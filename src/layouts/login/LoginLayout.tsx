@@ -1,11 +1,11 @@
-import { Typography, Stack } from "@mui/material";
-import Logo from "../../components/logo";
+import { Stack, Typography } from "@mui/material";
 import Image from "../../components/image";
+import Logo from "../../components/logo";
 import {
-  StyledRoot,
-  StyledSectionBg,
-  StyledSection,
   StyledContent,
+  StyledRoot,
+  StyledSection,
+  StyledSectionBg,
 } from "./styles";
 
 type Props = {
@@ -29,7 +29,7 @@ export default function LoginLayout({ children, illustration, title }: Props) {
       <StyledSection>
         <Typography
           variant="h3"
-          sx={{ mb: 10, maxWidth: 480, textAlign: "center" }}
+          sx={{ mb: 2, maxWidth: 480, textAlign: "center" }}
         >
           {title || "Hi, Welcome back"}
         </Typography>

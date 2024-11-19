@@ -1,7 +1,7 @@
+import { Box, BoxProps, Link } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { forwardRef } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { useTheme } from "@mui/material/styles";
-import { Box, Link, BoxProps } from "@mui/material";
 
 export interface LogoProps extends BoxProps {
   disabledLink?: boolean;
@@ -29,7 +29,7 @@ const Logo = forwardRef<HTMLDivElement, LogoProps>(
         }}
         {...other}
       >
-        <svg
+        {/* <svg
           xmlns="http://www.w3.org/2000/svg"
           width="100%"
           height="100%"
@@ -71,7 +71,12 @@ const Logo = forwardRef<HTMLDivElement, LogoProps>(
               d="M450 384c26.509 0 48-21.491 48-48s-21.491-48-48-48-48 21.491-48 48 21.491 48 48 48"
             />
           </g>
-        </svg>
+        </svg> */}
+        <img
+          src="/logo/logo_single.svg"
+          alt="Logo"
+          style={{ width: "100%", height: "100%" }}
+        />
       </Box>
     );
 

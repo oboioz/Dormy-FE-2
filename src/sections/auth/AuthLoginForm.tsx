@@ -1,11 +1,11 @@
-import { useState } from "react";
-import * as Yup from "yup";
-import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Link, Stack, Alert, IconButton, InputAdornment } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import Iconify from "../../components/iconify";
+import { Alert, IconButton, InputAdornment, Link, Stack } from "@mui/material";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import * as Yup from "yup";
 import FormProvider, { RHFTextField } from "../../components/hook-form";
+import Iconify from "../../components/iconify";
 
 type FormValuesProps = {
   email: string;
@@ -78,13 +78,12 @@ export default function AuthLoginForm() {
 
       <LoadingButton
         fullWidth
-        color="inherit"
+        color="primary"
         size="large"
         type="submit"
         variant="contained"
         loading={isSubmitSuccessful || isSubmitting}
         sx={{
-          bgcolor: "text.primary",
           color: (theme) =>
             theme.palette.mode === "light" ? "common.white" : "grey.800",
           "&:hover": {

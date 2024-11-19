@@ -1,12 +1,15 @@
-import { BrowserRouter } from "react-router-dom";
-import Router from "./routes";
+import 'react-lazy-load-image-component/src/effects/blur.css';
+import { BrowserRouter } from 'react-router-dom';
+import Router from './routes';
 
-function App() {
+import ThemeProvider from './theme';
+
+export default function App() {
   return (
     <BrowserRouter>
-      <Router />
+      <ThemeProvider>
+        <Router />
+      </ThemeProvider>
     </BrowserRouter>
   );
 }
-
-export default App;

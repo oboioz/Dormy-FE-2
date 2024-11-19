@@ -1,4 +1,4 @@
-import { styled, alpha } from "@mui/material/styles";
+import { alpha, styled } from "@mui/material/styles";
 import { bgGradient } from "../../utils/cssStyles";
 
 export const StyledRoot = styled("main")(() => ({
@@ -42,9 +42,10 @@ export const StyledContent = styled("div")(({ theme }) => ({
   display: "flex",
   minHeight: "100vh",
   justifyContent: "center",
+  alignItems: "center",
   padding: theme.spacing(15, 2),
   [theme.breakpoints.up("md")]: {
     flexShrink: 0,
-    padding: theme.spacing(30, 8, 0, 8),
+    padding: theme.spacing(0, 8, 0, 8),
   },
 }));
