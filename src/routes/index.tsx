@@ -1,20 +1,29 @@
 import { useRoutes } from "react-router-dom";
-import LoginPage from "../pages/LoginPage";
 import DashboardLayout from "../layouts/dashboard";
+import LoginPage from "../pages/auth/LoginPage";
+import UserProfilePage from "../pages/user/UserProfilePage";
 
 export default function Router() {
   return useRoutes([
     {
-      path: "/",
+      path: 'auth',
       children: [
         {
-          path: "login",
-          element: <LoginPage />,
+          path: 'login',
+          element: (
+            <LoginPage />
+          ),
         },
-        {
-          path: "dashboard",
-          element: <DashboardLayout />,
-        },
+      ],
+    },
+
+    {
+      path: 'dashboard',
+      element: (
+        <DashboardLayout />
+      ),
+      children: [
+        { path: 'user', element: (<UserProfilePage />), },
       ],
     },
   ]);

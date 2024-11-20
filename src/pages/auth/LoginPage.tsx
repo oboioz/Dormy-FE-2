@@ -1,4 +1,4 @@
-import Login from "../sections/auth/Login";
+import Login from "../../sections/auth/Login";
 
 export default function LoginPage() {
   return (
