@@ -6,6 +6,7 @@ import { Box, Card, Container, Tab, Tabs } from '@mui/material';
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 import Iconify from '../../components/iconify';
 // sections
+import AccountChangePassword from '../../sections/@dashboard/user/account/AccountChangePassword';
 import {
   Profile,
   ProfileCover,
@@ -27,29 +28,17 @@ export default function UserProfilePage() {
       component: <Profile info={123} posts={123} />,
     },
     {
-      value: 'followers',
-      label: 'Followers',
-      icon: <Iconify icon="eva:heart-fill" />,
-      component: <Profile info={123} posts={123} />,
-    },
-    {
-      value: 'friends',
-      label: 'Friends',
-      icon: <Iconify icon="eva:people-fill" />,
-      component: <Profile info={123} posts={123} />,
-    },
-    {
-      value: 'gallery',
-      label: 'Gallery',
-      icon: <Iconify icon="ic:round-perm-media" />,
-      component: <Profile info={123} posts={123} />,
+      value: 'change_password',
+      label: 'Change password',
+      icon: <Iconify icon="ic:round-vpn-key" />,
+      component: <AccountChangePassword />,
     },
   ];
 
   return (
     <>
 
-      <title> User: Profile | Minimal UI</title>
+      <title> User: Profile</title>
 
 
       <Container maxWidth={'lg'}>

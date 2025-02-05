@@ -1,11 +1,14 @@
+import { Box, Drawer, Stack } from "@mui/material";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { Box, Stack, Drawer } from "@mui/material";
-import { NAV } from "../../../config-global";
 import Logo from "../../../components/logo";
+import NavSectionVertical from "../../../components/nav-section/vertical/NavSectionVertical";
 import Scrollbar from "../../../components/scrollbar";
-import NavDocs from "./NavDocs";
+import { NAV } from "../../../config-global";
+import useResponsive from "../../../hooks/useResponsive";
+import navConfig from "./config-navigation";
 import NavAccount from "./NavAccount";
+import NavDocs from "./NavDocs";
 import NavToggleButton from "./NavToggleButton";
 
 type Props = {
@@ -15,6 +18,9 @@ type Props = {
 
 export default function NavVertical({ openNav, onCloseNav }: Props) {
   const { pathname } = useLocation();
+
+  const isDesktop = useResponsive('up', 'lg');
+
 
   useEffect(() => {
     if (openNav) {
@@ -48,6 +54,7 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
       </Stack>
 
       {/* <NavSectionVertical /> */}
+      <NavSectionVertical data={navConfig} />
 
       <Box sx={{ flexGrow: 1 }} />
 

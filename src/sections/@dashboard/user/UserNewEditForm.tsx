@@ -1,12 +1,11 @@
-import * as Yup from 'yup';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import * as Yup from 'yup';
 // form
-import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Controller, useForm } from 'react-hook-form';
 // @mui
-import { LoadingButton } from '@mui/lab';
-import { Box, Card, Grid, Stack, Switch, Typography, FormControlLabel } from '@mui/material';
+import { Box, Card, FormControlLabel, Grid, Switch, Typography } from '@mui/material';
 // utils
 import { fData } from '../../../utils/formatNumber';
 // routes
@@ -16,15 +15,15 @@ import { IUserAccountGeneral } from '../../../@types/user';
 // assets
 import { countries } from '../../../assets/data';
 // components
-import Label from '../../../components/label';
-import { CustomFile } from '../../../components/upload';
-import { useSnackbar } from '../../../components/snackbar';
 import FormProvider, {
   RHFSelect,
   RHFSwitch,
   RHFTextField,
   RHFUploadAvatar,
 } from '../../../components/hook-form';
+import Label from '../../../components/label';
+import { useSnackbar } from '../../../components/snackbar';
+import { CustomFile } from '../../../components/upload';
 
 // ----------------------------------------------------------------------
 
@@ -246,12 +245,6 @@ export default function UserNewEditForm({ isEdit = false, currentUser }: Props) 
               <RHFTextField name="company" label="Company" />
               <RHFTextField name="role" label="Role" />
             </Box>
-
-            <Stack alignItems="flex-end" sx={{ mt: 3 }}>
-              <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-                {!isEdit ? 'Create User' : 'Save Changes'}
-              </LoadingButton>
-            </Stack>
           </Card>
         </Grid>
       </Grid>

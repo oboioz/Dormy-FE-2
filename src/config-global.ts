@@ -13,3 +13,9 @@ export const NAV = {
   H_DASHBOARD_ITEM_SUB: 36,
   H_DASHBOARD_ITEM_HORIZONTAL: 32,
 };
+
+export const ICON = {
+  NAV_ITEM: 24,
+  NAV_ITEM_HORIZONTAL: 22,
+  NAV_ITEM_MINI: 22,
+};

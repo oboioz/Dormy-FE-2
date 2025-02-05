@@ -1,10 +1,8 @@
 // form
 import { useForm } from 'react-hook-form';
 // @mui
-import { LoadingButton } from '@mui/lab';
-import { Box, Card, CardHeader, Stack } from '@mui/material';
+import { Box, Card, CardHeader, Divider, Stack } from '@mui/material';
 import FormProvider, { RHFTextField } from '../../../../../components/hook-form';
-import { RHFSelect } from '../../../../../components/hook-form/RHFSelect';
 
 // utils
 
@@ -61,45 +59,99 @@ export default function ProfileInformation() {
     };
 
     return (
-        <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-            <Card sx={{ p: 3 }}>
-                <CardHeader title="Personal Information" />
-                <Box
-                    rowGap={3}
-                    columnGap={2}
-                    display="grid"
-                    gridTemplateColumns={{
-                        xs: 'repeat(1, 1fr)',
-                        sm: 'repeat(2, 1fr)',
-                    }}
-                >
-                    <RHFTextField name="displayName" label="Name" />
+        <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)} >
+            <Stack spacing={3}>
+                <Card sx={{ p: 3 }}>
+                    <CardHeader title="Personal Information" />
+                    <Box
+                        rowGap={3}
+                        columnGap={2}
+                        display="grid"
+                        gridTemplateColumns={{
+                            xs: 'repeat(1, 1fr)',
+                            sm: 'repeat(2, 1fr)',
+                        }}
+                    >
+                        <RHFTextField name="displayName" label="Name" />
 
-                    <RHFTextField name="email" label="Email Address" />
+                        <RHFTextField name="email" label="Email Address" />
 
-                    <RHFTextField name="phoneNumber" label="Phone Number" />
+                        <RHFTextField name="phoneNumber" label="Phone Number" />
 
-                    <RHFTextField name="address" label="Address" />
+                        <RHFTextField name="address" label="Address" />
 
-                    <RHFSelect native name="country" label="Country" placeholder="Country">
-                        <option value="" />
-                    </RHFSelect>
+                        <RHFTextField name="country" label="Country" placeholder="Country" />
 
-                    <RHFTextField name="state" label="State/Region" />
+                        <RHFTextField name="state" label="State/Region" />
 
-                    <RHFTextField name="city" label="City" />
+                        <RHFTextField name="city" label="City" />
 
-                    <RHFTextField name="zipCode" label="Zip/Code" />
-                </Box>
+                        <RHFTextField name="zipCode" label="Zip/Code" />
+                    </Box>
+                </Card>
 
-                <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
-                    <RHFTextField name="about" multiline rows={4} label="About" />
 
-                    <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-                        Save Changes
-                    </LoadingButton>
-                </Stack>
-            </Card>
+
+                <Card sx={{ p: 3 }}>
+                    <CardHeader title="Personal Information" />
+                    <Box
+                        rowGap={3}
+                        columnGap={2}
+                        display="grid"
+                        gridTemplateColumns={{
+                            xs: 'repeat(1, 1fr)',
+                            sm: 'repeat(2, 1fr)',
+                        }}
+                    >
+                        <RHFTextField name="displayName" label="Name" />
+
+                        <RHFTextField name="email" label="Email Address" />
+
+                        <RHFTextField name="phoneNumber" label="Phone Number" />
+
+                        <RHFTextField name="address" label="Address" />
+
+                        <RHFTextField name="country" label="Country" placeholder="Country" />
+
+                        <RHFTextField name="state" label="State/Region" />
+
+                        <RHFTextField name="city" label="City" />
+
+                        <RHFTextField name="zipCode" label="Zip/Code" />
+                    </Box>
+                </Card>
+
+                <Divider variant="middle" component="li" />
+
+                <Card sx={{ p: 3 }}>
+                    <CardHeader title="Personal Information" />
+                    <Box
+                        rowGap={3}
+                        columnGap={2}
+                        display="grid"
+                        gridTemplateColumns={{
+                            xs: 'repeat(1, 1fr)',
+                            sm: 'repeat(2, 1fr)',
+                        }}
+                    >
+                        <RHFTextField name="displayName" label="Name" />
+
+                        <RHFTextField name="email" label="Email Address" />
+
+                        <RHFTextField name="phoneNumber" label="Phone Number" />
+
+                        <RHFTextField name="address" label="Address" />
+
+                        <RHFTextField name="country" label="Country" placeholder="Country" />
+
+                        <RHFTextField name="state" label="State/Region" />
+
+                        <RHFTextField name="city" label="City" />
+
+                        <RHFTextField name="zipCode" label="Zip/Code" />
+                    </Box>
+                </Card>
+            </Stack>
         </FormProvider>
     );
 }
