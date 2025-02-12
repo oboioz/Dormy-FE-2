@@ -152,7 +152,7 @@ export default function ContractListPage() {
 
                 <TableBody>
                   {mockAbsences.map((row, index) => (
-                    <TableRow hover key={index}>
+                    <TableRow key={index}>
                       <TableCell align="left">{fDate(row.absenceDate)}</TableCell>
                       <TableCell align="left">{fDateTime(row.sendAt)}</TableCell>
                       <TableCell align="left">{row.reason}</TableCell>
