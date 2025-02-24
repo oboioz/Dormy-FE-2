@@ -1,12 +1,5 @@
 // ----------------------------------------------------------------------
 
-export type IUserSocialLink = {
-  facebookLink: string;
-  instagramLink: string;
-  linkedinLink: string;
-  twitterLink: string;
-};
-
 export type IUserProfileFollowers = {
   follower: number;
   following: number;
@@ -25,61 +18,6 @@ export type IUserProfileAbout = {
   role: string;
   company: string;
   school: string;
-};
-
-export type IUserProfile = IUserProfileFollowers &
-  IUserProfileAbout & {
-    id: string;
-    socialLinks: IUserSocialLink;
-  };
-
-export type IUserProfileFollower = {
-  id: string;
-  avatarUrl: string;
-  name: string;
-  country: string;
-  isFollowed: boolean;
-};
-
-export type IUserProfileGallery = {
-  id: string;
-  title: string;
-  postAt: Date | string | number;
-  imageUrl: string;
-};
-
-export type IUserProfileFriend = {
-  id: string;
-  avatarUrl: string;
-  name: string;
-  role: string;
-};
-
-export type IUserProfilePost = {
-  id: string;
-  author: {
-    id: string;
-    avatarUrl: string;
-    name: string;
-  };
-  isLiked: boolean;
-  createdAt: Date | string | number;
-  media: string;
-  message: string;
-  personLikes: {
-    name: string;
-    avatarUrl: string;
-  }[];
-  comments: {
-    id: string;
-    author: {
-      id: string;
-      avatarUrl: string;
-      name: string;
-    };
-    createdAt: Date | string | number;
-    message: string;
-  }[];
 };
 
 // ----------------------------------------------------------------------
@@ -114,29 +52,6 @@ export type IUserAccountGeneral = {
   role: string;
 };
 
-export type IUserAccountBillingCreditCard = {
-  id: string;
-  cardNumber: string;
-  cardType: string;
-};
-
-export type IUserAccountBillingInvoice = {
-  id: string;
-  createdAt: Date | string | number;
-  price: number;
-};
-
-export type IUserAccountBillingAddress = {
-  id: string;
-  name: string;
-  phone: string;
-  country: string;
-  state: string;
-  city: string;
-  street: string;
-  zipCode: string;
-};
-
 export type IUserAccountChangePassword = {
   oldPassword: string;
   newPassword: string;
@@ -144,12 +59,81 @@ export type IUserAccountChangePassword = {
 };
 
 // ----------------------------------------------------------------------
+// New User Types
 
-export type IUserAccountNotificationSettings = {
-  activityComments: boolean;
-  activityAnswers: boolean;
-  activityFollows: boolean;
-  applicationNews: boolean;
-  applicationProduct: boolean;
-  applicationBlog: boolean;
+export enum UserPriorityOption {
+  NO_FATHER = "No Father",
+  NO_MOTHER = "No Mother",
+  CHILDREN_OF_WAR_INVALIDS = "Children of War Invalids",
+  DISABLED = "Disabled",
+  POOR_HOUSEHOLD = "Poor Household",
+  ORPHAN = "Orphan",
+  ECONOMICALLY_DISADVANTAGED = "Economically Disadvantaged Area",
+  SERIOUS_ILLNESS = "Student with Serious Illness",
+  ETHNIC_MINORITIES = "Ethnic Minority",
+  NOT_INCLUDED = "Not Included in the Above Categories",
+}
+
+export type IUserPriority = {
+  options: UserPriorityOption[]; // Multiple priority options
+};
+
+export type IUserHealthInsurance = {
+  insuranceCardNumber: string;
+  expirationDate: Date | null;
+  registeredHospital: string;
+};
+
+export type IUserWorkplace = {
+  workplaceID: number;
+  name: string;
+  address: string;
+  createdAt: Date | null;
+  createdBy: string;
+  abbreviation: string;
+};
+
+export type IUserGuardian = {
+  guardianID: number;
+  name: string;
+  email: string;
+  phoneNumber: string;
+  address: string;
+  relationshipToUser: string;
+};
+
+export type IUser = {
+  userID: number;
+  password: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  gender: string;
+  dateOfBirth: Date | null;
+  nationalIDNumber: string;
+  status: string;
+  contractID: number;
+  priorities: string[]; // User can select multiple priority conditions
+  guardian: IUserGuardian; // One guardian per user
+  workplace: IUserWorkplace | null; // One workplace per user, nullable
+  healthInsurance: IUserHealthInsurance | null; // One health insurance per user, nullable
+};
+
+export type IRegistrationForm = {
+  isLoading: boolean;
+  error: Error | string | null;
+  activeStep: number;
+
+  registrationInformation: {
+    generalInformation: IUser,
+    documents: IDocuments,
+  }
+};
+
+export type IDocuments = {
+  portraitPhoto: File | null;
+  educationPhoto: File | null;
+  nationalIDPhotosFront: File | null;
+  nationalIDPhotosBack: File | null;
 };
