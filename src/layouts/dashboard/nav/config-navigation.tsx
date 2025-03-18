@@ -1,6 +1,6 @@
 // components
 import SvgColor from '../../../components/svg-color';
-import { PATH_USER } from '../../../routes/paths';
+import { PATH_ADMIN, PATH_USER } from '../../../routes/paths';
 // import { PATH_DASHBOARD } from '../../../routes/paths';
 
 // ----------------------------------------------------------------------
@@ -8,16 +8,27 @@ import { PATH_USER } from '../../../routes/paths';
 const createIcon = (name: string) => <SvgColor src={name} sx={{ width: 1, height: 1 }} />;
 
 const ICONS = {
+  dashboard: createIcon("mdi:view-dashboard"),
+  settings: createIcon("mdi:cog"),
   user: createIcon("mdi:account"),
-  file: createIcon("mdi:file-document"),
-  folder: createIcon("mdi:folder"),
-  calendar: createIcon("mdi:calendar"),
-  vehicle: createIcon("mdi:motorbike"), // Vehicle (Motorbike icon)
+  resident: createIcon("mdi:home-account"),
+  workplace: createIcon("mdi:office-building"),
+  dormitory: createIcon("mdi:home-group"),
+  roomType: createIcon("mdi:bed"),
+  registration: createIcon("mdi:clipboard-check"),
+  overnight: createIcon("mdi:moon-waning-crescent"),
+  garage: createIcon("mdi:garage"),
+  vehicle: createIcon("mdi:car"),
+  worker: createIcon("mdi:account-hard-hat"),
+  parking: createIcon("mdi:car-parking-lights"),
   invoice: createIcon("mdi:receipt"),
-  banking: createIcon("mdi:bank"),
-  booking: createIcon("mdi:clipboard-check"),
-  lock: createIcon("mdi:lock"),
+  rent: createIcon("mdi:home-currency-usd"),
+  water: createIcon("mdi:water"),
+  electricity: createIcon("mdi:flash"),
+  request: createIcon("mdi:clipboard-list"),
   notification: createIcon("mdi:bell"),
+  violation: createIcon("mdi:alert-circle"),
+
 };
 
 const navConfig = [
@@ -35,7 +46,7 @@ const navConfig = [
           { title: 'room details', path: PATH_USER.residential.roomDetails }, // Folder for room-related data
         ],
       },
-      { title: 'overnight absence', path: PATH_USER.overnight, icon: ICONS.calendar }, // Calendar represents staying overnight
+      { title: 'overnight absence', path: PATH_USER.overnight, icon: ICONS.overnight }, // Calendar represents staying overnight
       { title: 'my vehicle', path: PATH_USER.vehicle, icon: ICONS.vehicle }, // Cart is the closest to vehicle-related actions
       {
         title: 'invoice',
@@ -49,232 +60,108 @@ const navConfig = [
           { title: 'others', path: PATH_USER.invoice.others }, // Miscellaneous financial matters
         ],
       },
-      { title: 'request', path: PATH_USER.request, icon: ICONS.booking }, // Booking represents requests
-      { title: 'violation', path: PATH_USER.violation, icon: ICONS.lock },
+      { title: 'request', path: PATH_USER.request, icon: ICONS.request }, // Booking represents requests
+      { title: 'violation', path: PATH_USER.violation, icon: ICONS.violation },
       { title: 'notification', path: PATH_USER.notification.notification, icon: ICONS.notification }, // Label is used for notifications/messages
     ],
   },
 
-  // Admin
-  // ----------------------------------------------------------------------
   {
-    subheader: 'management',
+    subheader: "admin",
     items: [
       {
-        // default roles : All roles can see this entry.
-        // roles: ['user'] Only users can see this item.
-        // roles: ['admin'] Only admin can see this item.
-        // roles: ['admin', 'manager'] Only admin/manager can see this item.
-        // Reference from 'src/guards/RoleBasedGuard'.
-        title: 'dashboard',
-        path: PATH_USER.profile,
-        icon: ICONS.lock,
-        roles: ['admin'],
-        // caption: 'only_admin_can_see_this_item',
+        title: "Dashboard",
+        path: PATH_ADMIN.dashboard,
+        icon: ICONS.dashboard,
+        // roles: ['admin'],
+
       },
+      { title: "Settings", path: PATH_ADMIN.settings, icon: ICONS.settings },
 
       {
-        title: 'system',
-        path: PATH_USER.profile,
-        icon: ICONS.lock,
-        roles: ['admin'],
-      },
+        title: "Residential",
+        path: PATH_ADMIN.resident,
+        icon: ICONS.resident,
+        // roles: ['admin'],
 
-      {
-        title: 'resident',
-        path: PATH_USER.profile,
-        icon: ICONS.user,
-        roles: ['admin'],
         children: [
-          { title: 'resident list', path: PATH_USER.profile },
-          { title: 'workplace', path: PATH_USER.profile },
+          { title: "List", path: PATH_ADMIN.resident },
+          { title: "Workplace", path: PATH_ADMIN.workplace.list },
         ],
       },
 
       {
-        title: 'dormitory',
-        path: PATH_USER.profile,
-        icon: ICONS.user,
-        roles: ['admin'],
+        title: "Dormitory",
+        path: PATH_ADMIN.dormitory.root,
+        icon: ICONS.dormitory,
+        // roles: ['admin'],
+
         children: [
-          { title: 'layout structure', path: PATH_USER.profile },
-          { title: 'room type', path: PATH_USER.profile },
+          { title: "Structure", path: PATH_ADMIN.dormitory.structure },
+          { title: "Room Types", path: PATH_ADMIN.dormitory.roomType },
         ],
       },
 
       {
-        title: 'registration',
-        path: PATH_USER.profile,
-        icon: ICONS.lock,
-        roles: ['admin'],
+        title: "Registration",
+        path: PATH_ADMIN.register,
+        icon: ICONS.registration,
+        // roles: ['admin'],
+
       },
 
       {
-        title: 'overnight request',
-        path: PATH_USER.profile,
-        icon: ICONS.lock,
-        roles: ['admin'],
+        title: "Overnight Request",
+        path: PATH_ADMIN.overnight,
+        icon: ICONS.overnight,
+        // roles: ['admin'],
       },
 
       {
-        title: 'garage',
-        path: PATH_USER.profile,
-        icon: ICONS.user,
-        roles: ['admin'],
+        title: "Garage",
+        path: PATH_ADMIN.garage.list,
+        icon: ICONS.garage,
+        // roles: ['admin'],
         children: [
-          { title: 'vehicle list', path: PATH_USER.profile },
-          { title: 'garage info', path: PATH_USER.profile },
-          { title: 'worker', path: PATH_USER.profile },
-          { title: 'parking request', path: PATH_USER.profile },
+          { title: "Garage List", path: PATH_ADMIN.garage.list },
+          { title: "Vehicle List", path: PATH_ADMIN.garage.vehiclelist },
+          { title: "Worker List", path: PATH_ADMIN.garage.worker },
+          { title: "Parking Request", path: PATH_ADMIN.garage.registrationlist },
         ],
       },
 
       {
-        title: 'invoice list',
-        path: PATH_USER.profile,
-        icon: ICONS.user,
-        roles: ['admin'],
+        title: "Invoice",
+        path: PATH_ADMIN.invoice.list,
+        icon: ICONS.invoice,
+        // roles: ['admin'],
         children: [
-          { title: 'rent', path: PATH_USER.profile },
-          { title: 'water', path: PATH_USER.profile },
-          { title: 'electricity', path: PATH_USER.profile },
-          { title: 'parking', path: PATH_USER.profile },
-          { title: 'others', path: PATH_USER.profile },
+          { title: "Rent", path: PATH_ADMIN.invoice.list },
+          { title: "Water", path: PATH_ADMIN.invoice.list },
+          { title: "Electricity", path: PATH_ADMIN.invoice.list },
+          { title: "Parking", path: PATH_ADMIN.invoice.list },
+          { title: "Others", path: PATH_ADMIN.invoice.list },
         ],
       },
 
       {
-        title: 'request list',
-        path: PATH_USER.profile,
-        icon: ICONS.lock,
-        roles: ['admin'],
+        title: "Request",
+        path: PATH_ADMIN.request,
+        icon: ICONS.request,
+        // roles: ['admin'],
       },
 
       {
-        title: 'notification',
-        path: PATH_USER.profile,
-        icon: ICONS.lock,
-        roles: ['admin'],
+        title: "Notification",
+        path: PATH_ADMIN.notification.notification,
+        icon: ICONS.notification,
+        // roles: ['admin'],
       },
     ],
   },
 
-  // APP
-  // ----------------------------------------------------------------------
-  // {
-  //   subheader: 'app',
-  //   items: [
-  //     {
-  //       title: 'mail',
-  //       path: PATH_USER.profile,
-  //       icon: ICONS.mail,
-  //       info: <Label color="error">+32</Label>,
-  //     },
-  //     {
-  //       title: 'chat',
-  //       path: PATH_USER.profile,
-  //       icon: ICONS.chat,
-  //     },
-  //     {
-  //       title: 'calendar',
-  //       path: PATH_USER.profile,
-  //       icon: ICONS.calendar,
-  //     },
-  //     {
-  //       title: 'kanban',
-  //       path: PATH_USER.profile,
-  //       icon: ICONS.kanban,
-  //     },
-  //   ],
-  // },
 
-  // // DEMO MENU STATES
-  // {
-  //   subheader: 'Other cases',
-  //   items: [
-  //     {
-  //       // default roles : All roles can see this entry.
-  //       // roles: ['user'] Only users can see this item.
-  //       // roles: ['admin'] Only admin can see this item.
-  //       // roles: ['admin', 'manager'] Only admin/manager can see this item.
-  //       // Reference from 'src/guards/RoleBasedGuard'.
-  //       title: 'item_by_roles',
-  //       path: PATH_USER.profile,
-  //       icon: ICONS.lock,
-  //       roles: ['admin'],
-  //       caption: 'only_admin_can_see_this_item',
-  //     },
-  //     {
-  //       title: 'menu_level',
-  //       path: '#/dashboard/menu_level',
-  //       icon: ICONS.menuItem,
-  //       children: [
-  //         {
-  //           title: 'menu_level_2a',
-  //           path: '#/dashboard/menu_level/menu_level_2a',
-  //         },
-  //         {
-  //           title: 'menu_level_2b',
-  //           path: '#/dashboard/menu_level/menu_level_2b',
-  //           children: [
-  //             {
-  //               title: 'menu_level_3a',
-  //               path: '#/dashboard/menu_level/menu_level_2b/menu_level_3a',
-  //             },
-  //             {
-  //               title: 'menu_level_3b',
-  //               path: '#/dashboard/menu_level/menu_level_2b/menu_level_3b',
-  //               children: [
-  //                 {
-  //                   title: 'menu_level_4a',
-  //                   path: '#/dashboard/menu_level/menu_level_2b/menu_level_3b/menu_level_4a',
-  //                 },
-  //                 {
-  //                   title: 'menu_level_4b',
-  //                   path: '#/dashboard/menu_level/menu_level_2b/menu_level_3b/menu_level_4b',
-  //                 },
-  //               ],
-  //             },
-  //           ],
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       title: 'item_disabled',
-  //       path: '#disabled',
-  //       icon: ICONS.disabled,
-  //       disabled: true,
-  //     },
 
-  //     {
-  //       title: 'item_label',
-  //       path: '#label',
-  //       icon: ICONS.label,
-  //       info: (
-  //         <Label color="info" startIcon={<Iconify icon="eva:email-fill" />}>
-  //           NEW
-  //         </Label>
-  //       ),
-  //     },
-  //     {
-  //       title: 'item_caption',
-  //       path: '#caption',
-  //       icon: ICONS.menuItem,
-  //       caption:
-  //         'Quisque malesuada placerat nisl. In hac habitasse platea dictumst. Cras id dui. Pellentesque commodo eros a enim. Morbi mollis tellus ac sapien.',
-  //     },
-  //     {
-  //       title: 'item_external_link',
-  //       path: 'https://www.google.com/',
-  //       icon: ICONS.external,
-  //     },
-  //     {
-  //       title: 'blank',
-  //       path: PATH_USER.profile,
-  //       icon: ICONS.blank,
-  //     },
-  //   ],
-  // },
 ];
 
 export default navConfig;

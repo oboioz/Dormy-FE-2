@@ -82,6 +82,7 @@ export const PATH_ADMIN = {
 
   overnight: path(ROOTS_ADMIN, '/overnight'),
   request: path(ROOTS_ADMIN, '/request'),
+  register: path(ROOTS_ADMIN, '/registration'),
 
   invoice: {
     list: path(ROOTS_ADMIN, '/invoice'),
