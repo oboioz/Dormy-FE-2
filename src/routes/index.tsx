@@ -3,7 +3,7 @@ import CompactLayout from "../layouts/compact";
 import DashboardLayout from "../layouts/dashboard";
 import SimpleLayout from "../layouts/simple";
 
-import { AdminDashboardPage, AdminProfilePage, ContractListPage, DormitoryBuildingFormPage, DormitoryBuildingPage, DormitoryRoomCreatePage, DormitoryRoomListPage, EnterEmailPage, InvoiceCreatePage, InvoiceElectricPage, InvoiceListPage, InvoiceOthersPage, InvoiceParkingPage, InvoiceRentPage, InvoiceWaterPage, LoginPage, MyVehiclePage, NewPasswordPage, NotificationNewPostPage, NotificationPostPage, NotificationsPage, OvernightAbsencePage, OvernightRequestFormPage, OvernightRequestPage, RegistrationFormPage, RegistrationListPage, RegistrationPolicyPage, RegistrationPreviewPage, RegistrationSuccessPage, RequestFormPage, RequestListingPage, RequestListPage, ResetPasswordPage, ResidentListPage, RoomDetailsPage, RoomPickingPage, RoomTypeFormPage, RoomTypePage, SystemSettingsPage, UserProfilePage, VehicleGarageCreatePage, VehicleGaragePage, VehicleListPage, VehicleRegistrationFormPage, VehicleRegistrationListPage, VehicleWorkerPage, VerifyCodePage, ViolationDetailsPage, ViolationMonthListPage, WorkplaceFormPage, WorkplaceListPage } from "./elements";
+import { AdminDashboardPage, AdminProfilePage, ContractListPage, DormitoryBuildingFormPage, DormitoryBuildingPage, DormitoryRoomCreatePage, DormitoryRoomListPage, EnterEmailPage, InvoiceCreatePage, InvoiceElectricPage, InvoiceListPage, InvoiceOthersPage, InvoiceParkingPage, InvoiceRentPage, InvoiceWaterPage, LoginPage, MyVehiclePage, NewPasswordPage, NotificationNewPostPage, NotificationPostPage, NotificationsPage, OvernightAbsencePage, OvernightRequestFormPage, OvernightRequestPage, RegistrationFormPage, RegistrationListPage, RegistrationPolicyPage, RegistrationPreviewPage, RegistrationSuccessPage, RequestFormPage, RequestListingPage, RequestListPage, ResetPasswordPage, ResidentListPage, RoomDetailsPage, RoomPickingPage, RoomTypeFormPage, RoomTypePage, SystemSettingsPage, UserProfilePage, VehicleGarageCreatePage, VehicleGaragePage, VehicleListPage, VehicleRegistrationFormPage, VehicleRegistrationListPage, VehicleWorkerPage, VerifyCodePage, ViolationDetailsListPage, ViolationDetailsPage, ViolationFormPage, ViolationMonthListPage, WorkplaceFormPage, WorkplaceListPage } from "./elements";
 
 
 export default function Router() {
@@ -83,6 +83,9 @@ export default function Router() {
 
         { path: 'overnight', element: (<OvernightRequestPage />), },
         { path: 'request', element: (<RequestListingPage />), },
+
+        { path: 'violation', element: (<ViolationDetailsListPage />), },
+        { path: 'violationform', element: (<ViolationFormPage />), },
 
 
         { path: 'invoice', element: (<InvoiceListPage />), },

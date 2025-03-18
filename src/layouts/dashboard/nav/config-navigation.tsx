@@ -118,6 +118,13 @@ const navConfig = [
       },
 
       {
+        title: "Violation",
+        path: PATH_ADMIN.violation.list,
+        icon: ICONS.violation,
+        // roles: ['admin'],
+      },
+
+      {
         title: "Garage",
         path: PATH_ADMIN.garage.list,
         icon: ICONS.garage,
@@ -157,6 +164,7 @@ const navConfig = [
         icon: ICONS.notification,
         // roles: ['admin'],
       },
+
     ],
   },
 

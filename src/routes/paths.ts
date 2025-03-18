@@ -102,6 +102,11 @@ export const PATH_ADMIN = {
     form: path(ROOTS_ADMIN, '/workplaceform'),
   },
 
+  violation: {
+    list: path(ROOTS_ADMIN, '/violation'),
+    form: path(ROOTS_ADMIN, '/violationform'),
+  },
+
   garage: {
     list: path(ROOTS_ADMIN, '/garage'),
     form: path(ROOTS_ADMIN, '/garageform'),
