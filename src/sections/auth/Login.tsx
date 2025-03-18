@@ -1,20 +1,21 @@
-import { Alert, Button, Link, Stack, Typography } from "@mui/material";
+import { Alert, Button, Typography } from "@mui/material";
 import Divider from '@mui/material/Divider';
 
-
-import DashboardLayout from "../../layouts/dashboard";
+import { Link as RouterLink } from 'react-router-dom';
 import LoginLayout from "../../layouts/login";
+import { PATH_REGISTER } from "../../routes/paths";
 import AuthLoginForm from "./AuthLoginForm";
 
 export default function Login() {
+  // const { method } = useAuthContext();
+
   return (
     <LoginLayout>
-      <Stack spacing={2} sx={{ mb: 5, position: "relative" }}>
-        <Typography variant="h4">Sign in to Dormy</Typography>
-      </Stack>
+
+      <Typography variant="h4">Sign in to Dormy</Typography>
 
       <Alert severity="info" sx={{ mb: 3 }}>
-        Use email : <strong>demo@minimals.cc</strong> / password :
+        Use email : <strong>demo@dormy.cc</strong> / password :
         <strong> demo1234</strong>
       </Alert>
 
@@ -26,8 +27,8 @@ export default function Login() {
         fullWidth
         color="primary"
         size="large"
-        component={Link}
-        to={DashboardLayout}
+        component={RouterLink} // Use RouterLink for navigation
+        to={PATH_REGISTER.policy} // Navigate to register policy page
         variant="outlined"
       >
         Register

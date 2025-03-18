@@ -7,15 +7,9 @@ import ProfileInsurance from './ProfileInsurance';
 import ProfileQR from './ProfileQR';
 // ----------------------------------------------------------------------
 
-export default function Profile() {
+export default function UserProfile() {
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12} md={4}>
-        <Stack spacing={3}>
-          <ProfileQR />
-          <ProfileInsurance />
-        </Stack>
-      </Grid>
 
       <Grid item xs={12} md={8}>
         <Stack spacing={3}>
@@ -23,6 +17,15 @@ export default function Profile() {
 
         </Stack>
       </Grid>
+
+      <Grid item xs={12} md={4}>
+        <Stack spacing={3}>
+          <ProfileQR />
+          <ProfileInsurance />
+        </Stack>
+      </Grid>
+
+
     </Grid>
   );
 }

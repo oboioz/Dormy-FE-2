@@ -1,41 +1,39 @@
-import { useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 // @mui
-import { Grid, Container } from '@mui/material';
+import { Container, Grid } from '@mui/material';
 // routes
-import { PATH_DASHBOARD } from '../../routes/paths';
 // redux
-import { useDispatch, useSelector } from '../../redux/store';
 import {
-  nextStep,
   backStep,
-  resetForm,
+  nextStep,
 } from '../../redux/slices/registration';
+import { useDispatch, useSelector } from '../../redux/store';
 // sections
-import {
-  CheckoutCart,
-  CheckoutSteps,
-  CheckoutPayment,
-  CheckoutOrderComplete,
-  CheckoutBillingAddress,
-} from '../../sections/@dashboard/e-commerce/checkout';
+import { useSettingsContext } from '../../components/settings';
+
+import { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import GeneralInformationForm from '../../sections/registration/GeneralInformationForm';
+import GuardianInformationForm from '../../sections/registration/GuardianInformationForm';
+import MedicalInformationForm from '../../sections/registration/MedicalInformationForm';
+import RegistrationComplete from '../../sections/registration/RegistrationComplete';
+import RegistrationSteps from '../../sections/registration/RegistrationSteps';
 
 // ----------------------------------------------------------------------
 
-const STEPS = ['General Information', 'Guardian Information', 'Medical Information', 'Final Confirmation'];
+const STEPS = ['General Information', 'Guardian Information', 'Medical Information'];
 
 // ----------------------------------------------------------------------
 
-export default function EcommerceCheckoutPage() {
+export default function RegistrationFormPage() {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
+  const { themeStretch } = useSettingsContext();
+
   const { activeStep } = useSelector((state) => state.registration);
   const { generalInformation, documents, } = useSelector((state) => state.registration.registrationInformation);
-  const { guardian } = useSelector((state) => state.registration.registrationInformation.generalInformation.guardian);
 
 
 
@@ -50,54 +48,64 @@ export default function EcommerceCheckoutPage() {
     dispatch(backStep());
   };
 
-  const handleReset = () => {
-    if (completed) {
-      dispatch(resetForm());
-      navigate(PATH_DASHBOARD.eCommerce.shop, { replace: true });
-    }
-  };
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (completed) setOpen(true);
+  }, [completed]);
+
 
   return (
     <>
-      {/* <Helmet>
-        <title> Ecommerce: Checkout | Minimal UI</title>
-      </Helmet> */}
+      <Helmet>
+        <title> Form | Registration</title>
+      </Helmet>
 
-      <Grid container justifyContent={completed ? 'center' : 'flex-start'}>
-        <Grid item xs={12} md={8}>
-          <CheckoutSteps activeStep={activeStep} steps={STEPS} />
+      <Container maxWidth={themeStretch ? false : 'lg'}
+        sx={{
+          pt: 15,
+          pb: 10,
+          // flexDirection: 'column',
+          // alignItems: 'center', // Centers horizontally
+          // justifyContent: 'center', // Centers vertically
+          minHeight: '100vh', // Ensures full viewport height for vertical centering
+        }}
+      >
+        <Grid container justifyContent={'center'}>
+          <Grid item xs={12} md={8}>
+            <RegistrationSteps activeStep={activeStep} steps={STEPS} />
+          </Grid>
         </Grid>
-      </Grid>
 
-      {completed ? (
-        <CheckoutOrderComplete open={completed} onDownloadPDF={() => { }} />
-      ) : (
-        <>
-          {activeStep === 0 && (
-            <GeneralInformationForm
-              generalInformation={generalInformation}
-              documents={documents}
-              onNextStep={handleNextStep}
-              onBackStep={handleBackStep}
-            />
-          )}
-          {activeStep === 1 && (
-            <CheckoutBillingAddress
-              checkout={checkout}
-              onNextStep={handleNextStep}
-              onBackStep={handleBackStep}
-            />
-          )}
-          {activeStep === 2 && billing && (
-            <CheckoutPayment
-              checkout={checkout}
-              onNextStep={handleNextStep}
-              onBackStep={handleBackStep}
-            />
-          )}
-        </>
-      )}
-    </Container >
+        {completed ? (
+          <RegistrationComplete open={open} onClose={() => setOpen(false)} />
+        ) : (
+          <>
+            {activeStep === 0 && (
+              <GeneralInformationForm
+                generalInformation={generalInformation}
+                documents={documents}
+                onNextStep={handleNextStep}
+              // onBackStep={handleBackStep}
+              />
+            )}
+            {activeStep === 1 && (
+              <GuardianInformationForm
+                generalInformation={generalInformation}
+                onNextStep={handleNextStep}
+                onBackStep={handleBackStep}
+              />
+            )}
+            {activeStep === 2 && (
+              <MedicalInformationForm
+                generalInformation={generalInformation}
+                onNextStep={handleNextStep}
+                onBackStep={handleBackStep}
+              />
+            )}
+          </>
+        )}
+      </Container >
     </>
   );
 }

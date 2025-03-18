@@ -1,5 +1,7 @@
 // ----------------------------------------------------------------------
 
+import { IContract } from "./contract";
+
 export type IUserProfileFollowers = {
   follower: number;
   following: number;
@@ -113,7 +115,7 @@ export type IUser = {
   dateOfBirth: Date | null;
   nationalIDNumber: string;
   status: string;
-  contractID: number;
+  contract: IContract;
   priorities: string[]; // User can select multiple priority conditions
   guardian: IUserGuardian; // One guardian per user
   workplace: IUserWorkplace | null; // One workplace per user, nullable

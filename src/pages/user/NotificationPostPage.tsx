@@ -1,16 +1,19 @@
-import { useState } from 'react';
 // @mui
-import { Container, Stack, Typography } from '@mui/material';
+import { Button, Container, IconButton, MenuItem, Stack, Typography } from '@mui/material';
 // routes
-import { PATH_DASHBOARD } from '../../routes/paths';
+import { PATH_USER } from '../../routes/paths';
 // utils
 // @types
 import { INotification } from '../../@types/notification';
 // components
+import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
+import ConfirmDialog from '../../components/confirm-dialog';
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
+import Iconify from '../../components/iconify';
 import Markdown from '../../components/markdown';
+import MenuPopover from '../../components/menu-popover';
 import { useSettingsContext } from '../../components/settings';
-import { SkeletonPostDetails } from '../../components/skeleton';
 import NotificationPostHero from '../../sections/@dashboard/notifications/NotificationPostHero';
 // sections
 
@@ -34,13 +37,35 @@ const mockNotification: INotification = {
 export default function NotificationPostPage() {
   const { themeStretch } = useSettingsContext();
 
-  const [post, setPost] = useState<INotification | null>(null);
+  // const [post, setPost] = useState<INotification | null>(null);
 
   const [loadingPost, setLoadingPost] = useState(true);
 
   const [errorMsg, setErrorMsg] = useState(null);
 
-  setPost(mockNotification);
+  // setPost(mockNotification);
+
+  const post = mockNotification;
+
+  const [openConfirm, setOpenConfirm] = useState(false);
+
+  const [openPopover, setOpenPopover] = useState<HTMLElement | null>(null);
+
+  const handleOpenConfirm = () => {
+    setOpenConfirm(true);
+  };
+
+  const handleCloseConfirm = () => {
+    setOpenConfirm(false);
+  };
+
+  const handleOpenPopover = (event: React.MouseEvent<HTMLElement>) => {
+    setOpenPopover(event.currentTarget);
+  };
+
+  const handleClosePopover = () => {
+    setOpenPopover(null);
+  };
 
   // const getPost = useCallback(async () => {
   //   try {
@@ -64,9 +89,9 @@ export default function NotificationPostPage() {
 
   return (
     <>
-      {/* <Helmet>
-        <title>{`Blog: ${post?.title || ''} | Minimal UI`}</title>
-      </Helmet> */}
+      <Helmet>
+        <title>{`${post?.title || ''} | Notification`}</title>
+      </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
@@ -74,16 +99,68 @@ export default function NotificationPostPage() {
           links={[
             {
               name: 'Dashboard',
-              href: PATH_DASHBOARD.root,
+              href: PATH_USER.root,
             },
             {
-              name: 'Blog',
-              href: PATH_DASHBOARD.blog.root,
+              name: 'Notification',
+              href: PATH_USER.notification.notification,
             },
             {
               name: post?.title,
             },
           ]}
+          action={
+            <>
+              <IconButton color={openPopover ? 'inherit' : 'default'} onClick={handleOpenPopover}>
+                <Iconify icon="eva:more-vertical-fill" />
+              </IconButton>
+              <MenuPopover
+                open={openPopover}
+                onClose={handleClosePopover}
+                arrow="right-top"
+                sx={{ width: 140 }}
+              >
+                <MenuItem
+                  onClick={() => {
+                    handleOpenConfirm();
+                    handleClosePopover();
+                  }}
+                  sx={{ color: 'error.main' }}
+                >
+                  <Iconify icon="eva:trash-2-outline" />
+                  Delete
+                </MenuItem>
+
+                <MenuItem
+                  onClick={() => {
+                    // onEditRow();
+                    handleClosePopover();
+                  }}
+                >
+                  <Iconify icon="eva:edit-fill" />
+                  Edit
+                </MenuItem>
+              </MenuPopover>
+
+              <ConfirmDialog
+                open={openConfirm}
+                onClose={handleCloseConfirm}
+                title="Delete"
+                content="Are you sure want to delete?"
+                action={
+                  <Button variant="contained" color="error" onClick={handleOpenConfirm}>
+                    Delete
+                  </Button>
+                }
+              />
+            </>
+
+
+
+
+
+          }
+
         />
 
         {post && (
@@ -117,9 +194,9 @@ export default function NotificationPostPage() {
           </Stack>
         )}
 
-        {errorMsg && !loadingPost && <Typography variant="h6">404 {errorMsg}</Typography>}
+        {/* {errorMsg && !loadingPost && <Typography variant="h6">404 {errorMsg}</Typography>} */}
 
-        {loadingPost && <SkeletonPostDetails />}
+        {/* {loadingPost && <SkeletonPostDetails />} */}
       </Container>
     </>
   );

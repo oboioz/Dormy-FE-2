@@ -101,7 +101,7 @@ export default function NotificationPostHero({ post }: Props) {
 
       <StyledOverlay />
 
-      <Image alt="cover" src={cover} ratio="16/9" />
+      <Image alt="cover" src={cover} ratio="21/9" />
     </Box>
   );
 }

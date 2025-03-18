@@ -6,6 +6,7 @@ import { styled } from '@mui/material/styles';
 import { bgBlur } from '../../../../utils/cssStyles';
 
 // components
+import { CustomAvatar } from '../../../../components/custom-avatar';
 import Image from '../../../../components/image';
 
 // ----------------------------------------------------------------------
@@ -43,13 +44,16 @@ const StyledInfo = styled('div')(({ theme }) => ({
 
 export default function ProfileCover() {
 
+  const name = "Guest";
+  const avatarURL = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+    name
+  )}&background=random&size=128`;
+
   return (
     <StyledRoot>
       <StyledInfo>
-        {/* <CustomAvatar
-          src={abc}
-          alt={abc}
-          name={abc}
+        <CustomAvatar
+          src={avatarURL}
           sx={{
             mx: 'auto',
             borderWidth: 2,
@@ -58,7 +62,7 @@ export default function ProfileCover() {
             width: { xs: 80, md: 128 },
             height: { xs: 80, md: 128 },
           }}
-        /> */}
+        />
 
         <Box
           sx={{
@@ -68,9 +72,9 @@ export default function ProfileCover() {
             textAlign: { xs: 'center', md: 'left' },
           }}
         >
-          <Typography variant="h4">NAME</Typography>
+          <Typography variant="h4">Nguyen Thinh Dat</Typography>
 
-          <Typography sx={{ opacity: 0.72 }}>ROLE</Typography>
+          {/* <Typography sx={{ opacity: 0.72 }}>ROLE</Typography> */}
         </Box>
       </StyledInfo>
 

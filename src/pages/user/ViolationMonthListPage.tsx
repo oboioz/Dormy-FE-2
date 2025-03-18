@@ -10,8 +10,6 @@ import {
   TableContainer,
   TableRow
 } from '@mui/material';
-// routes
-import { PATH_DASHBOARD } from '../../routes/paths';
 // components
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 import Scrollbar from '../../components/scrollbar';
@@ -21,6 +19,8 @@ import {
   TablePaginationCustom,
   useTable,
 } from '../../components/table';
+import { PATH_USER } from '../../routes/paths';
+import { Helmet } from 'react-helmet-async';
 // sections
 
 // ----------------------------------------------------------------------
@@ -60,17 +60,17 @@ export default function ViolationMonthListPage() {
 
   return (
     <>
-      {/* <Helmet>
-        <title>Contract List</title>
-      </Helmet> */}
+      <Helmet>
+        <title>Violation List</title>
+      </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="Contract List"
+          heading="Violation List"
           links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'User', href: PATH_DASHBOARD.user.root },
-            { name: 'List' },
+            { name: 'Dashboard', href: PATH_USER.root },
+            { name: 'User', href: PATH_USER.profile },
+            { name: 'Violation' },
           ]}
         />
 

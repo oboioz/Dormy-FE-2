@@ -1,5 +1,5 @@
 // @mui
-import { Card, CardHeader, Link, Stack, Typography } from '@mui/material';
+import { Card, CardHeader, Stack, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 // components
@@ -23,45 +23,28 @@ export default function ProfileInsurance() {
       <CardHeader title="Health Insurance" />
 
       <Stack spacing={2} sx={{ p: 3 }}>
-        <Typography variant="body2">QUOTE</Typography>
 
         <Stack direction="row">
-          <StyledIcon icon="eva:pin-fill" />
+          <StyledIcon icon="mdi:card-account-details-outline" />
 
           <Typography variant="body2">
-            Live at &nbsp;
-            <Link component="span" variant="subtitle2" color="text.primary">
-              Coutrny
-            </Link>
+            Insurance Code: &nbsp;0400-834-833-E1E
           </Typography>
         </Stack>
 
         <Stack direction="row">
-          <StyledIcon icon="eva:email-fill" />
-          <Typography variant="body2">Email</Typography>
+          <StyledIcon icon="mdi:map-marker" />
+          <Typography variant="body2">Address: Ho Chi Minh City</Typography>
         </Stack>
 
         <Stack direction="row">
-          <StyledIcon icon="ic:round-business-center" />
+          <StyledIcon icon="mdi:hospital-box" />
 
           <Typography variant="body2">
-            Role
-            <Link component="span" variant="subtitle2" color="text.primary">
-              Company
-            </Link>
+            Hospital: Trung Vuong Hospital
           </Typography>
         </Stack>
 
-        <Stack direction="row">
-          <StyledIcon icon="ic:round-business-center" />
-
-          <Typography variant="body2">
-            Studied at &nbsp;
-            <Link component="span" variant="subtitle2" color="text.primary">
-              School
-            </Link>
-          </Typography>
-        </Stack>
       </Stack>
     </Card>
   );

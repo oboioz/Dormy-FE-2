@@ -1,18 +1,16 @@
-import { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 // @mui
-import { Button, Container, Grid } from '@mui/material';
+import { Container, Grid } from '@mui/material';
 // utils
 // routes
-import { PATH_DASHBOARD } from '../../routes/paths';
+import { PATH_USER } from '../../routes/paths';
 // @types
 // components
+import { Helmet } from 'react-helmet-async';
 import { INotification } from '../../@types/notification';
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
-import Iconify from '../../components/iconify';
 import { useSettingsContext } from '../../components/settings';
 import { SkeletonPostItem } from '../../components/skeleton';
-import BlogPostCard from '../../sections/@dashboard/notifications/NotificationPostCard';
+import NotificationPostCard from '../../sections/@dashboard/notifications/NotificationPostCard';
 // sections
 
 // ----------------------------------------------------------------------
@@ -104,9 +102,11 @@ export default function NotificationsPage() {
 
   // setPosts(mockNotifications);
 
-  const [posts, setPosts] = useState<INotification[]>([]);
+  // const [posts, setPosts] = useState<INotification[]>([]);
 
-  setPosts(mockNotifications);
+  // setPosts(mockNotifications);
+
+  const posts = mockNotifications
 
 
 
@@ -115,43 +115,43 @@ export default function NotificationsPage() {
 
   return (
     <>
-      {/* <Helmet>
-        <title> Blog: Posts | Minimal UI</title>
-      </Helmet> */}
+      <Helmet>
+        <title> Notification | Dormy</title>
+      </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="Blog"
+          heading="Notification"
           links={[
             {
               name: 'Dashboard',
-              href: PATH_DASHBOARD.root,
+              href: PATH_USER.root,
             },
             {
-              name: 'Blog',
-              href: PATH_DASHBOARD.blog.root,
+              name: 'User',
+              href: PATH_USER.profile,
             },
             {
-              name: 'Posts',
+              name: 'Notification',
             },
           ]}
-          action={
-            <Button
-              component={RouterLink}
-              to={PATH_DASHBOARD.blog.new}
-              variant="contained"
-              startIcon={<Iconify icon="eva:plus-fill" />}
-            >
-              New Post
-            </Button>
-          }
+        // action={
+        //   <Button
+        //     component={RouterLink}
+        //     to={PATH_DASHBOARD.blog.new}
+        //     variant="contained"
+        //     startIcon={<Iconify icon="eva:plus-fill" />}
+        //   >
+        //     New Post
+        //   </Button>
+        // }
         />
 
         <Grid container spacing={3}>
           {(!posts.length ? [...Array(12)] : posts).map((post, index) =>
             post ? (
-              <Grid key={post.id} item xs={12} sm={6} md={(index === 0 && 6) || 3}>
-                <BlogPostCard post={post} index={index} />
+              <Grid key={post.id} item xs={12} sm={6} md={3}>
+                <NotificationPostCard post={post} index={index} />
               </Grid>
             ) : (
               <SkeletonPostItem key={index} />

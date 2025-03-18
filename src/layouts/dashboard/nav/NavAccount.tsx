@@ -1,5 +1,5 @@
-import { styled, alpha } from "@mui/material/styles";
 import { Box, Typography } from "@mui/material";
+import { alpha, styled } from "@mui/material/styles";
 import { CustomAvatar } from "../../../components/custom-avatar";
 
 const StyledRoot = styled("div")(({ theme }) => ({
@@ -11,17 +11,23 @@ const StyledRoot = styled("div")(({ theme }) => ({
 }));
 
 export default function NavAccount() {
+  const name = "Guest";
+  const avatarURL = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+    name
+  )}&background=random&size=128`;
   return (
     <StyledRoot>
-      <CustomAvatar />
+
+
+      <CustomAvatar src={avatarURL} />
 
       <Box sx={{ ml: 2, minWidth: 0 }}>
         <Typography variant="subtitle2" noWrap>
-          Tan Le
+          Username
         </Typography>
 
         <Typography variant="body2" noWrap sx={{ color: "text.secondary" }}>
-          Admin
+          Role
         </Typography>
       </Box>
     </StyledRoot>

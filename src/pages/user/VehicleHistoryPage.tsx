@@ -9,9 +9,8 @@ import {
   TableContainer,
   TableRow
 } from '@mui/material';
-// routes
-import { PATH_DASHBOARD } from '../../routes/paths';
 // components
+import { Helmet } from 'react-helmet-async';
 import { IHistory } from '../../@types/vehicle';
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 import Label from '../../components/label';
@@ -22,6 +21,7 @@ import {
   TablePaginationCustom,
   useTable,
 } from '../../components/table';
+import { PATH_USER } from '../../routes/paths';
 // sections
 
 // ----------------------------------------------------------------------
@@ -97,16 +97,17 @@ export default function ContractListPage() {
 
   return (
     <>
-      {/* <Helmet>
-        <title>Contract List</title>
-      </Helmet> */}
+      <Helmet>
+        <title>History | Vehicle</title>
+      </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
           heading="Entrance/Depart History"
           links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'My Vehicle', href: PATH_DASHBOARD.user.root },
+            { name: 'Dashboard', href: PATH_USER.root },
+            { name: 'User', href: PATH_USER.profile },
+            { name: 'Vehicle', href: PATH_USER.vehicle },
             { name: 'History' },
           ]}
         />

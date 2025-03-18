@@ -9,9 +9,8 @@ import {
   TableContainer,
   TableRow
 } from '@mui/material';
-// routes
-import { PATH_DASHBOARD } from '../../routes/paths';
 // components
+import { Helmet } from 'react-helmet-async';
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 import Scrollbar from '../../components/scrollbar';
 import { useSettingsContext } from '../../components/settings';
@@ -19,6 +18,7 @@ import {
   TableHeadCustom,
   useTable,
 } from '../../components/table';
+import { PATH_USER } from '../../routes/paths';
 // sections
 
 // ----------------------------------------------------------------------
@@ -71,17 +71,18 @@ export default function ViolationDetailsPage() {
 
   return (
     <>
-      {/* <Helmet>
-        <title>Contract List</title>
-      </Helmet> */}
+      <Helmet>
+        <title>Violation</title>
+      </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="Contract List"
+          heading="Violation Details"
           links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'User', href: PATH_DASHBOARD.user.root },
-            { name: 'List' },
+            { name: 'Dashboard', href: PATH_USER.root },
+            { name: 'User', href: PATH_USER.profile },
+            { name: 'Violation Month', href: PATH_USER.violation },
+            { name: 'Violation Details' },
           ]}
         />
 

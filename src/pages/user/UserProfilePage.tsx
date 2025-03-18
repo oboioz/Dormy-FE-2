@@ -6,6 +6,8 @@ import { Box, Card, Container, Tab, Tabs } from '@mui/material';
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 import Iconify from '../../components/iconify';
 // sections
+import { Helmet } from 'react-helmet-async';
+import { useSettingsContext } from '../../components/settings';
 import AccountChangePassword from '../../sections/@dashboard/user/account/AccountChangePassword';
 import {
   Profile,
@@ -15,17 +17,18 @@ import {
 // ----------------------------------------------------------------------
 
 export default function UserProfilePage() {
-
-  const [searchFriends, setSearchFriends] = useState('');
+  const { themeStretch } = useSettingsContext();
 
   const [currentTab, setCurrentTab] = useState('profile');
+
+  // const { user } = useAuthContext();
 
   const TABS = [
     {
       value: 'profile',
       label: 'Profile',
       icon: <Iconify icon="ic:round-account-box" />,
-      component: <Profile info={123} posts={123} />,
+      component: <Profile />,
     },
     {
       value: 'change_password',
@@ -37,11 +40,13 @@ export default function UserProfilePage() {
 
   return (
     <>
+      <Helmet>
+        <title> User: Profile</title>
+      </Helmet>
 
-      <title> User: Profile</title>
 
 
-      <Container maxWidth={'lg'}>
+      <Container maxWidth={themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
           heading="Profile"
           links={[
@@ -57,7 +62,7 @@ export default function UserProfilePage() {
             position: 'relative',
           }}
         >
-          <ProfileCover name={'Name'} role={'Role'} cover={'cover'} />
+          <ProfileCover />
 
           <Tabs
             value={currentTab}

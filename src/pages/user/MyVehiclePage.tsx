@@ -2,13 +2,15 @@ import { useParams } from 'react-router-dom';
 // @mui
 import { CardHeader, Container, Grid } from '@mui/material';
 // routes
-import { PATH_DASHBOARD } from '../../routes/paths';
+import { PATH_USER } from '../../routes/paths';
 // _mock_
 // components
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 // sections
+import { Helmet } from 'react-helmet-async';
 import { IAdmin } from '../../@types/admin';
 import { IHistory, IVehicle } from '../../@types/vehicle';
+import { useSettingsContext } from '../../components/settings';
 import GarageWorkers from '../../sections/myVehicle/GarageWorkers';
 import HistoryPartition from '../../sections/myVehicle/HistoryPartition';
 import VehicleDetails from '../../sections/myVehicle/VehicleDetails';
@@ -20,8 +22,8 @@ const mockAdmins: IAdmin[] = [
   {
     adminID: 1,
     password: 'securePass123',
-    firstname: 'Alice',
-    lastname: 'Johnson',
+    firstName: 'Alice',
+    lastName: 'Johnson',
     email: 'alice.johnson@example.com',
     dateOfBirth: new Date('1985-04-12'),
     gender: 'Female',
@@ -36,8 +38,8 @@ const mockAdmins: IAdmin[] = [
   {
     adminID: 2,
     password: 'strongPass456',
-    firstname: 'Michael',
-    lastname: 'Smith',
+    firstName: 'Michael',
+    lastName: 'Smith',
     email: 'michael.smith@example.com',
     dateOfBirth: new Date('1990-06-24'),
     gender: 'Male',
@@ -52,7 +54,7 @@ const mockAdmins: IAdmin[] = [
   {
     adminID: 3,
     password: 'pass789Secure',
-    firstname: 'Emily',
+    firstName: 'Emily',
     lastname: 'Davis',
     email: 'emily.davis@example.com',
     dateOfBirth: new Date('1988-09-15'),
@@ -129,21 +131,33 @@ const mockHistory: IHistory[] = [
 
 
 
-export default function RoomDetailsPage() {
+export default function MyVehiclePage() {
   const { vehicle } = useParams();
   const { history } = useParams();
+  const { themeStretch } = useSettingsContext();
 
   return (
     <>
-      {/* <Helmet>
+      <Helmet>
         <title> Room Details</title>
-      </Helmet> */}
+      </Helmet>
 
-      <Container maxWidth={'lg'}>
+      <Container maxWidth={themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
           heading="My Vehicle"
           links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
+            {
+              name: 'Dashboard',
+              href: PATH_USER.root,
+            },
+            {
+              name: 'User',
+              href: PATH_USER.profile,
+            },
+            {
+              name: 'Vehicle',
+              href: PATH_USER.vehicle,
+            },
           ]}
         />
 

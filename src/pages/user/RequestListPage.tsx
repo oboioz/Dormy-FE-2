@@ -11,9 +11,8 @@ import {
   TableContainer,
   TableRow,
 } from '@mui/material';
-// routes
-import { PATH_DASHBOARD } from '../../routes/paths';
 // components
+import { Helmet } from 'react-helmet-async';
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 import Iconify from '../../components/iconify';
 import Label from '../../components/label';
@@ -24,6 +23,7 @@ import {
   TablePaginationCustom,
   useTable,
 } from '../../components/table';
+import { PATH_USER } from '../../routes/paths';
 import { fDate } from '../../utils/formatTime';
 // sections
 
@@ -91,22 +91,22 @@ export default function RequestListPage() {
 
   return (
     <>
-      {/* <Helmet>
-        <title>Contract List</title>
-      </Helmet> */}
+      <Helmet>
+        <title>Request List</title>
+      </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
           heading="Request List"
           links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'User', href: PATH_DASHBOARD.user.root },
-            { name: 'List' },
+            { name: 'Dashboard', href: PATH_USER.root },
+            { name: 'User', href: PATH_USER.profile },
+            { name: 'Request' },
           ]}
           action={
             <Button
               component={RouterLink}
-              to={PATH_DASHBOARD.user.new}
+              to={PATH_USER.requestNew}
               variant="contained"
               startIcon={<Iconify icon="eva:plus-fill" />}
             >

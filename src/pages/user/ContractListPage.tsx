@@ -11,8 +11,7 @@ import {
   TableContainer,
   TableRow,
 } from '@mui/material';
-// routes
-import { PATH_DASHBOARD } from '../../routes/paths';
+
 // components
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 import Iconify from '../../components/iconify';
@@ -23,6 +22,7 @@ import {
   TableHeadCustom,
   useTable,
 } from '../../components/table';
+import { PATH_REGISTER, PATH_USER } from '../../routes/paths';
 // sections
 
 // ----------------------------------------------------------------------
@@ -174,14 +174,14 @@ export default function ContractListPage() {
         <CustomBreadcrumbs
           heading="Contract List"
           links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'User', href: PATH_DASHBOARD.user.root },
-            { name: 'List' },
+            { name: 'Dashboard', href: PATH_USER.root },
+            { name: 'User', href: PATH_USER.profile },
+            { name: 'Contract' },
           ]}
           action={
             <Button
               component={RouterLink}
-              to={PATH_DASHBOARD.user.new}
+              to={PATH_REGISTER.policy}
               variant="contained"
               startIcon={<Iconify icon="eva:plus-fill" />}
             >

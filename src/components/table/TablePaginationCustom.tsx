@@ -1,13 +1,13 @@
 // @mui
+import { Theme } from '@mui/material/styles';
 import {
   Box,
-  FormControlLabel,
   Switch,
   SxProps,
   TablePagination,
+  FormControlLabel,
   TablePaginationProps,
 } from '@mui/material';
-import { Theme } from '@mui/material/styles';
 //
 
 // ----------------------------------------------------------------------

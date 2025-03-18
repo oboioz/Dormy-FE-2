@@ -39,9 +39,11 @@ export default function LoginLayout({ children, illustration, title }: Props) {
           visibleByDefault
           alt="auth"
           src={
-            illustration || "/assets/illustrations/illustration_dashboard.png"
+            illustration || "/assets/illustrations/DormLogin.svg"
           }
-          sx={{ maxWidth: 720 }}
+          sx={
+            { width: "40%", maxWidth: 720 }
+          }
         />
 
         <StyledSectionBg />

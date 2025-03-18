@@ -11,7 +11,7 @@ export default function ProfileQR({ sx, ...other }: StackProps) {
             sx={{ p: 5, borderRadius: 2, bgcolor: 'background.neutral', ...sx }}
             {...other}
         >
-            <img alt="qrcode" src="/static/illustrations/qr-code.svg" />
+            <img alt="qrcode" src="/assets/illustrations/QRCode.svg" />
 
             <Typography variant="subtitle2" sx={{ color: 'text.disabled', textAlign: 'center' }}>
                 Personal QRCode

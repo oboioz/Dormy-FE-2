@@ -1,20 +1,16 @@
-import { useState } from 'react';
 // @mui
-import { Box, Button, Card, Grid, Stack, Typography } from '@mui/material';
+import { Button, Container, Divider, Grid, MenuItem, Stack, Typography } from '@mui/material';
 // @types
-import { ICheckoutBillingAddress } from '../../../../../@types/product';
 // _mock
-import { _addressBooks } from '../../../../../_mock/arrays';
 // components
-import Iconify from '../../../../../components/iconify';
-import Label from '../../../../../components/label';
 //
-import * as Yup from "yup";
-import { IUserGuardian } from '../../@types/user';
-import CheckoutSummary from '../CheckoutSummary';
-import CheckoutBillingNewAddressForm from './CheckoutBillingNewAddressForm';
-import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
+import * as Yup from "yup";
+import { IUser } from '../../@types/user';
+import FormProvider, { RHFTextField } from '../../components/hook-form';
+import { RHFSelect } from '../../components/hook-form/RHFSelect';
+import Iconify from '../../components/iconify';
 
 
 // ----------------------------------------------------------------------
@@ -31,7 +27,7 @@ const OPTIONS = [
 ];
 
 type Props = {
-  guardian: IUserGuardian;
+  generalInformation: IUser;
   onNextStep: VoidFunction;
   onBackStep: VoidFunction
 };
@@ -63,7 +59,9 @@ const defaultValues: FormValuesProps = {
   relationshipToUser: '',
 };
 
-export default function GuardianInformationForm({ guardian, onNextStep, onBackStep }: Props) {
+export default function GuardianInformationForm({ generalInformation, onNextStep, onBackStep }: Props) {
+
+  const { guardian } = generalInformation.guardian
 
 
   const methods = useForm<FormValuesProps>({
@@ -87,128 +85,75 @@ export default function GuardianInformationForm({ guardian, onNextStep, onBackSt
   };
 
 
-
-  const { total, discount, subtotal } = checkout;
-
-  const [open, setOpen] = useState(false);
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   return (
     <>
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={8}>
-          {_addressBooks.map((address, index) => (
-            <AddressItem
-              key={index}
-              address={address}
-              onCreateBilling={() => onCreateBilling(address)}
-            />
-          ))}
+      <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 5 }}>
+        Please fill in all the guardian information
+      </Typography>
+      <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+        <Grid container spacing={5} alignContent={'center'} justifyContent={'center'}>
+          <Grid item xs={12} md={10}>
+            <Stack spacing={2}>
+              <Typography variant="h6">Guardian Information</Typography>
 
-          <Stack direction="row" justifyContent="space-between">
-            <Button
-              size="small"
-              color="inherit"
-              onClick={onBackStep}
-              startIcon={<Iconify icon="eva:arrow-ios-back-fill" />}
-            >
-              Back
-            </Button>
+              <RHFTextField name="name" label="Name" />
 
-            <Button
-              size="small"
-              variant="soft"
-              onClick={handleOpen}
-              startIcon={<Iconify icon="eva:plus-fill" />}
-            >
-              Add new address
-            </Button>
-          </Stack>
+              <RHFTextField name="email" label="Email address" />
+
+              <RHFTextField name="phoneNumber" label="Phone Number" />
+
+
+              <RHFTextField name="address" label="Address" />
+
+
+
+              <RHFSelect name="relationshipToUser" label="Relationship To User">
+                <MenuItem value="">None</MenuItem>
+                <Divider sx={{ borderStyle: 'dashed' }} />
+                {OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.label}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </RHFSelect>
+
+
+
+            </Stack>
+          </Grid>
+
+          <Container
+            sx={{
+              pt: 15,
+            }}
+          >
+            <Stack spacing={3} direction="row" justifyContent="space-between">
+              <Button
+                variant="outlined"
+                onClick={onBackStep} // Change this based on your path
+                size='large'
+              >
+                Back Step
+              </Button>
+
+              {/* Next Step Button */}
+              <Button
+                variant="contained"
+                endIcon={<Iconify icon="eva:arrow-ios-forward-fill" />}
+                onClick={onNextStep} // Change this based on your path
+                size='large'
+              >
+                Next Step
+              </Button>
+            </Stack>
+
+          </Container>
+
         </Grid>
-
-        <Grid item xs={12} md={4}>
-          <CheckoutSummary subtotal={subtotal} total={total} discount={discount} />
-        </Grid>
-      </Grid>
-
-      <CheckoutBillingNewAddressForm
-        open={open}
-        onClose={handleClose}
-        onCreateBilling={onCreateBilling}
-      />
+      </FormProvider>
     </>
   );
 }
 
 // ----------------------------------------------------------------------
 
-type AddressItemProps = {
-  address: ICheckoutBillingAddress;
-  onCreateBilling: VoidFunction;
-};
-
-function AddressItem({ address, onCreateBilling }: AddressItemProps) {
-  const { receiver, fullAddress, addressType, phoneNumber, isDefault } = address;
-
-  return (
-    <Card
-      sx={{
-        p: 3,
-        mb: 3,
-      }}
-    >
-      <Stack
-        spacing={2}
-        alignItems={{
-          md: 'flex-end',
-        }}
-        direction={{
-          xs: 'column',
-          md: 'row',
-        }}
-      >
-        <Stack flexGrow={1} spacing={1}>
-          <Stack direction="row" alignItems="center">
-            <Typography variant="subtitle1">
-              {receiver}
-              <Box component="span" sx={{ ml: 0.5, typography: 'body2', color: 'text.secondary' }}>
-                ({addressType})
-              </Box>
-            </Typography>
-
-            {isDefault && (
-              <Label color="info" sx={{ ml: 1 }}>
-                Default
-              </Label>
-            )}
-          </Stack>
-
-          <Typography variant="body2">{fullAddress}</Typography>
-
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            {phoneNumber}
-          </Typography>
-        </Stack>
-
-        <Stack flexDirection="row" flexWrap="wrap" flexShrink={0}>
-          {!isDefault && (
-            <Button variant="outlined" size="small" color="inherit" sx={{ mr: 1 }}>
-              Delete
-            </Button>
-          )}
-
-          <Button variant="outlined" size="small" onClick={onCreateBilling}>
-            Deliver to this Address
-          </Button>
-        </Stack>
-      </Stack>
-    </Card>
-  );
-}

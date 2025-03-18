@@ -1,10 +1,9 @@
-import { paramCase } from 'param-case';
 
 import { Link as RouterLink } from 'react-router-dom';
 // @mui
 import { Box, Card, CardContent, Link, Stack, Typography } from '@mui/material';
 // routes
-import { PATH_DASHBOARD } from '../../../routes/paths';
+// import { PATH_DASHBOARD } from '../../../routes/paths';
 // hooks
 // utils
 import { fDate } from '../../../utils/formatTime';
@@ -13,6 +12,8 @@ import { fDate } from '../../../utils/formatTime';
 import { INotification } from '../../../@types/notification';
 import Image from '../../../components/image';
 import TextMaxLine from '../../../components/text-max-line';
+import { PATH_USER } from '../../../routes/paths';
+import { paramCase } from 'param-case';
 
 // ----------------------------------------------------------------------
 
@@ -25,7 +26,7 @@ type Props = {
   index?: number;
 };
 
-export default function BlogPostCard({ post, index }: Props) {
+export default function NotificationPostCard({ post, index }: Props) {
 
   const { title, date } = post;
   const cover = 'https://source.unsplash.com/random';
@@ -54,7 +55,7 @@ type PostContentProps = {
 
 export function PostContent({ title, createdAt, index }: PostContentProps) {
 
-  const linkTo = PATH_DASHBOARD.blog.view(paramCase(title));
+  const linkTo = PATH_USER.notification.view(paramCase(title));
 
   return (
     <CardContent
@@ -74,7 +75,7 @@ export function PostContent({ title, createdAt, index }: PostContentProps) {
         {fDate(createdAt)}
       </Typography>
 
-      <Link color="inherit" component={RouterLink} to={linkTo}>
+      <Link color="inherit" component={RouterLink} to={linkTo || '#'}>
         <TextMaxLine
           variant={'subtitle2'}
           line={2}

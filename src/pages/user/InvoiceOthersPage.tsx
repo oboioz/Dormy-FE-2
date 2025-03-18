@@ -9,12 +9,13 @@ import {
   TableRow
 } from '@mui/material';
 // routes
-import { PATH_DASHBOARD } from '../../routes/paths';
+import { PATH_USER } from '../../routes/paths';
 // utils
 import { fDate } from '../../utils/formatTime';
 // _mock_
 // @types
 // components
+import { Helmet } from 'react-helmet-async';
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 import Label from '../../components/label';
 import Scrollbar from '../../components/scrollbar';
@@ -88,9 +89,9 @@ export default function InvoiceOthersPage() {
 
   return (
     <>
-      {/* <Helmet>
-        <title> Invoice: List | Minimal UI</title>
-      </Helmet> */}
+      <Helmet>
+        <title> Invoice: List | Others</title>
+      </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
@@ -98,14 +99,15 @@ export default function InvoiceOthersPage() {
           links={[
             {
               name: 'Dashboard',
-              href: PATH_DASHBOARD.root,
+              href: PATH_USER.root,
             },
             {
-              name: 'Invoices',
-              href: PATH_DASHBOARD.invoice.root,
+              name: 'User',
+              href: PATH_USER.profile,
             },
             {
-              name: 'List',
+              name: 'Invoice',
+              href: PATH_USER.invoice,
             },
           ]}
         />

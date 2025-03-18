@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 // hooks
 import useActiveLink from '../../../hooks/useActiveLink';
 //
 import { NavListProps } from '../types';
-import { StyledPopover } from './styles';
 import NavItem from './NavItem';
+import { StyledPopover } from './styles';
 
 // ----------------------------------------------------------------------
 

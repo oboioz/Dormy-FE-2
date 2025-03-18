@@ -1,3 +1,4 @@
+import { CustomFile } from "../components/upload";
 
 export type INotification = {
   notificationID: number;
@@ -8,4 +9,12 @@ export type INotification = {
   isRead: boolean;
   userID: number;
   adminID: number;
+  cover: CustomFile | string | null;
+};
+
+export type INotificationNew = {
+  content: string;
+  title: string;
+  description: string;
+  cover: CustomFile | string | null;
 };

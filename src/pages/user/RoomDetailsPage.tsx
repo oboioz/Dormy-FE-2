@@ -1,13 +1,14 @@
 import { useParams } from 'react-router-dom';
 // @mui
 import { CardHeader, Container } from '@mui/material';
-// routes
-import { PATH_DASHBOARD } from '../../routes/paths';
-// _mock_
+
 // components
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 // sections
+import { Helmet } from 'react-helmet-async';
 import { IRoom } from '../../@types/room';
+import { useSettingsContext } from '../../components/settings';
+import { PATH_USER } from '../../routes/paths';
 import RoomDetails from '../../sections/roomdetails/RoomDetails';
 import RoomateInformation from '../../sections/roomdetails/RoomateInformation';
 
@@ -46,20 +47,22 @@ export default function RoomDetailsPage() {
 
   const currentRoommates = arr;
 
+  const { themeStretch } = useSettingsContext();
+
   return (
     <>
-      {/* <Helmet>
+      <Helmet>
         <title> Room Details</title>
-      </Helmet> */}
+      </Helmet>
 
-      <Container maxWidth={'lg'}>
+      <Container maxWidth={themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
           heading="Room Details"
           links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
+            { name: 'Dashboard', href: PATH_USER.root },
             {
-              name: 'Room',
-              href: PATH_DASHBOARD.invoice.root,
+              name: 'User',
+              href: PATH_USER.profile,
             },
             { name: `ROOM-${id}` },
           ]}

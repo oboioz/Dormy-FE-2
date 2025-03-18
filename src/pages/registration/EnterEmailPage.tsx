@@ -1,23 +1,30 @@
-import { Link as RouterLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 // @mui
-import { Link, Typography } from '@mui/material';
+import { Button, Container, Stack, Typography } from '@mui/material';
 // routes
-import { PATH_AUTH } from '../../routes/paths';
+import { PATH_REGISTER } from '../../routes/paths';
 // components
 import Iconify from '../../components/iconify';
 // sections
 // assets
+import { Helmet } from 'react-helmet-async';
 import { EmailInboxIcon } from '../../assets/icons';
+import { useSelector } from '../../redux/store';
 import EnterEmailForm from '../../sections/registration/EnterEmailForm';
 
 // ----------------------------------------------------------------------
 
 export default function EnterEmailPage() {
+  const navigate = useNavigate();
+
+  const { generalInformation } = useSelector((state) => state.registration.registrationInformation);
+
+
   return (
     <>
-      {/* <Helmet>
-        <title> Enter Email</title>
-      </Helmet> */}
+      <Helmet>
+        <title> Email | Registration</title>
+      </Helmet>
 
       <EmailInboxIcon sx={{ mb: 5, height: 96 }} />
 
@@ -29,23 +36,36 @@ export default function EnterEmailPage() {
         Please enter the email address associated with your account registration. Please notice that one email  for one registration only
       </Typography>
 
-      <EnterEmailForm />
+      <EnterEmailForm generalInformation={generalInformation} />
 
-      <Link
-        component={RouterLink}
-        to={PATH_AUTH.login}
-        color="inherit"
-        variant="subtitle2"
+      <Container
         sx={{
-          mt: 3,
-          mx: 'auto',
-          alignItems: 'center',
-          display: 'inline-flex',
+          pt: 15,
+          pb: 10,
         }}
       >
-        <Iconify icon="eva:chevron-left-fill" width={16} />
-        Return to sign in
-      </Link>
+        {/* Back to Login Button */}
+        <Stack spacing={3} direction="row" justifyContent="space-between">
+          <Button
+            variant="outlined"
+            onClick={() => navigate(PATH_REGISTER.policy)} // Change this based on your path
+            size='large'
+          >
+            Back to Login
+          </Button>
+
+          {/* Next Step Button */}
+          <Button
+            variant="contained"
+            endIcon={<Iconify icon="eva:arrow-ios-forward-fill" />}
+            onClick={() => navigate(PATH_REGISTER.bed)} // Change this based on your path
+            size='large'
+          >
+            Next Step
+          </Button>
+        </Stack>
+
+      </Container>
     </>
   );
 }

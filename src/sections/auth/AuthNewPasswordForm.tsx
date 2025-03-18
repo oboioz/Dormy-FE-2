@@ -8,9 +8,10 @@ import { useForm } from 'react-hook-form';
 import { LoadingButton } from '@mui/lab';
 import { FormHelperText, IconButton, InputAdornment, Stack } from '@mui/material';
 // routes
-import { PATH_DASHBOARD } from '../../routes/paths';
+// import { PATH_DASHBOARD } from '../../routes/paths';
 // components
-import FormProvider, { RHFCodes, RHFTextField } from '../../components/hook-form';
+import FormProvider, { RHFTextField } from '../../components/hook-form';
+import RHFCodes from '../../components/hook-form/RHFCodes';
 import Iconify from '../../components/iconify';
 import { useSnackbar } from '../../components/snackbar';
 
@@ -87,7 +88,7 @@ export default function AuthNewPasswordForm() {
       });
       sessionStorage.removeItem('email-recovery');
       enqueueSnackbar('Change password success!');
-      navigate(PATH_DASHBOARD.root);
+      // navigate(PATH_DASHBOARD.root);
     } catch (error) {
       console.error(error);
     }

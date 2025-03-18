@@ -1,6 +1,7 @@
 
 // @mui
 import {
+  Button,
   Card,
   Container,
   Stack,
@@ -12,9 +13,9 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-// routes
-import { PATH_DASHBOARD } from '../../routes/paths';
 // components
+import { Helmet } from 'react-helmet-async';
+import { Link as RouterLink } from 'react-router-dom';
 import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
 import Iconify from '../../components/iconify';
 import Label from '../../components/label';
@@ -25,6 +26,7 @@ import {
   TablePaginationCustom,
   useTable,
 } from '../../components/table';
+import { PATH_USER } from '../../routes/paths';
 import { fDate, fDateTime } from '../../utils/formatTime';
 
 
@@ -81,7 +83,7 @@ const mockAbsences = [
 
 // ----------------------------------------------------------------------
 
-export default function ContractListPage() {
+export default function OvernightAbsencePage() {
   const {
     page,
     rowsPerPage,
@@ -95,18 +97,28 @@ export default function ContractListPage() {
 
   return (
     <>
-      {/* <Helmet>
-        <title>Contract List</title>
-      </Helmet> */}
+      <Helmet>
+        <title>Overnight Absence</title>
+      </Helmet>
 
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
           heading="Overnight Absence"
           links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'User', href: PATH_DASHBOARD.user.root },
+            { name: 'Dashboard', href: PATH_USER.root },
+            { name: 'User', href: PATH_USER.profile },
             { name: 'Overnight Absence' },
           ]}
+          action={
+            <Button
+              component={RouterLink}
+              to={PATH_USER.overnightRequest}
+              variant="contained"
+              startIcon={<Iconify icon="eva:plus-fill" />}
+            >
+              New Request
+            </Button>
+          }
         />
 
 

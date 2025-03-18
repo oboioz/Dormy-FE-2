@@ -1,8 +1,8 @@
 export type IAdmin = {
   adminID: number;
   password: string;
-  firstname: string;
-  lastname: string;
+  firstName: string;
+  lastName: string;
   email: string;
   dateOfBirth: Date;
   gender: string;

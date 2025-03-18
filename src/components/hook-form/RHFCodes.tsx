@@ -75,8 +75,8 @@ export default function RHFCodes({ keyName = '', inputs = [], ...other }: Props)
               onFocus={(event) => event.currentTarget.select()}
               InputProps={{
                 sx: {
-                  width: { xs: 36, sm: 56 },
-                  height: { xs: 36, sm: 56 },
+                  width: { xs: 36, sm: 48 },  // Medium (md) set to 40
+                  height: { xs: 36, sm: 48 },
                   '& input': { p: 0, textAlign: 'center' },
                 },
               }}

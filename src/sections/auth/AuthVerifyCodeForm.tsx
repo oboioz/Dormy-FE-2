@@ -7,7 +7,6 @@ import { useForm } from 'react-hook-form';
 import { LoadingButton } from '@mui/lab';
 import { FormHelperText, Stack } from '@mui/material';
 // routes
-import { PATH_DASHBOARD } from '../../routes/paths';
 // components
 import FormProvider from '../../components/hook-form';
 import RHFCodes from '../../components/hook-form/RHFCodes';
@@ -63,7 +62,7 @@ export default function AuthVerifyCodeForm() {
       await new Promise((resolve) => setTimeout(resolve, 500));
       console.log('DATA', Object.values(data).join(''));
       enqueueSnackbar('Verify success!');
-      navigate(PATH_DASHBOARD.root);
+      // navigate(PATH_DASHBOARD.root);
     } catch (error) {
       console.error(error);
     }

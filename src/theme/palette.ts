@@ -34,29 +34,29 @@ const GREY = {
 };
 
 const PRIMARY = {
-  lighter: '#8eceff',
-  light: '#1a8aff',
-  main: '#2d63ed',
-  dark: '#3340cd',
-  darker: '#3340cd',
+  lighter: '#AFC7FA', // Adjusted lighter shade
+  light: '#5A8DF0',  // Adjusted light shade
+  main: '#2D62ED',   // Primary color
+  dark: '#1D48B5',   // Adjusted dark shade
+  darker: '#12318A', // Adjusted darker shade
   contrastText: '#fff',
 };
 
 const SECONDARY = {
-  lighter: '#e1f8fe',
-  light: '#80e3fb',
-  main: '#00cef2',
-  dark: '#00b5d9',
-  darker: '#006977',
-  contrastText: '#fff',
+  lighter: '#FDEBA5', // Adjusted lighter shade
+  light: '#FCD759',  // Adjusted light shade
+  main: '#F9CB28',   // Secondary color
+  dark: '#B7921E',   // Adjusted dark shade
+  darker: '#7A6314', // Adjusted darker shade
+  contrastText: GREY[800],
 };
 
 const INFO = {
-  lighter: '#fbe182',
-  light: '#fad64f',
-  main: '#f9cc28',
-  dark: '#f9b500',
-  darker: '#fa9200',
+  lighter: '#CAFDF5',
+  light: '#61F3F3',
+  main: '#00B8D9',
+  dark: '#006C9C',
+  darker: '#003768',
   contrastText: '#fff',
 };
 

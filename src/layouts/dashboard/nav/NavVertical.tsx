@@ -1,15 +1,25 @@
-import { Box, Drawer, Stack } from "@mui/material";
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import Logo from "../../../components/logo";
-import NavSectionVertical from "../../../components/nav-section/vertical/NavSectionVertical";
-import Scrollbar from "../../../components/scrollbar";
-import { NAV } from "../../../config-global";
-import useResponsive from "../../../hooks/useResponsive";
-import navConfig from "./config-navigation";
-import NavAccount from "./NavAccount";
-import NavDocs from "./NavDocs";
-import NavToggleButton from "./NavToggleButton";
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+// @mui
+import { Box, Drawer, Stack } from '@mui/material';
+// hooks
+import useResponsive from '../../../hooks/useResponsive';
+// config
+import { NAV } from '../../../config-global';
+// components
+import Logo from '../../../components/logo';
+import { NavSectionVertical } from '../../../components/nav-section';
+import Scrollbar from '../../../components/scrollbar';
+//
+import { Link as RouterLink } from 'react-router-dom';
+import { PATH_USER } from '../../../routes/paths';
+import navConfig from './config-navigation';
+import NavAccount from './NavAccount';
+import NavDocs from './NavDocs';
+import NavToggleButton from './NavToggleButton';
+
+
+// ----------------------------------------------------------------------
 
 type Props = {
   openNav: boolean;
@@ -21,21 +31,24 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
 
   const isDesktop = useResponsive('up', 'lg');
 
-
   useEffect(() => {
     if (openNav) {
       onCloseNav();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   const renderContent = (
     <Scrollbar
       sx={{
         height: 1,
-        "& .simplebar-content": {
+        overflowY: 'auto',
+        maxHeight: { xs: 'calc(100vh - 64px)', lg: '100%' },
+        '& .simplebar-content': {
           height: 1,
-          display: "flex",
-          flexDirection: "column",
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '100%', // Ensures proper content height
         },
       }}
     >
@@ -50,10 +63,19 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
       >
         <Logo />
 
-        <NavAccount />
+        <Box
+          component={RouterLink}
+          to={PATH_USER.profile}
+          sx={{
+            textDecoration: 'none',
+            color: 'inherit', // Prevents default link color change
+            '&:hover': { opacity: 0.8 }, // Optional: subtle hover effect
+          }}
+        >
+          <NavAccount />
+        </Box>
       </Stack>
 
-      {/* <NavSectionVertical /> */}
       <NavSectionVertical data={navConfig} />
 
       <Box sx={{ flexGrow: 1 }} />
@@ -72,7 +94,7 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
     >
       <NavToggleButton />
 
-      {true ? (
+      {isDesktop ? (
         <Drawer
           open
           variant="permanent"
@@ -80,8 +102,8 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
             sx: {
               zIndex: 0,
               width: NAV.W_DASHBOARD,
-              bgcolor: "transparent",
-              borderRightStyle: "dashed",
+              bgcolor: 'transparent',
+              borderRightStyle: 'dashed',
             },
           }}
         >
