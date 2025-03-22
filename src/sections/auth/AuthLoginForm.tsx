@@ -1,6 +1,16 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { LoadingButton } from "@mui/lab";
-import { Alert, IconButton, InputAdornment, Link, Stack } from "@mui/material";
+import {
+  Alert,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  IconButton,
+  InputAdornment,
+  Link,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
@@ -20,8 +30,10 @@ type FormValuesProps = {
 
 export default function AuthLoginForm() {
   const { signIn } = useAuthContext();
-  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const LoginSchema = Yup.object().shape({
     username: Yup.string().required("Username is required"),
@@ -45,7 +57,7 @@ export default function AuthLoginForm() {
     formState: { errors, isSubmitting, isSubmitSuccessful },
   } = methods;
 
-  const onSubmit = async (data: FormValuesProps) => {
+  const userSignIn = async (data: FormValuesProps) => {
     var response = await httpClient.userSignIn({
       username: data.username,
       password: data.password,
@@ -68,6 +80,40 @@ export default function AuthLoginForm() {
       setError("afterSubmit", {
         message: "Username or password is incorrect",
       });
+    }
+  };
+
+  const adminSignIn = async (data: FormValuesProps) => {
+    var response = await httpClient.adminSignIn({
+      username: data.username,
+      password: data.password,
+    });
+
+    if (response) {
+      signIn({
+        id: response.adminInformation.id,
+        name: `${response.adminInformation.firstName} ${response.adminInformation.lastName}`,
+        role: "admin",
+        token: response.accessToken,
+      });
+      toast.success(
+        `Login success, hello admin ${response.adminInformation.firstName} ${response.adminInformation.lastName}`
+      );
+      navigate(PATH_USER.profile);
+    } else {
+      toast.error("Login failed, please check your username or password");
+      reset();
+      setError("afterSubmit", {
+        message: "Username or password is incorrect",
+      });
+    }
+  };
+
+  const onSubmit = async (data: FormValuesProps) => {
+    if (isAdmin) {
+      await adminSignIn(data);
+    } else {
+      await userSignIn(data);
     }
   };
 
@@ -102,7 +148,31 @@ export default function AuthLoginForm() {
         />
       </Stack>
 
-      <Stack alignItems="flex-end" sx={{ my: 2 }}>
+      <Stack
+        flexDirection={"row"}
+        justifyContent={"space-between"}
+        sx={{ my: 2 }}
+      >
+        <FormGroup sx={{ marginTop: "-10px" }}>
+          <FormControlLabel
+            sx={{
+              marginLeft: 0,
+            }}
+            label={
+              <Typography variant="body1" fontWeight={"bold"}>
+                I'm Admin
+              </Typography>
+            }
+            labelPlacement="start"
+            control={
+              <Checkbox
+                color="success"
+                checked={isAdmin}
+                onChange={(evt) => setIsAdmin(evt.target.checked)}
+              />
+            }
+          />
+        </FormGroup>
         <Link
           component={RouterLink}
           to={PATH_AUTH.resetPassword}

@@ -1,17 +1,14 @@
 import { Alert, Button, Typography } from "@mui/material";
-import Divider from '@mui/material/Divider';
+import Divider from "@mui/material/Divider";
 
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink } from "react-router-dom";
 import LoginLayout from "../../layouts/login";
 import { PATH_REGISTER } from "../../routes/paths";
 import AuthLoginForm from "./AuthLoginForm";
 
 export default function Login() {
-  // const { method } = useAuthContext();
-
   return (
     <LoginLayout>
-
       <Typography variant="h4">Sign in to Dormy</Typography>
 
       <Alert severity="info" sx={{ mb: 3 }}>
@@ -35,6 +32,6 @@ export default function Login() {
       </Button>
 
       {/* <AuthWithSocial /> */}
-    </LoginLayout >
+    </LoginLayout>
   );
 }
