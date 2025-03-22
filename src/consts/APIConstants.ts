@@ -8,4 +8,10 @@ export const API_URL = {
     SIGN_UP: "user/sign-up",
     GET_PROFILE: "/user/id/",
   },
+  WORKPLACE: {
+    GET: "workplace/all",
+  },
+  GUARDIAN: {
+    GET: "guardian/all",
+  },
 };

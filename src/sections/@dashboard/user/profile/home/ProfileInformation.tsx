@@ -7,6 +7,8 @@ import { useAuthContext } from "../../../../../auth/JwtContext";
 import { useEffect, useState } from "react";
 import { Profile } from "../../../../../models/responses/UserModel";
 import { httpClient } from "../../../../../utils/axios";
+import { WorkplaceModel } from "../../../../../models/responses/WorkplaceModels";
+import { GuardianModel } from "../../../../../models/responses/GuardianModels";
 
 type FormValuesProps = {
   firstName: string;
@@ -30,43 +32,73 @@ type FormValuesProps = {
 };
 
 export default function ProfileInformation() {
-  const [profile, setProfile] = useState<Profile>();
   var { user } = useAuthContext();
 
-  const setUserData = (profile: Profile) => {
-    setValue("firstName", profile.firstName);
-    setValue("lastName", profile.lastName);
-    setValue("gender", profile.gender.toLocaleUpperCase());
+  const [profile, setProfile] = useState<Profile>();
+  const [workplace, setWorkplace] = useState<WorkplaceModel>();
+  const [guardian, setGuardian] = useState<GuardianModel>();
+
+  const setUserData = (
+    profile: Profile | undefined,
+    workplace: WorkplaceModel | undefined,
+    guardian: GuardianModel | undefined
+  ) => {
+    setValue("firstName", profile?.firstName || "--");
+    setValue("lastName", profile?.lastName || "--");
+    setValue("gender", profile?.gender.toLocaleUpperCase() || "N/A");
     setValue(
       "dayOfBirth",
-      profile.dateOfBirth ? new Date(profile.dateOfBirth) : new Date()
+      profile?.dateOfBirth ? new Date(profile.dateOfBirth) : new Date()
     );
     setValue("address", "--");
-    setValue("NIC", profile.nationalIdNumber);
-    setValue("email", profile.email);
-    setValue("phoneNumber", profile.phoneNumber);
+    setValue("NIC", profile?.nationalIdNumber || "--");
+    setValue("email", profile?.email || "--");
+    setValue("phoneNumber", profile?.phoneNumber || "--");
     setValue("priority", "");
-    setValue("workplaceName", "ABC Corporation");
-    setValue("workplaceAddress", "456 Business Road, District 1, HCMC");
-    setValue("guardianName", "Nguyen Van A");
-    setValue("guardianAddress", "789 Family Street, Ho Chi Minh City");
-    setValue("guardianPhoneNumber", "0971234567");
-    setValue("guardianEmail", "guardian@example.com");
-    setValue("guardianRelationship", "Father");
+    setValue("workplaceName", workplace?.name || "--");
+    setValue("workplaceAddress", workplace?.address || "--");
+    setValue("guardianName", guardian?.name || "--");
+    setValue("guardianAddress", guardian?.address || "--");
+    setValue("guardianPhoneNumber", guardian?.phoneNumber || "--");
+    setValue("guardianEmail", guardian?.email || "--");
+    setValue("guardianRelationship", guardian?.relationshipToUser || "--");
   };
+
+  useEffect(() => {
+    setUserData(profile, workplace, guardian);
+  }, [profile, workplace, guardian]);
 
   const fetchProfile = async () => {
     if (user) {
       var response = await httpClient.userGetProfile(user?.id);
       if (response) {
         setProfile(response);
-        setUserData(response);
+      }
+    }
+  };
+
+  const fetchWorkplace = async () => {
+    if (user) {
+      var response = await httpClient.getUserWorkplace();
+      if (response) {
+        setWorkplace(response);
+      }
+    }
+  };
+
+  const fetchGuardian = async () => {
+    if (user) {
+      var response = await httpClient.getUserGuardian();
+      if (response) {
+        setGuardian(response);
       }
     }
   };
 
   useEffect(() => {
     fetchProfile();
+    fetchWorkplace();
+    fetchGuardian();
   }, []);
 
   const defaultValues = {
