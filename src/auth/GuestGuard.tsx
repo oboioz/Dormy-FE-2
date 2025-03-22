@@ -1,10 +1,11 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate } from "react-router-dom";
 // routes
-import { PATH_DASHBOARD } from '../routes/paths';
+import { PATH_ADMIN } from "../routes/paths";
 // components
-import LoadingScreen from '../components/loading-screen';
+import LoadingScreen from "../components/loading-screen";
+import { useAuthContext } from "./JwtContext";
+import LoginPage from "../pages/auth/LoginPage";
 //
-import { useAuthContext } from './useAuthContext';
 
 // ----------------------------------------------------------------------
 
@@ -13,14 +14,10 @@ type GuestGuardProps = {
 };
 
 export default function GuestGuard({ children }: GuestGuardProps) {
-  const { isAuthenticated, isInitialized } = useAuthContext();
+  const { user } = useAuthContext();
 
-  if (isAuthenticated) {
-    return <Navigate to={PATH_DASHBOARD.root} />;
-  }
-
-  if (!isInitialized) {
-    return <LoadingScreen />;
+  if (user?.id) {
+    return <Navigate to={PATH_ADMIN.dashboard} />;
   }
 
   return <> {children} </>;

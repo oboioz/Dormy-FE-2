@@ -1,205 +1,67 @@
-import { createContext, useCallback, useEffect, useMemo, useReducer } from 'react';
-// utils
+import {
+  createContext,
+  useState,
+  ReactNode,
+  useContext,
+  useEffect,
+} from "react";
+import { UserModel } from "../models/responses/UserModel";
+import { DormyLocalStorage } from "../consts/DormyConstants";
 
-import localStorageAvailable from '../utils/localStorageAvailable';
-//
-import axios from '../utils/axios';
-import { ActionMapType, AuthStateType, AuthUserType, JWTContextType } from './types';
-import { isValidToken, setSession } from './utils';
-
-// ----------------------------------------------------------------------
-
-// NOTE:
-// We only build demo at basic level.
-// Customer will need to do some extra handling yourself if you want to extend the logic and other features...
-
-// ----------------------------------------------------------------------
-
-enum Types {
-  INITIAL = 'INITIAL',
-  LOGIN = 'LOGIN',
-  REGISTER = 'REGISTER',
-  LOGOUT = 'LOGOUT',
+interface AuthContextType {
+  user: UserModel | undefined;
+  signIn: (user: UserModel | undefined) => void;
+  signOut: () => void;
 }
 
-type Payload = {
-  [Types.INITIAL]: {
-    isAuthenticated: boolean;
-    user: AuthUserType;
-  };
-  [Types.LOGIN]: {
-    user: AuthUserType;
-  };
-  [Types.REGISTER]: {
-    user: AuthUserType;
-  };
-  [Types.LOGOUT]: undefined;
-};
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);
 
-type ActionsType = ActionMapType<Payload>[keyof ActionMapType<Payload>];
-
-// ----------------------------------------------------------------------
-
-const initialState: AuthStateType = {
-  isInitialized: false,
-  isAuthenticated: false,
-  user: null,
-};
-
-const reducer = (state: AuthStateType, action: ActionsType) => {
-  if (action.type === Types.INITIAL) {
-    return {
-      isInitialized: true,
-      isAuthenticated: action.payload.isAuthenticated,
-      user: action.payload.user,
-    };
-  }
-  if (action.type === Types.LOGIN) {
-    return {
-      ...state,
-      isAuthenticated: true,
-      user: action.payload.user,
-    };
-  }
-  if (action.type === Types.REGISTER) {
-    return {
-      ...state,
-      isAuthenticated: true,
-      user: action.payload.user,
-    };
-  }
-  if (action.type === Types.LOGOUT) {
-    return {
-      ...state,
-      isAuthenticated: false,
-      user: null,
-    };
-  }
-  return state;
-};
-
-// ----------------------------------------------------------------------
-
-export const AuthContext = createContext<JWTContextType | null>(null);
-
-// ----------------------------------------------------------------------
-
-type AuthProviderProps = {
-  children: React.ReactNode;
-};
-
-export function AuthProvider({ children }: AuthProviderProps) {
-  const [state, dispatch] = useReducer(reducer, initialState);
-
-  const storageAvailable = localStorageAvailable();
-
-  const initialize = useCallback(async () => {
-    try {
-      const accessToken = storageAvailable ? localStorage.getItem('accessToken') : '';
-
-      if (accessToken && isValidToken(accessToken)) {
-        setSession(accessToken);
-
-        const response = await axios.get('/api/account/my-account');
-
-        const { user } = response.data;
-
-        dispatch({
-          type: Types.INITIAL,
-          payload: {
-            isAuthenticated: true,
-            user,
-          },
-        });
-      } else {
-        dispatch({
-          type: Types.INITIAL,
-          payload: {
-            isAuthenticated: false,
-            user: null,
-          },
-        });
-      }
-    } catch (error) {
-      console.error(error);
-      dispatch({
-        type: Types.INITIAL,
-        payload: {
-          isAuthenticated: false,
-          user: null,
-        },
-      });
-    }
-  }, [storageAvailable]);
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUser] = useState<UserModel | undefined>(() => {
+    const storedUser = localStorage.getItem(DormyLocalStorage.userProfile);
+    return storedUser !== "undefined" ? JSON.parse(storedUser!) : undefined;
+  });
 
   useEffect(() => {
-    initialize();
-  }, [initialize]);
+    if (user) {
+      handleSignIn(user);
+    } else {
+      signOut();
+    }
+  }, [user]);
 
-  // LOGIN
-  const login = useCallback(async (email: string, password: string) => {
-    const response = await axios.post('/api/account/login', {
-      email,
-      password,
-    });
-    const { accessToken, user } = response.data;
+  const handleSignIn = (user: UserModel) => {
+    setUser(user);
+    localStorage.setItem(DormyLocalStorage.dormyToken, user.token);
+    localStorage.setItem(DormyLocalStorage.userProfile, JSON.stringify(user));
+  };
 
-    setSession(accessToken);
+  const signIn = (user: UserModel | undefined) => {
+    if (user) {
+      handleSignIn(user);
+    } else {
+      signOut();
+    }
+  };
 
-    dispatch({
-      type: Types.LOGIN,
-      payload: {
-        user,
-      },
-    });
-  }, []);
+  const signOut = () => {
+    setUser(undefined);
+    localStorage.removeItem(DormyLocalStorage.userProfile);
+    localStorage.removeItem(DormyLocalStorage.dormyToken);
+  };
 
-  // REGISTER
-  const register = useCallback(
-    async (email: string, password: string, firstName: string, lastName: string) => {
-      const response = await axios.post('/api/account/register', {
-        email,
-        password,
-        firstName,
-        lastName,
-      });
-      const { accessToken, user } = response.data;
-
-      localStorage.setItem('accessToken', accessToken);
-
-      dispatch({
-        type: Types.REGISTER,
-        payload: {
-          user,
-        },
-      });
-    },
-    []
+  return (
+    <AuthContext.Provider value={{ user, signIn, signOut }}>
+      {children}
+    </AuthContext.Provider>
   );
+};
 
-  // LOGOUT
-  const logout = useCallback(() => {
-    setSession(null);
-    dispatch({
-      type: Types.LOGOUT,
-    });
-  }, []);
-
-  const memoizedValue = useMemo(
-    () => ({
-      isInitialized: state.isInitialized,
-      isAuthenticated: state.isAuthenticated,
-      user: state.user,
-      method: 'jwt',
-      login,
-      loginWithGoogle: () => { },
-      loginWithGithub: () => { },
-      loginWithTwitter: () => { },
-      register,
-      logout,
-    }),
-    [state.isAuthenticated, state.isInitialized, state.user, login, logout, register]
-  );
-
-  return <AuthContext.Provider value={memoizedValue}>{children}</AuthContext.Provider>;
-}
+export const useAuthContext = () => {
+  const context = useContext(AuthContext);
+  if (!context)
+    throw new Error("useAuthContext must be used inside AuthProvider");
+  return context;
+};

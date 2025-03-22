@@ -3,154 +3,197 @@ import CompactLayout from "../layouts/compact";
 import DashboardLayout from "../layouts/dashboard";
 import SimpleLayout from "../layouts/simple";
 
-import { AdminDashboardPage, AdminProfilePage, ContractListPage, DormitoryBuildingFormPage, DormitoryBuildingPage, DormitoryRoomCreatePage, DormitoryRoomListPage, EnterEmailPage, InvoiceCreatePage, InvoiceElectricPage, InvoiceListPage, InvoiceOthersPage, InvoiceParkingPage, InvoiceRentPage, InvoiceWaterPage, LoginPage, MyVehiclePage, NewPasswordPage, NotificationNewPostPage, NotificationPostPage, NotificationsPage, OvernightAbsencePage, OvernightRequestFormPage, OvernightRequestPage, RegistrationFormPage, RegistrationListPage, RegistrationPolicyPage, RegistrationPreviewPage, RegistrationSuccessPage, RequestFormPage, RequestListingPage, RequestListPage, ResetPasswordPage, ResidentListPage, RoomDetailsPage, RoomPickingPage, RoomTypeFormPage, RoomTypePage, SystemSettingsPage, UserProfilePage, VehicleGarageCreatePage, VehicleGaragePage, VehicleListPage, VehicleRegistrationFormPage, VehicleRegistrationListPage, VehicleWorkerPage, VerifyCodePage, ViolationDetailsListPage, ViolationDetailsPage, ViolationFormPage, ViolationMonthListPage, WorkplaceFormPage, WorkplaceListPage } from "./elements";
-
+import {
+  AdminDashboardPage,
+  AdminProfilePage,
+  ContractListPage,
+  DormitoryBuildingFormPage,
+  DormitoryBuildingPage,
+  DormitoryRoomCreatePage,
+  DormitoryRoomListPage,
+  EnterEmailPage,
+  InvoiceCreatePage,
+  InvoiceElectricPage,
+  InvoiceListPage,
+  InvoiceOthersPage,
+  InvoiceParkingPage,
+  InvoiceRentPage,
+  InvoiceWaterPage,
+  LoginPage,
+  MyVehiclePage,
+  NewPasswordPage,
+  NotificationNewPostPage,
+  NotificationPostPage,
+  NotificationsPage,
+  OvernightAbsencePage,
+  OvernightRequestFormPage,
+  OvernightRequestPage,
+  RegistrationFormPage,
+  RegistrationListPage,
+  RegistrationPolicyPage,
+  RegistrationPreviewPage,
+  RegistrationSuccessPage,
+  RequestFormPage,
+  RequestListingPage,
+  RequestListPage,
+  ResetPasswordPage,
+  ResidentListPage,
+  RoomDetailsPage,
+  RoomPickingPage,
+  RoomTypeFormPage,
+  RoomTypePage,
+  SystemSettingsPage,
+  UserProfilePage,
+  VehicleGarageCreatePage,
+  VehicleGaragePage,
+  VehicleListPage,
+  VehicleRegistrationFormPage,
+  VehicleRegistrationListPage,
+  VehicleWorkerPage,
+  VerifyCodePage,
+  ViolationDetailsListPage,
+  ViolationDetailsPage,
+  ViolationFormPage,
+  ViolationMonthListPage,
+  WorkplaceFormPage,
+  WorkplaceListPage,
+} from "./elements";
 
 export default function Router() {
   return useRoutes([
     {
-      path: 'auth',
+      path: "/",
+      element: <LoginPage />,
+    },
+    {
+      path: "auth",
       children: [
         {
-          path: 'login', element: <LoginPage />,
+          path: "login",
+          element: <LoginPage />,
         },
         {
           element: <CompactLayout />,
           children: [
-            { path: 'reset-password', element: <ResetPasswordPage /> },
-            { path: 'new-password', element: <NewPasswordPage /> },
-            { path: 'verify', element: <VerifyCodePage /> },
+            { path: "reset-password", element: <ResetPasswordPage /> },
+            { path: "new-password", element: <NewPasswordPage /> },
+            { path: "verify", element: <VerifyCodePage /> },
           ],
         },
       ],
     },
 
     {
-      path: 'user',
-      element: (
-        <DashboardLayout />
-      ),
+      path: "user",
+      element: <DashboardLayout />,
       children: [
-        { path: 'profile', element: (<UserProfilePage />), },
-        { path: 'contract', element: (<ContractListPage />), },
-        { path: 'roomdetails', element: (<RoomDetailsPage />), },
-        { path: 'overnight', element: (<OvernightAbsencePage />), },
-        { path: 'vehicle', element: (<MyVehiclePage />), },
+        { path: "profile", element: <UserProfilePage /> },
+        { path: "contract", element: <ContractListPage /> },
+        { path: "roomdetails", element: <RoomDetailsPage /> },
+        { path: "overnight", element: <OvernightAbsencePage /> },
+        { path: "vehicle", element: <MyVehiclePage /> },
 
-        { path: 'invoicerent', element: (<InvoiceRentPage />), },
-        { path: 'invoicewater', element: (<InvoiceWaterPage />), },
-        { path: 'invoiceelectric', element: (<InvoiceElectricPage />), },
-        { path: 'invoiceparking', element: (<InvoiceParkingPage />), },
-        { path: 'invoiceothers', element: (<InvoiceOthersPage />), },
+        { path: "invoicerent", element: <InvoiceRentPage /> },
+        { path: "invoicewater", element: <InvoiceWaterPage /> },
+        { path: "invoiceelectric", element: <InvoiceElectricPage /> },
+        { path: "invoiceparking", element: <InvoiceParkingPage /> },
+        { path: "invoiceothers", element: <InvoiceOthersPage /> },
 
-        { path: 'request', element: (<RequestListPage />), },
+        { path: "request", element: <RequestListPage /> },
 
-        { path: 'violation', element: (<ViolationMonthListPage />), },
-        { path: 'violationdetails', element: (<ViolationDetailsPage />), },
+        { path: "violation", element: <ViolationMonthListPage /> },
+        { path: "violationdetails", element: <ViolationDetailsPage /> },
 
-        { path: 'notification', element: (<NotificationsPage />), },
-        { path: 'notificationpost', element: (<NotificationPostPage />), },
-
+        { path: "notification", element: <NotificationsPage /> },
+        { path: "notificationpost", element: <NotificationPostPage /> },
       ],
     },
     {
-      path: 'user',
-      element: (
-        <SimpleLayout />
-      ),
+      path: "user",
+      element: <SimpleLayout />,
       children: [
-        { path: 'newovernight', element: (<OvernightRequestFormPage />), },
-        { path: 'newrequest', element: (<RequestFormPage />), },
-        { path: 'newvehicle', element: (<VehicleRegistrationFormPage />), },
+        { path: "newovernight", element: <OvernightRequestFormPage /> },
+        { path: "newrequest", element: <RequestFormPage /> },
+        { path: "newvehicle", element: <VehicleRegistrationFormPage /> },
       ],
     },
     {
-      path: 'admin',
-      element: (
-        <DashboardLayout />
-      ),
+      path: "admin",
+      element: <DashboardLayout />,
       children: [
-        { path: 'dashboard', element: (<AdminDashboardPage />), },
-        { path: 'profile', element: (<AdminProfilePage />), },
-        { path: 'settings', element: (<SystemSettingsPage />), },
+        { path: "dashboard", element: <AdminDashboardPage /> },
+        { path: "profile", element: <AdminProfilePage /> },
+        { path: "settings", element: <SystemSettingsPage /> },
 
-        { path: 'resident', element: (<ResidentListPage />), },
+        { path: "resident", element: <ResidentListPage /> },
 
-        { path: 'workplacelist', element: (<WorkplaceListPage />), },
+        { path: "workplacelist", element: <WorkplaceListPage /> },
         // { path: 'workplaceform', element: (<WorkplaceFormPage />), },
 
-        { path: 'registration', element: (<RegistrationListPage />), },
+        { path: "registration", element: <RegistrationListPage /> },
 
-        { path: 'overnight', element: (<OvernightRequestPage />), },
-        { path: 'request', element: (<RequestListingPage />), },
+        { path: "overnight", element: <OvernightRequestPage /> },
+        { path: "request", element: <RequestListingPage /> },
 
-        { path: 'violation', element: (<ViolationDetailsListPage />), },
-        { path: 'violationform', element: (<ViolationFormPage />), },
+        { path: "violation", element: <ViolationDetailsListPage /> },
+        { path: "violationform", element: <ViolationFormPage /> },
 
+        { path: "invoice", element: <InvoiceListPage /> },
+        { path: "invoicecreate", element: <InvoiceCreatePage /> },
 
-        { path: 'invoice', element: (<InvoiceListPage />), },
-        { path: 'invoicecreate', element: (<InvoiceCreatePage />), },
+        { path: "garage", element: <VehicleGaragePage /> },
+        { path: "vehiclelist", element: <VehicleListPage /> },
+        {
+          path: "vehicleregisterlist",
+          element: <VehicleRegistrationListPage />,
+        },
+        { path: "garageworker", element: <VehicleWorkerPage /> },
 
-        { path: 'garage', element: (<VehicleGaragePage />), },
-        { path: 'vehiclelist', element: (<VehicleListPage />), },
-        { path: 'vehicleregisterlist', element: (<VehicleRegistrationListPage />), },
-        { path: 'garageworker', element: (<VehicleWorkerPage />), },
-
-        { path: 'structure', element: (<DormitoryBuildingPage />), },
-        { path: 'blockedit', element: (<DormitoryBuildingFormPage />), },
-        { path: 'structure/structurename/roomlist', element: (<DormitoryRoomListPage />), },
+        { path: "structure", element: <DormitoryBuildingPage /> },
+        { path: "blockedit", element: <DormitoryBuildingFormPage /> },
+        {
+          path: "structure/structurename/roomlist",
+          element: <DormitoryRoomListPage />,
+        },
         // { path: 'structure/structurename/roomcreate', element: (<DormitoryRoomCreatePage />), },
 
-        { path: 'roomtype', element: (<RoomTypePage />), },
+        { path: "roomtype", element: <RoomTypePage /> },
         // { path: 'roomtypeedit', element: (<RoomTypeFormPage />), },
 
-        { path: 'notification', element: (<NotificationsPage />), },
-        { path: 'notificationpost', element: (<NotificationPostPage />), },
-        { path: 'notificationcreate', element: (<NotificationNewPostPage />), },
-
-
+        { path: "notification", element: <NotificationsPage /> },
+        { path: "notificationpost", element: <NotificationPostPage /> },
+        { path: "notificationcreate", element: <NotificationNewPostPage /> },
       ],
     },
     {
-      path: 'admin',
-      element: (
-        <SimpleLayout />
-      ),
+      path: "admin",
+      element: <SimpleLayout />,
       children: [
-
-        { path: 'workplaceform', element: (<WorkplaceFormPage />), },
-        { path: 'structure/structurename/roomcreate', element: (<DormitoryRoomCreatePage />), },
-        { path: 'roomtypeedit', element: (<RoomTypeFormPage />), },
-        { path: 'garageform', element: (<VehicleGarageCreatePage />), },
-
+        { path: "workplaceform", element: <WorkplaceFormPage /> },
+        {
+          path: "structure/structurename/roomcreate",
+          element: <DormitoryRoomCreatePage />,
+        },
+        { path: "roomtypeedit", element: <RoomTypeFormPage /> },
+        { path: "garageform", element: <VehicleGarageCreatePage /> },
       ],
     },
 
     {
-      path: 'registration',
-      element: (
-        <SimpleLayout />
-      ),
+      path: "registration",
+      element: <SimpleLayout />,
       children: [
-        { path: 'policy', element: (<RegistrationPolicyPage />), },
-        { path: 'bed', element: (<RoomPickingPage />), },
-        { path: 'form', element: (<RegistrationFormPage />), },
-        { path: 'preview', element: (<RegistrationPreviewPage />), },
-        { path: 'success', element: (<RegistrationSuccessPage />), },
+        { path: "policy", element: <RegistrationPolicyPage /> },
+        { path: "bed", element: <RoomPickingPage /> },
+        { path: "form", element: <RegistrationFormPage /> },
+        { path: "preview", element: <RegistrationPreviewPage /> },
+        { path: "success", element: <RegistrationSuccessPage /> },
       ],
     },
     {
-      path: 'registration',
-      element: (
-        <CompactLayout />
-      ),
-      children: [
-        { path: 'email', element: (<EnterEmailPage />), },
-      ],
+      path: "registration",
+      element: <CompactLayout />,
+      children: [{ path: "email", element: <EnterEmailPage /> }],
     },
-
-
-
-
   ]);
 }

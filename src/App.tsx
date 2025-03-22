@@ -1,21 +1,22 @@
-import 'react-lazy-load-image-component/src/effects/blur.css';
-import { BrowserRouter } from 'react-router-dom';
-import Router from './routes';
+import "react-lazy-load-image-component/src/effects/blur.css";
+import { BrowserRouter } from "react-router-dom";
+import Router from "./routes";
 
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { HelmetProvider } from 'react-helmet-async';
-import { Provider as ReduxProvider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
-import { AuthProvider } from './auth/JwtContext';
-import { MotionLazyContainer } from './components/animate';
-import { StyledChart } from './components/chart';
-import ScrollToTop from './components/scroll-to-top';
-import { SettingsProvider } from './components/settings';
-import { SnackbarProvider } from './components/snackbar';
-import ThemeLocalization from './locales';
-import { persistor, store } from './redux/store';
-import ThemeProvider from './theme';
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { HelmetProvider } from "react-helmet-async";
+import { Provider as ReduxProvider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import { AuthProvider } from "./auth/JwtContext";
+import { MotionLazyContainer } from "./components/animate";
+import { StyledChart } from "./components/chart";
+import ScrollToTop from "./components/scroll-to-top";
+import { SettingsProvider } from "./components/settings";
+import { SnackbarProvider } from "./components/snackbar";
+import ThemeLocalization from "./locales";
+import { persistor, store } from "./redux/store";
+import ThemeProvider from "./theme";
+import { ToastContainer } from "react-toastify";
 
 export default function App() {
   return (
@@ -29,14 +30,13 @@ export default function App() {
                   <ScrollToTop />
                   <MotionLazyContainer>
                     <ThemeProvider>
-
                       <ThemeLocalization>
                         <SnackbarProvider>
+                          <ToastContainer />
                           <StyledChart />
                           <Router />
                         </SnackbarProvider>
                       </ThemeLocalization>
-
                     </ThemeProvider>
                   </MotionLazyContainer>
                 </BrowserRouter>
