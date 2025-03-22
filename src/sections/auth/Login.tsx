@@ -28,7 +28,7 @@ export default function Login() {
         color="primary"
         size="large"
         component={RouterLink} // Use RouterLink for navigation
-        to={PATH_REGISTER.policy} // Navigate to register policy page
+        to={PATH_REGISTER.form} // Navigate to register policy page
         variant="outlined"
       >
         Register
