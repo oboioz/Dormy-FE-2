@@ -21,6 +21,7 @@ import { PATH_AUTH, PATH_USER } from "../../routes/paths";
 import { useAuthContext } from "../../auth/JwtContext";
 import { httpClient } from "../../utils/axios";
 import { toast } from "react-toastify";
+import { UserRole } from "../../models/enums/DormyEnums";
 
 type FormValuesProps = {
   username: string;
@@ -67,7 +68,7 @@ export default function AuthLoginForm() {
       signIn({
         id: response.userInformation.userId,
         name: `${response.userInformation.firstName} ${response.userInformation.lastName}`,
-        role: "user",
+        role: UserRole.CUSTOMER,
         token: response.accessToken,
       });
       toast.success(
@@ -93,7 +94,7 @@ export default function AuthLoginForm() {
       signIn({
         id: response.adminInformation.id,
         name: `${response.adminInformation.firstName} ${response.adminInformation.lastName}`,
-        role: "admin",
+        role: UserRole.ADMIN,
         token: response.accessToken,
       });
       toast.success(

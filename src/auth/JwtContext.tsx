@@ -21,7 +21,7 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserModel | undefined>(() => {
     const storedUser = localStorage.getItem(DormyLocalStorage.userProfile);
-    return storedUser !== "undefined" ? JSON.parse(storedUser!) : undefined;
+    return storedUser ? JSON.parse(storedUser!) : undefined;
   });
 
   useEffect(() => {

@@ -1,3 +1,5 @@
+import { UserRole } from "../enums/DormyEnums";
+
 export interface ApiResponse {
   statusCode: number;
   isSuccess: boolean;
@@ -31,7 +33,7 @@ export interface UserModel {
   id: string;
   name: string;
   token: string;
-  role: string;
+  role: UserRole;
 }
 
 export interface UserSignUpModel {
@@ -45,14 +47,14 @@ export interface UserSignUpModel {
 }
 
 export interface Profile {
-  userId: string
-  firstName: string
-  lastName: string
-  email: string
-  userName: string
-  dateOfBirth: string
-  phoneNumber: string
-  nationalIdNumber: string
-  status: string
-  gender: string
+  userId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  userName: string;
+  dateOfBirth: string;
+  phoneNumber: string;
+  nationalIdNumber: string;
+  status: string;
+  gender: string;
 }
