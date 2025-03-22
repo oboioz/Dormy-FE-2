@@ -38,7 +38,7 @@ export default function WorkplaceTableRow({
 
   const { workplaceID, name, address, createdBy, createdAt, abbreviation } = row;
 
-  const amount = 8000;
+  // const amount = 8000;
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
@@ -77,11 +77,11 @@ export default function WorkplaceTableRow({
 
         <TableCell align="left">{abbreviation}</TableCell>
 
+        <TableCell align="left">{address}</TableCell>
+
         <TableCell align="left">{createdBy}</TableCell>
 
         <TableCell align="left">{fDateTime(createdAt)}</TableCell>
-
-        <TableCell align="left">{amount}</TableCell>
 
         <TableCell align="right">
           <IconButton color={openPopover ? 'inherit' : 'default'} onClick={handleOpenPopover}>
