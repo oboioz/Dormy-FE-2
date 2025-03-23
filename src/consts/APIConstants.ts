@@ -1,5 +1,5 @@
 export const API_URL = {
-  BASE_URL: "http://localhost:5000/api/",
+  BASE_URL: "http://localhost:5158/api/",
   ADMIN: {
     SIGN_IN: "auth/admin/sign-in",
   },

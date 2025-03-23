@@ -27,10 +27,11 @@ import {
   RoomServiceEnum,
 } from "../../../../models/responses/RoomServiceModels";
 import { RHFCheckbox } from "../../../../components/hook-form/RHFCheckbox";
-import { httpClient } from "../../../../utils/axios";
 import { toast } from "react-toastify";
 import { RHFSelect } from "../../../../components/hook-form/RHFSelect";
 import { useEffect, useState } from "react";
+// import { httpClient } from "../../../../utils/axios";
+import { httpClient } from "../../../../services";
 
 const UpdateSchema = Yup.object().shape({
   roomServiceName: Yup.string().required("Name is required!"),
@@ -73,7 +74,7 @@ export default function RoomServiceForm() {
   } = methods;
 
   const createRoomService = async (data: IRoomServiceCreate) => {
-    var response = await httpClient.createRoomServiceBatch([data]);
+    var response = await httpClient.roomServiceService.createRoomServiceBatch([data]);
     if (response && response?.length > 0) {
       toast.success("Create room service successfully");
       navigate(PATH_ADMIN.dormitory.roomService);
@@ -83,7 +84,7 @@ export default function RoomServiceForm() {
   };
 
   const updateRoomService = async (data: IRoomServiceCreate) => {
-    var response = await httpClient.updateRoomServiceBatch({
+    var response = await httpClient.roomServiceService.updateRoomServiceBatch({
       ...data,
       id: id || "",
     });
@@ -105,7 +106,7 @@ export default function RoomServiceForm() {
   };
 
   const fetchRoomServiceEnums = async () => {
-    var response = await httpClient.getRoomServiceEnums();
+    var response = await httpClient.roomServiceService.getRoomServiceEnums();
     setRoomServiceEnums(response || []);
   };
 
@@ -118,7 +119,7 @@ export default function RoomServiceForm() {
   };
 
   const getRoomServiceDetail = async (id: string) => {
-    var response = await httpClient.getRoomServiceBatch({
+    var response = await httpClient.roomServiceService.getRoomServiceBatch({
       ids: [id],
     });
 

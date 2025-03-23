@@ -6,9 +6,10 @@ import FormProvider, {
 import { useAuthContext } from "../../../../../auth/JwtContext";
 import { useEffect, useState } from "react";
 import { Profile } from "../../../../../models/responses/UserModel";
-import { httpClient } from "../../../../../utils/axios";
+// import { httpClient } from "../../../../../utils/axios";
 import { WorkplaceModel } from "../../../../../models/responses/WorkplaceModels";
 import { GuardianModel } from "../../../../../models/responses/GuardianModels";
+import { httpClient } from "../../../../../services";
 
 type FormValuesProps = {
   firstName: string;
@@ -70,7 +71,7 @@ export default function ProfileInformation() {
 
   const fetchProfile = async () => {
     if (user) {
-      var response = await httpClient.userGetProfile(user?.id);
+      var response = await httpClient.userService.userGetProfile(user?.id);
       if (response) {
         setProfile(response);
       }
@@ -79,7 +80,7 @@ export default function ProfileInformation() {
 
   const fetchWorkplace = async () => {
     if (user) {
-      var response = await httpClient.getUserWorkplace();
+      var response = await httpClient.workplaceService.getUserWorkplace();
       if (response) {
         setWorkplace(response);
       }
@@ -88,7 +89,7 @@ export default function ProfileInformation() {
 
   const fetchGuardian = async () => {
     if (user) {
-      var response = await httpClient.getUserGuardian();
+      var response = await httpClient.guardianService.getUserGuardian();
       if (response) {
         setGuardian(response);
       }

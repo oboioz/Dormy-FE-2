@@ -19,9 +19,10 @@ import FormProvider, { RHFTextField } from "../../components/hook-form";
 import Iconify from "../../components/iconify";
 import { PATH_ADMIN, PATH_AUTH, PATH_USER } from "../../routes/paths";
 import { useAuthContext } from "../../auth/JwtContext";
-import { httpClient } from "../../utils/axios";
 import { toast } from "react-toastify";
 import { UserRole } from "../../models/enums/DormyEnums";
+// import { httpClient } from "../../utils/axios";
+import { httpClient } from "../../services";
 
 type FormValuesProps = {
   username: string;
@@ -59,7 +60,7 @@ export default function AuthLoginForm() {
   } = methods;
 
   const userSignIn = async (data: FormValuesProps) => {
-    var response = await httpClient.userSignIn({
+    var response = await httpClient.authService.userSignIn({
       username: data.username,
       password: data.password,
     });
@@ -85,7 +86,7 @@ export default function AuthLoginForm() {
   };
 
   const adminSignIn = async (data: FormValuesProps) => {
-    var response = await httpClient.adminSignIn({
+    var response = await httpClient.authService.adminSignIn({
       username: data.username,
       password: data.password,
     });

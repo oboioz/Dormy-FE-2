@@ -30,10 +30,11 @@ import {
 import { PATH_ADMIN } from "../../routes/paths";
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
-import { httpClient } from "../../utils/axios";
+// import { httpClient } from "../../utils/axios";
 import { IRoomService } from "../../models/responses/RoomServiceModels";
 import RoomServiceRow from "../../sections/@dashboard/admin/venue/RoomServiceRow";
 import { toast } from "react-toastify";
+import { httpClient } from "../../services";
 
 const TABLE_HEAD = [
   { id: "roomServiceName", label: "Service Name", align: "left" },
@@ -90,7 +91,7 @@ export default function RoomServicePage() {
 
   const handleDeleteRow = async (id: string) => {
     try {
-      var response = await httpClient.softDeleteRoomServiceBatch([id]);
+      var response = await httpClient.roomServiceService.softDeleteRoomServiceBatch([id]);
       if (response) {
         toast.success("Deleted");
         window.location.reload();
@@ -104,7 +105,7 @@ export default function RoomServicePage() {
 
   const handleDeleteRows = async (selectedRows: string[]) => {
     try {
-      var response = await httpClient.softDeleteRoomServiceBatch(selectedRows);
+      var response = await httpClient.roomServiceService.softDeleteRoomServiceBatch(selectedRows);
       if (response) {
         toast.success("Deleted");
         window.location.reload();
@@ -117,7 +118,7 @@ export default function RoomServicePage() {
   };
 
   const fetchRoomServices = async () => {
-    var response = await httpClient.getRoomServiceBatch({
+    var response = await httpClient.roomServiceService.getRoomServiceBatch({
       ids: [],
     });
     console.log(response);
