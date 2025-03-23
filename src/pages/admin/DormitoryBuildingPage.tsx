@@ -1,18 +1,15 @@
-
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink } from "react-router-dom";
 // @mui
-import {
-  Button,
-  Card,
-  Container
-} from '@mui/material';
+import { Button, Card, Container } from "@mui/material";
 // components
-import { Helmet } from 'react-helmet-async';
-import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
-import Iconify from '../../components/iconify';
-import { useSettingsContext } from '../../components/settings';
-import { PATH_ADMIN } from '../../routes/paths';
-import BuildingStructure from '../../sections/@dashboard/admin/venue/BuildingStructure';
+import { Helmet } from "react-helmet-async";
+import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
+import Iconify from "../../components/iconify";
+import { useSettingsContext } from "../../components/settings";
+import { PATH_ADMIN } from "../../routes/paths";
+import BuildingStructure from "../../sections/@dashboard/admin/venue/BuildingStructure";
+import { useAuthGuard } from "../../auth/AuthGuard";
+import { UserRole } from "../../models/enums/DormyEnums";
 // sections
 
 // ----------------------------------------------------------------------
@@ -28,7 +25,7 @@ const _buildingList = [...Array(10)].map((_, index) => ({
 // ----------------------------------------------------------------------
 
 export default function DormitoryBuildingPage() {
-
+  useAuthGuard(UserRole.ADMIN);
   const { themeStretch } = useSettingsContext();
 
   return (
@@ -37,13 +34,13 @@ export default function DormitoryBuildingPage() {
         <title>Dormitory Building Structure</title>
       </Helmet>
 
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
           heading="Dormitory Structure"
           links={[
-            { name: 'Dashboard', href: PATH_ADMIN.root },
-            { name: 'Admin', href: PATH_ADMIN.profile },
-            { name: 'Dormitory Structure' },
+            { name: "Dashboard", href: PATH_ADMIN.root },
+            { name: "Admin", href: PATH_ADMIN.profile },
+            { name: "Dormitory Structure" },
           ]}
           action={
             <Button
@@ -61,7 +58,6 @@ export default function DormitoryBuildingPage() {
           <BuildingStructure buildings={_buildingList} />
         </Card>
       </Container>
-
     </>
   );
 }

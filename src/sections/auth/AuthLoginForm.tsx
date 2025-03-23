@@ -17,7 +17,7 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import FormProvider, { RHFTextField } from "../../components/hook-form";
 import Iconify from "../../components/iconify";
-import { PATH_AUTH, PATH_USER } from "../../routes/paths";
+import { PATH_ADMIN, PATH_AUTH, PATH_USER } from "../../routes/paths";
 import { useAuthContext } from "../../auth/JwtContext";
 import { httpClient } from "../../utils/axios";
 import { toast } from "react-toastify";
@@ -100,7 +100,7 @@ export default function AuthLoginForm() {
       toast.success(
         `Login success, hello admin ${response.adminInformation.firstName} ${response.adminInformation.lastName}`
       );
-      navigate(PATH_USER.profile);
+      navigate(PATH_ADMIN.dashboard);
     } else {
       toast.error("Login failed, please check your username or password");
       reset();

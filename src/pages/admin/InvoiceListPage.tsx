@@ -1,7 +1,7 @@
-import sumBy from 'lodash/sumBy';
-import { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import sumBy from "lodash/sumBy";
+import { useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 // @mui
 import {
   Button,
@@ -16,21 +16,21 @@ import {
   TableContainer,
   Tabs,
   Tooltip,
-} from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+} from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 // utils
-import { fTimestamp } from '../../utils/formatTime';
+import { fTimestamp } from "../../utils/formatTime";
 // _mock_
-import { _invoices } from '../../_mock/arrays';
+import { _invoices } from "../../_mock/arrays";
 
 // components
-import { IInvoice } from '../../@types/invoice';
-import ConfirmDialog from '../../components/confirm-dialog';
-import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
-import Iconify from '../../components/iconify';
-import Label from '../../components/label';
-import Scrollbar from '../../components/scrollbar';
-import { useSettingsContext } from '../../components/settings';
+import { IInvoice } from "../../@types/invoice";
+import ConfirmDialog from "../../components/confirm-dialog";
+import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
+import Iconify from "../../components/iconify";
+import Label from "../../components/label";
+import Scrollbar from "../../components/scrollbar";
+import { useSettingsContext } from "../../components/settings";
 import {
   emptyRows,
   getComparator,
@@ -40,38 +40,41 @@ import {
   TablePaginationCustom,
   TableSelectedAction,
   useTable,
-} from '../../components/table';
-import { PATH_ADMIN } from '../../routes/paths';
-import InvoiceAnalytic from '../../sections/@dashboard/admin/invoices/InvoiceAnalytic';
-import InvoiceTableRow from '../../sections/@dashboard/admin/invoices/InvoiceTableRow';
-import InvoiceTableToolbar from '../../sections/@dashboard/admin/invoices/InvoiceTableToolbar';
+} from "../../components/table";
+import { PATH_ADMIN } from "../../routes/paths";
+import InvoiceAnalytic from "../../sections/@dashboard/admin/invoices/InvoiceAnalytic";
+import InvoiceTableRow from "../../sections/@dashboard/admin/invoices/InvoiceTableRow";
+import InvoiceTableToolbar from "../../sections/@dashboard/admin/invoices/InvoiceTableToolbar";
+import { useAuthGuard } from "../../auth/AuthGuard";
+import { UserRole } from "../../models/enums/DormyEnums";
 // sections
 
 // ----------------------------------------------------------------------
 
 const SERVICE_OPTIONS = [
-  'all',
-  'rent',
-  'water',
-  'electricity',
-  'parking',
-  'others',
+  "all",
+  "rent",
+  "water",
+  "electricity",
+  "parking",
+  "others",
 ];
 
 const TABLE_HEAD = [
-  { id: 'invoiceID', label: 'ID', align: 'left' },
-  { id: 'client', label: 'Client', align: 'left' },
-  { id: 'createdAt', label: 'Created At', align: 'left' },
-  { id: 'dueDate', label: 'Due Date', align: 'left' },
-  { id: 'price', label: 'Amount', align: 'center', width: 140 },
-  { id: 'description', label: 'Description', align: 'center', width: 140 },
-  { id: 'status', label: 'Status', align: 'left' },
-  { id: '' },
+  { id: "invoiceID", label: "ID", align: "left" },
+  { id: "client", label: "Client", align: "left" },
+  { id: "createdAt", label: "Created At", align: "left" },
+  { id: "dueDate", label: "Due Date", align: "left" },
+  { id: "price", label: "Amount", align: "center", width: 140 },
+  { id: "description", label: "Description", align: "center", width: 140 },
+  { id: "status", label: "Status", align: "left" },
+  { id: "" },
 ];
 
 // ----------------------------------------------------------------------
 
 export default function InvoiceListPage() {
+  useAuthGuard(UserRole.ADMIN);
   const theme = useTheme();
 
   const { themeStretch } = useSettingsContext();
@@ -93,17 +96,17 @@ export default function InvoiceListPage() {
     onSort,
     onChangePage,
     onChangeRowsPerPage,
-  } = useTable({ defaultOrderBy: 'createDate' });
+  } = useTable({ defaultOrderBy: "createDate" });
 
   const [tableData, setTableData] = useState(_invoices);
 
-  const [filterName, setFilterName] = useState('');
+  const [filterName, setFilterName] = useState("");
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
-  const [filterStatus, setFilterStatus] = useState('all');
+  const [filterStatus, setFilterStatus] = useState("all");
 
-  const [filterService, setFilterService] = useState('all');
+  const [filterService, setFilterService] = useState("all");
 
   const [filterEndDate, setFilterEndDate] = useState<Date | null>(null);
 
@@ -119,12 +122,15 @@ export default function InvoiceListPage() {
     filterEndDate,
   });
 
-  const dataInPage = dataFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const dataInPage = dataFiltered.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   const isFiltered =
-    filterStatus !== 'all' ||
-    filterName !== '' ||
-    filterService !== 'all' ||
+    filterStatus !== "all" ||
+    filterName !== "" ||
+    filterService !== "all" ||
     (!!filterStartDate && !!filterEndDate);
 
   const isNotFound =
@@ -140,17 +146,32 @@ export default function InvoiceListPage() {
   const getTotalPriceByStatus = (status: string) =>
     sumBy(
       tableData.filter((item) => item.status === status),
-      'totalPrice'
+      "totalPrice"
     );
 
   const getPercentByStatus = (status: string) =>
     (getLengthByStatus(status) / tableData.length) * 100;
 
   const TABS = [
-    { value: 'all', label: 'All', color: 'info', count: tableData.length },
-    { value: 'paid', label: 'Paid', color: 'success', count: getLengthByStatus('paid') },
-    { value: 'unpaid', label: 'Unpaid', color: 'warning', count: getLengthByStatus('unpaid') },
-    { value: 'overdue', label: 'Overdue', color: 'error', count: getLengthByStatus('overdue') },
+    { value: "all", label: "All", color: "info", count: tableData.length },
+    {
+      value: "paid",
+      label: "Paid",
+      color: "success",
+      count: getLengthByStatus("paid"),
+    },
+    {
+      value: "unpaid",
+      label: "Unpaid",
+      color: "warning",
+      count: getLengthByStatus("unpaid"),
+    },
+    {
+      value: "overdue",
+      label: "Overdue",
+      color: "error",
+      count: getLengthByStatus("overdue"),
+    },
   ] as const;
 
   const handleOpenConfirm = () => {
@@ -161,7 +182,10 @@ export default function InvoiceListPage() {
     setOpenConfirm(false);
   };
 
-  const handleFilterStatus = (event: React.SyntheticEvent<Element, Event>, newValue: string) => {
+  const handleFilterStatus = (
+    event: React.SyntheticEvent<Element, Event>,
+    newValue: string
+  ) => {
     setPage(0);
     setFilterStatus(newValue);
   };
@@ -177,7 +201,9 @@ export default function InvoiceListPage() {
   };
 
   const handleDeleteRow = (id: string) => {
-    const deleteRow = tableData.filter((row) => row.invoiceID.toString() !== id);
+    const deleteRow = tableData.filter(
+      (row) => row.invoiceID.toString() !== id
+    );
     setSelected([]);
     setTableData(deleteRow);
 
@@ -189,7 +215,9 @@ export default function InvoiceListPage() {
   };
 
   const handleDeleteRows = (selectedRows: string[]) => {
-    const deleteRows = tableData.filter((row) => !selectedRows.includes(row.invoiceID.toString()));
+    const deleteRows = tableData.filter(
+      (row) => !selectedRows.includes(row.invoiceID.toString())
+    );
     setSelected([]);
     setTableData(deleteRows);
 
@@ -199,7 +227,8 @@ export default function InvoiceListPage() {
       } else if (selectedRows.length === dataFiltered.length) {
         setPage(0);
       } else if (selectedRows.length > dataInPage.length) {
-        const newPage = Math.ceil((tableData.length - selectedRows.length) / rowsPerPage) - 1;
+        const newPage =
+          Math.ceil((tableData.length - selectedRows.length) / rowsPerPage) - 1;
         setPage(newPage);
       }
     }
@@ -214,9 +243,9 @@ export default function InvoiceListPage() {
   };
 
   const handleResetFilter = () => {
-    setFilterName('');
-    setFilterStatus('all');
-    setFilterService('all');
+    setFilterName("");
+    setFilterStatus("all");
+    setFilterService("all");
     setFilterEndDate(null);
     setFilterStartDate(null);
   };
@@ -227,20 +256,20 @@ export default function InvoiceListPage() {
         <title> Invoice: List | Admin</title>
       </Helmet>
 
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
           heading="Invoice List"
           links={[
             {
-              name: 'Dashboard',
+              name: "Dashboard",
               href: PATH_ADMIN.root,
             },
             {
-              name: 'Admin',
+              name: "Admin",
               href: PATH_ADMIN.profile,
             },
             {
-              name: 'Invoice',
+              name: "Invoice",
             },
           ]}
           action={
@@ -259,45 +288,50 @@ export default function InvoiceListPage() {
           <Scrollbar>
             <Stack
               direction="row"
-              divider={<Divider orientation="vertical" flexItem sx={{ borderStyle: 'dashed' }} />}
+              divider={
+                <Divider
+                  orientation="vertical"
+                  flexItem
+                  sx={{ borderStyle: "dashed" }}
+                />
+              }
               sx={{ py: 2 }}
             >
               <InvoiceAnalytic
                 title="Total"
                 total={tableData.length}
                 percent={100}
-                price={sumBy(tableData, 'totalPrice')}
+                price={sumBy(tableData, "totalPrice")}
                 icon="ic:round-receipt"
                 color={theme.palette.info.main}
               />
 
               <InvoiceAnalytic
                 title="Paid"
-                total={getLengthByStatus('paid')}
-                percent={getPercentByStatus('paid')}
-                price={getTotalPriceByStatus('paid')}
+                total={getLengthByStatus("paid")}
+                percent={getPercentByStatus("paid")}
+                price={getTotalPriceByStatus("paid")}
                 icon="eva:checkmark-circle-2-fill"
                 color={theme.palette.success.main}
               />
 
               <InvoiceAnalytic
                 title="Unpaid"
-                total={getLengthByStatus('unpaid')}
-                percent={getPercentByStatus('unpaid')}
-                price={getTotalPriceByStatus('unpaid')}
+                total={getLengthByStatus("unpaid")}
+                percent={getPercentByStatus("unpaid")}
+                price={getTotalPriceByStatus("unpaid")}
                 icon="eva:clock-fill"
                 color={theme.palette.warning.main}
               />
 
               <InvoiceAnalytic
                 title="Overdue"
-                total={getLengthByStatus('overdue')}
-                percent={getPercentByStatus('overdue')}
-                price={getTotalPriceByStatus('overdue')}
+                total={getLengthByStatus("overdue")}
+                percent={getPercentByStatus("overdue")}
+                price={getTotalPriceByStatus("overdue")}
                 icon="eva:bell-fill"
                 color={theme.palette.error.main}
               />
-
             </Stack>
           </Scrollbar>
         </Card>
@@ -308,7 +342,7 @@ export default function InvoiceListPage() {
             onChange={handleFilterStatus}
             sx={{
               px: 2,
-              bgcolor: 'background.neutral',
+              bgcolor: "background.neutral",
             }}
           >
             {TABS.map((tab) => (
@@ -345,7 +379,7 @@ export default function InvoiceListPage() {
             }}
           />
 
-          <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+          <TableContainer sx={{ position: "relative", overflow: "unset" }}>
             <TableSelectedAction
               numSelected={selected.length}
               rowCount={tableData.length}
@@ -385,7 +419,7 @@ export default function InvoiceListPage() {
             />
 
             <Scrollbar>
-              <Table size={'medium'} sx={{ minWidth: 800 }}>
+              <Table size={"medium"} sx={{ minWidth: 800 }}>
                 <TableHeadCustom
                   order={order}
                   orderBy={orderBy}
@@ -409,10 +443,18 @@ export default function InvoiceListPage() {
                         key={row.invoiceID}
                         row={row}
                         selected={selected.includes(row.invoiceID.toString())}
-                        onSelectRow={() => onSelectRow(row.invoiceID.toString())}
-                        onViewRow={() => handleViewRow(row.invoiceID.toString())}
-                        onEditRow={() => handleEditRow(row.invoiceID.toString())}
-                        onDeleteRow={() => handleDeleteRow(row.invoiceID.toString())}
+                        onSelectRow={() =>
+                          onSelectRow(row.invoiceID.toString())
+                        }
+                        onViewRow={() =>
+                          handleViewRow(row.invoiceID.toString())
+                        }
+                        onEditRow={() =>
+                          handleEditRow(row.invoiceID.toString())
+                        }
+                        onDeleteRow={() =>
+                          handleDeleteRow(row.invoiceID.toString())
+                        }
                       />
                     ))}
 
@@ -442,7 +484,8 @@ export default function InvoiceListPage() {
         title="Delete"
         content={
           <>
-            Are you sure want to delete <strong> {selected.length} </strong> items?
+            Are you sure want to delete <strong> {selected.length} </strong>{" "}
+            items?
           </>
         }
         action={
@@ -496,16 +539,22 @@ function applyFilter({
       (invoice) =>
         // invoice.invoiceNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
         // invoice.invoiceTo.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
-        invoice.invoiceID.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        invoice.roomId.roomID.toString().toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        invoice.invoiceID
+          .toString()
+          .toLowerCase()
+          .indexOf(filterName.toLowerCase()) !== -1 ||
+        invoice.roomId.roomID
+          .toString()
+          .toLowerCase()
+          .indexOf(filterName.toLowerCase()) !== -1
     );
   }
 
-  if (filterStatus !== 'all') {
+  if (filterStatus !== "all") {
     inputData = inputData.filter((invoice) => invoice.status === filterStatus);
   }
 
-  if (filterService !== 'all') {
+  if (filterService !== "all") {
     inputData = inputData.filter((invoice) =>
       invoice.invoiceItems.some((c) => c.invoiceId.type === filterService)
     );

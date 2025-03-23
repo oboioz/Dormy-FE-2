@@ -1,22 +1,23 @@
 // @mui
-import { Container, Grid, Typography } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+import { Container, Grid, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 // _mock_
 // components
-import { Helmet } from 'react-helmet-async';
-import { useSettingsContext } from '../../components/settings';
-import AnalyticsByGender from '../../sections/@dashboard/AnalyticsByGender';
-import AnalyticsWidgetSummary from '../../sections/@dashboard/AnalyticsWidgetSummary';
-import AppAreaInstalled from '../../sections/@dashboard/AppAreaInstalled';
+import { Helmet } from "react-helmet-async";
+import { useSettingsContext } from "../../components/settings";
+import AnalyticsByGender from "../../sections/@dashboard/AnalyticsByGender";
+import AnalyticsWidgetSummary from "../../sections/@dashboard/AnalyticsWidgetSummary";
+import AppAreaInstalled from "../../sections/@dashboard/AppAreaInstalled";
+import { useAuthGuard } from "../../auth/AuthGuard";
+import { UserRole } from "../../models/enums/DormyEnums";
 // sections
-
 
 // ----------------------------------------------------------------------
 
 export default function AdminDashboardPage() {
   const theme = useTheme();
-
   const { themeStretch } = useSettingsContext();
+  useAuthGuard(UserRole.ADMIN);
 
   return (
     <>
@@ -24,7 +25,7 @@ export default function AdminDashboardPage() {
         <title> Dashboard Admin | Dormy</title>
       </Helmet>
 
-      <Container maxWidth={themeStretch ? false : 'xl'}>
+      <Container maxWidth={themeStretch ? false : "xl"}>
         <Typography variant="h4" sx={{ mb: 5 }}>
           Hi, Welcome back
         </Typography>
@@ -70,20 +71,42 @@ export default function AdminDashboardPage() {
               title="Area Installed"
               subheader="(+43%) than last year"
               chart={{
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+                categories: [
+                  "Jan",
+                  "Feb",
+                  "Mar",
+                  "Apr",
+                  "May",
+                  "Jun",
+                  "Jul",
+                  "Aug",
+                  "Sep",
+                ],
                 series: [
                   {
-                    year: '2019',
+                    year: "2019",
                     data: [
-                      { name: 'Asia', data: [10, 41, 35, 51, 49, 62, 69, 91, 148] },
-                      { name: 'America', data: [10, 34, 13, 56, 77, 88, 99, 77, 45] },
+                      {
+                        name: "Asia",
+                        data: [10, 41, 35, 51, 49, 62, 69, 91, 148],
+                      },
+                      {
+                        name: "America",
+                        data: [10, 34, 13, 56, 77, 88, 99, 77, 45],
+                      },
                     ],
                   },
                   {
-                    year: '2020',
+                    year: "2020",
                     data: [
-                      { name: 'Asia', data: [148, 91, 69, 62, 49, 51, 35, 41, 10] },
-                      { name: 'America', data: [45, 77, 99, 88, 77, 56, 13, 34, 10] },
+                      {
+                        name: "Asia",
+                        data: [148, 91, 69, 62, 49, 51, 35, 41, 10],
+                      },
+                      {
+                        name: "America",
+                        data: [45, 77, 99, 88, 77, 56, 13, 34, 10],
+                      },
                     ],
                   },
                 ],
@@ -97,13 +120,12 @@ export default function AdminDashboardPage() {
               total={2324}
               chart={{
                 series: [
-                  { label: 'Mens', value: 44 },
-                  { label: 'Womens', value: 75 },
+                  { label: "Mens", value: 44 },
+                  { label: "Womens", value: 75 },
                 ],
               }}
             />
           </Grid>
-
 
           {/* <Grid item xs={12}>
             <BookingDetails
@@ -120,7 +142,6 @@ export default function AdminDashboardPage() {
               ]}
             />
           </Grid> */}
-
         </Grid>
       </Container>
     </>

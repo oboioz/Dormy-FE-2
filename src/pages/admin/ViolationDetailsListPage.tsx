@@ -1,5 +1,4 @@
-
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 // @mui
 import {
   Button,
@@ -9,18 +8,18 @@ import {
   Table,
   TableBody,
   TableContainer,
-  Tooltip
-} from '@mui/material';
+  Tooltip,
+} from "@mui/material";
 
 // components
-import { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
-import _mock from '../../_mock';
-import ConfirmDialog from '../../components/confirm-dialog';
-import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
-import Iconify from '../../components/iconify';
-import Scrollbar from '../../components/scrollbar';
-import { useSettingsContext } from '../../components/settings';
+import { useState } from "react";
+import { Helmet } from "react-helmet-async";
+import _mock from "../../_mock";
+import ConfirmDialog from "../../components/confirm-dialog";
+import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
+import Iconify from "../../components/iconify";
+import Scrollbar from "../../components/scrollbar";
+import { useSettingsContext } from "../../components/settings";
 import {
   emptyRows,
   TableEmptyRows,
@@ -28,9 +27,11 @@ import {
   TableNoData,
   TableSelectedAction,
   useTable,
-} from '../../components/table';
-import { PATH_ADMIN } from '../../routes/paths';
-import ViolationTableRow from '../../sections/@dashboard/admin/violation/ViolationTableRow';
+} from "../../components/table";
+import { PATH_ADMIN } from "../../routes/paths";
+import ViolationTableRow from "../../sections/@dashboard/admin/violation/ViolationTableRow";
+import { useAuthGuard } from "../../auth/AuthGuard";
+import { UserRole } from "../../models/enums/DormyEnums";
 // sections
 
 // ----------------------------------------------------------------------
@@ -38,15 +39,14 @@ import ViolationTableRow from '../../sections/@dashboard/admin/violation/Violati
 const TABLE_HEAD = [
   // { id: 'workplaceID', label: 'ID', align: 'left' },
   // { id: 'no', label: '#', align: 'left' },
-  { id: 'violator', label: 'Violator', align: 'left' },
-  { id: 'createdBy', label: 'Created By', align: 'center' },
-  { id: 'createdAt', label: 'Created At', align: 'left' },
-  { id: 'violationDate', label: 'Violation Date', align: 'left' },
-  { id: 'description', label: 'Description', align: 'left' },
-  { id: 'penalty', label: 'Penalty', align: 'left' },
-  { id: '' },
+  { id: "violator", label: "Violator", align: "left" },
+  { id: "createdBy", label: "Created By", align: "center" },
+  { id: "createdAt", label: "Created At", align: "left" },
+  { id: "violationDate", label: "Violation Date", align: "left" },
+  { id: "description", label: "Description", align: "left" },
+  { id: "penalty", label: "Penalty", align: "left" },
+  { id: "" },
 ];
-
 
 const _violationList = [...Array(24)].map((_, index) => ({
   violationID: index + 1, // Unique ID
@@ -66,6 +66,7 @@ const _violationList = [...Array(24)].map((_, index) => ({
 // ----------------------------------------------------------------------
 
 export default function ViolationDetailsListPage() {
+  useAuthGuard(UserRole.ADMIN);
   const {
     page,
     rowsPerPage,
@@ -77,21 +78,22 @@ export default function ViolationDetailsListPage() {
     onSelectAllRows,
   } = useTable();
 
-  const dataInPage = _violationList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const dataInPage = _violationList.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   const { themeStretch } = useSettingsContext();
 
   const navigate = useNavigate();
 
-
   const [tableData, setTableData] = useState(_violationList);
 
-  const [filterName, setFilterName] = useState('');
+  const [filterName, setFilterName] = useState("");
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
-  const isNotFound = (!_violationList.length && !!filterName);
-
+  const isNotFound = !_violationList.length && !!filterName;
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -106,7 +108,9 @@ export default function ViolationDetailsListPage() {
   };
 
   const handleDeleteRow = (id: string) => {
-    const deleteRow = tableData.filter((row) => row.violationID.toString() !== id);
+    const deleteRow = tableData.filter(
+      (row) => row.violationID.toString() !== id
+    );
     setSelected([]);
     setTableData(deleteRow);
 
@@ -118,7 +122,9 @@ export default function ViolationDetailsListPage() {
   };
 
   const handleDeleteRows = (selectedRows: string[]) => {
-    const deleteRows = tableData.filter((row) => !selectedRows.includes(row.violationID.toString()));
+    const deleteRows = tableData.filter(
+      (row) => !selectedRows.includes(row.violationID.toString())
+    );
     setSelected([]);
     setTableData(deleteRows);
 
@@ -128,14 +134,12 @@ export default function ViolationDetailsListPage() {
       } else if (selectedRows.length === _violationList.length) {
         setPage(0);
       } else if (selectedRows.length > dataInPage.length) {
-        const newPage = Math.ceil((tableData.length - selectedRows.length) / rowsPerPage) - 1;
+        const newPage =
+          Math.ceil((tableData.length - selectedRows.length) / rowsPerPage) - 1;
         setPage(newPage);
       }
     }
   };
-
-
-
 
   return (
     <>
@@ -143,13 +147,13 @@ export default function ViolationDetailsListPage() {
         <title>Violation List</title>
       </Helmet>
 
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
           heading="Violation List"
           links={[
-            { name: 'Dashboard', href: PATH_ADMIN.root },
-            { name: 'User', href: PATH_ADMIN.profile },
-            { name: 'Violation' },
+            { name: "Dashboard", href: PATH_ADMIN.root },
+            { name: "User", href: PATH_ADMIN.profile },
+            { name: "Violation" },
           ]}
           action={
             <Button
@@ -164,8 +168,7 @@ export default function ViolationDetailsListPage() {
         />
 
         <Card>
-
-          <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+          <TableContainer sx={{ position: "relative", overflow: "unset" }}>
             <TableSelectedAction
               numSelected={selected.length}
               rowCount={tableData.length}
@@ -185,19 +188,19 @@ export default function ViolationDetailsListPage() {
             />
 
             <Scrollbar>
-              <Table size={'medium'} sx={{ minWidth: 800 }}>
+              <Table size={"medium"} sx={{ minWidth: 800 }}>
                 <TableHeadCustom
                   headLabel={TABLE_HEAD}
                   rowCount={tableData.length}
-                // numSelected={selected.length}
-                // onSelectAllRows={(checked) =>
-                //   onSelectAllRows(
-                //     checked,
-                //     tableData.map((row) => row.workplaceID.toString())
-                //   )
-                // }
+                  // numSelected={selected.length}
+                  // onSelectAllRows={(checked) =>
+                  //   onSelectAllRows(
+                  //     checked,
+                  //     tableData.map((row) => row.workplaceID.toString())
+                  //   )
+                  // }
 
-                // rowCount={tableData.length}
+                  // rowCount={tableData.length}
                 />
 
                 <TableBody>
@@ -207,7 +210,9 @@ export default function ViolationDetailsListPage() {
                       <ViolationTableRow
                         key={row.violationID}
                         row={row}
-                        onDeleteRow={() => handleDeleteRow(row.violationID.toString())}
+                        onDeleteRow={() =>
+                          handleDeleteRow(row.violationID.toString())
+                        }
                       />
                     ))}
 
@@ -220,7 +225,6 @@ export default function ViolationDetailsListPage() {
               </Table>
             </Scrollbar>
           </TableContainer>
-
         </Card>
       </Container>
 
@@ -230,7 +234,8 @@ export default function ViolationDetailsListPage() {
         title="Delete"
         content={
           <>
-            Are you sure want to delete <strong> {selected.length} </strong> items?
+            Are you sure want to delete <strong> {selected.length} </strong>{" "}
+            items?
           </>
         }
         action={
@@ -246,7 +251,6 @@ export default function ViolationDetailsListPage() {
           </Button>
         }
       />
-
     </>
   );
 }

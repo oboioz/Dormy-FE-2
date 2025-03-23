@@ -1,4 +1,3 @@
-
 // @mui
 import {
   Card,
@@ -8,55 +7,49 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableRow
-} from '@mui/material';
+  TableRow,
+} from "@mui/material";
 // components
-import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
-import Scrollbar from '../../components/scrollbar';
-import { useSettingsContext } from '../../components/settings';
+import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
+import Scrollbar from "../../components/scrollbar";
+import { useSettingsContext } from "../../components/settings";
 import {
   TableHeadCustom,
   TablePaginationCustom,
   useTable,
-} from '../../components/table';
-import { PATH_USER } from '../../routes/paths';
-import { Helmet } from 'react-helmet-async';
+} from "../../components/table";
+import { PATH_USER } from "../../routes/paths";
+import { Helmet } from "react-helmet-async";
+import { useAuthGuard } from "../../auth/AuthGuard";
+import { UserRole } from "../../models/enums/DormyEnums";
 // sections
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'order', label: 'order', align: 'left' },
-  { id: 'description', label: 'Description', align: 'left' },
+  { id: "order", label: "order", align: "left" },
+  { id: "description", label: "Description", align: "left" },
 ];
 
 const MOCK_VIOLATION_DATA = [
-  { order: 1, description: 'Violation of 11/2024' },
-  { order: 2, description: 'Violation of 10/2024' },
-  { order: 3, description: 'Violation of 9/2024' },
-  { order: 4, description: 'Violation of 8/2024' },
-  { order: 5, description: 'Violation of 7/2024' },
-  { order: 6, description: 'Violation of 6/2024' },
-  { order: 7, description: 'Violation of 5/2024' },
-  { order: 8, description: 'Violation of 4/2024' },
-  { order: 9, description: 'Violation of 3/2024' },
+  { order: 1, description: "Violation of 11/2024" },
+  { order: 2, description: "Violation of 10/2024" },
+  { order: 3, description: "Violation of 9/2024" },
+  { order: 4, description: "Violation of 8/2024" },
+  { order: 5, description: "Violation of 7/2024" },
+  { order: 6, description: "Violation of 6/2024" },
+  { order: 7, description: "Violation of 5/2024" },
+  { order: 8, description: "Violation of 4/2024" },
+  { order: 9, description: "Violation of 3/2024" },
 ];
-
-
 
 // ----------------------------------------------------------------------
 
 export default function ViolationMonthListPage() {
-  const {
-    page,
-    onChangePage,
-    rowsPerPage,
-    onChangeRowsPerPage
-  } = useTable();
+  useAuthGuard(UserRole.CUSTOMER);
+  const { page, onChangePage, rowsPerPage, onChangeRowsPerPage } = useTable();
 
   const { themeStretch } = useSettingsContext();
-
-
 
   return (
     <>
@@ -64,25 +57,23 @@ export default function ViolationMonthListPage() {
         <title>Violation List</title>
       </Helmet>
 
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
           heading="Violation List"
           links={[
-            { name: 'Dashboard', href: PATH_USER.root },
-            { name: 'User', href: PATH_USER.profile },
-            { name: 'Violation' },
+            { name: "Dashboard", href: PATH_USER.root },
+            { name: "User", href: PATH_USER.profile },
+            { name: "Violation" },
           ]}
         />
 
         <Card>
-
-          <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-
+          <TableContainer sx={{ position: "relative", overflow: "unset" }}>
             <Scrollbar>
-              <Table size={'medium'} sx={{ minWidth: 800 }}>
+              <Table size={"medium"} sx={{ minWidth: 800 }}>
                 <TableHeadCustom
                   headLabel={TABLE_HEAD}
-                // rowCount={tableData.length}
+                  // rowCount={tableData.length}
                 />
 
                 <TableBody>
@@ -90,9 +81,7 @@ export default function ViolationMonthListPage() {
                     <TableRow key={row.order}>
                       <TableCell align="left">{row.order}</TableCell>
                       <TableCell align="left">
-                        <Link>
-                          {row.description}
-                        </Link>
+                        <Link>{row.description}</Link>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -101,7 +90,6 @@ export default function ViolationMonthListPage() {
             </Scrollbar>
           </TableContainer>
 
-
           <TablePaginationCustom
             page={page}
             onPageChange={onChangePage}
@@ -109,10 +97,8 @@ export default function ViolationMonthListPage() {
             rowsPerPage={rowsPerPage}
             onRowsPerPageChange={onChangeRowsPerPage}
           />
-
         </Card>
       </Container>
-
     </>
   );
 }

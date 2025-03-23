@@ -1,5 +1,4 @@
-
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink } from "react-router-dom";
 // @mui
 import {
   Button,
@@ -10,84 +9,77 @@ import {
   TableCell,
   TableContainer,
   TableRow,
-} from '@mui/material';
+} from "@mui/material";
 // components
-import { Helmet } from 'react-helmet-async';
-import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
-import Iconify from '../../components/iconify';
-import Label from '../../components/label';
-import Scrollbar from '../../components/scrollbar';
-import { useSettingsContext } from '../../components/settings';
+import { Helmet } from "react-helmet-async";
+import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
+import Iconify from "../../components/iconify";
+import Label from "../../components/label";
+import Scrollbar from "../../components/scrollbar";
+import { useSettingsContext } from "../../components/settings";
 import {
   TableHeadCustom,
   TablePaginationCustom,
   useTable,
-} from '../../components/table';
-import { PATH_USER } from '../../routes/paths';
-import { fDate } from '../../utils/formatTime';
+} from "../../components/table";
+import { PATH_USER } from "../../routes/paths";
+import { fDate } from "../../utils/formatTime";
+import { useAuthGuard } from "../../auth/AuthGuard";
+import { UserRole } from "../../models/enums/DormyEnums";
 // sections
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'id', label: 'Request ID', align: 'left' },
-  { id: 'type', label: 'Request Type', align: 'left' },
-  { id: 'createdAt', label: 'Created At', align: 'left' },
-  { id: 'sender', label: 'Sender', align: 'left' },
-  { id: 'description', label: 'Description', align: 'center' },
-  { id: 'status', label: 'Status', align: 'left' },
+  { id: "id", label: "Request ID", align: "left" },
+  { id: "type", label: "Request Type", align: "left" },
+  { id: "createdAt", label: "Created At", align: "left" },
+  { id: "sender", label: "Sender", align: "left" },
+  { id: "description", label: "Description", align: "center" },
+  { id: "status", label: "Status", align: "left" },
 ];
 
 export const mockRequests = [
   {
     id: 1,
-    type: 'Maintenance',
-    createdAt: new Date('2024-10-01T10:30:00'),
-    sender: 'John Doe',
-    description: 'Air conditioner is not working.',
-    status: 'Pending',
+    type: "Maintenance",
+    createdAt: new Date("2024-10-01T10:30:00"),
+    sender: "John Doe",
+    description: "Air conditioner is not working.",
+    status: "Pending",
   },
   {
     id: 2,
-    type: 'Room Change',
-    createdAt: new Date('2024-10-02T14:15:00'),
-    sender: 'Jane Smith',
-    description: 'Request to change room due to noisy environment.',
-    status: 'Approved',
+    type: "Room Change",
+    createdAt: new Date("2024-10-02T14:15:00"),
+    sender: "Jane Smith",
+    description: "Request to change room due to noisy environment.",
+    status: "Approved",
   },
   {
     id: 3,
-    type: 'Repair',
-    createdAt: new Date('2024-10-03T09:00:00'),
-    sender: 'Michael Johnson',
-    description: 'Broken window in room 203.',
-    status: 'In Progress',
+    type: "Repair",
+    createdAt: new Date("2024-10-03T09:00:00"),
+    sender: "Michael Johnson",
+    description: "Broken window in room 203.",
+    status: "In Progress",
   },
   {
     id: 4,
-    type: 'Cleaning',
-    createdAt: new Date('2024-10-04T11:45:00'),
-    sender: 'Emily Davis',
-    description: 'Request for deep cleaning in common area.',
-    status: 'Completed',
+    type: "Cleaning",
+    createdAt: new Date("2024-10-04T11:45:00"),
+    sender: "Emily Davis",
+    description: "Request for deep cleaning in common area.",
+    status: "Completed",
   },
 ];
-
-
 
 // ----------------------------------------------------------------------
 
 export default function RequestListPage() {
-  const {
-    page,
-    rowsPerPage,
-    onChangePage,
-    onChangeRowsPerPage,
-  } = useTable();
-
+  useAuthGuard(UserRole.CUSTOMER);
+  const { page, rowsPerPage, onChangePage, onChangeRowsPerPage } = useTable();
   const { themeStretch } = useSettingsContext();
-
-
 
   return (
     <>
@@ -95,13 +87,13 @@ export default function RequestListPage() {
         <title>Request List</title>
       </Helmet>
 
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
           heading="Request List"
           links={[
-            { name: 'Dashboard', href: PATH_USER.root },
-            { name: 'User', href: PATH_USER.profile },
-            { name: 'Request' },
+            { name: "Dashboard", href: PATH_USER.root },
+            { name: "User", href: PATH_USER.profile },
+            { name: "Request" },
           ]}
           action={
             <Button
@@ -116,14 +108,12 @@ export default function RequestListPage() {
         />
 
         <Card>
-
-          <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-
+          <TableContainer sx={{ position: "relative", overflow: "unset" }}>
             <Scrollbar>
-              <Table size={'medium'} sx={{ minWidth: 800 }}>
+              <Table size={"medium"} sx={{ minWidth: 800 }}>
                 <TableHeadCustom
                   headLabel={TABLE_HEAD}
-                // rowCount={tableData.length}
+                  // rowCount={tableData.length}
                 />
 
                 <TableBody>
@@ -137,8 +127,10 @@ export default function RequestListPage() {
                       <TableCell align="left">
                         <Label
                           variant="soft"
-                          color={(row.status === 'Active' && 'success') || 'error'}
-                          sx={{ textTransform: 'capitalize' }}
+                          color={
+                            (row.status === "Active" && "success") || "error"
+                          }
+                          sx={{ textTransform: "capitalize" }}
                         >
                           {row.status}
                         </Label>
@@ -150,7 +142,6 @@ export default function RequestListPage() {
             </Scrollbar>
           </TableContainer>
 
-
           <TablePaginationCustom
             count={mockRequests.length}
             page={page}
@@ -158,10 +149,8 @@ export default function RequestListPage() {
             onPageChange={onChangePage}
             onRowsPerPageChange={onChangeRowsPerPage}
           />
-
         </Card>
       </Container>
-
     </>
   );
 }

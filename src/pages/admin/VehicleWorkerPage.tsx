@@ -1,42 +1,42 @@
-
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 // @mui
 import {
   Card,
   Container,
   Table,
   TableBody,
-  TableContainer
-} from '@mui/material';
+  TableContainer,
+} from "@mui/material";
 // components
-import { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
-import { IAdmin } from '../../@types/admin';
-import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
-import Scrollbar from '../../components/scrollbar';
-import { useSettingsContext } from '../../components/settings';
+import { useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { IAdmin } from "../../@types/admin";
+import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
+import Scrollbar from "../../components/scrollbar";
+import { useSettingsContext } from "../../components/settings";
 import {
   emptyRows,
   TableEmptyRows,
   TableHeadCustom,
   TableNoData,
-  useTable
-} from '../../components/table';
-import { PATH_ADMIN } from '../../routes/paths';
-import GarageWorkerRow from '../../sections/@dashboard/admin/garage/GarageWorkerRow';
+  useTable,
+} from "../../components/table";
+import { PATH_ADMIN } from "../../routes/paths";
+import GarageWorkerRow from "../../sections/@dashboard/admin/garage/GarageWorkerRow";
+import { useAuthGuard } from "../../auth/AuthGuard";
+import { UserRole } from "../../models/enums/DormyEnums";
 // sections
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', align: 'left' },
-  { id: 'phoneNumber', label: 'Phone Number', align: 'left' },
-  { id: 'email', label: 'Email', align: 'left' },
-  { id: 'role', label: 'role', align: 'left' },
+  { id: "name", label: "Name", align: "left" },
+  { id: "phoneNumber", label: "Phone Number", align: "left" },
+  { id: "email", label: "Email", align: "left" },
+  { id: "role", label: "role", align: "left" },
   // { id: 'status', label: 'Status', align: 'center' },
-  { id: '' },
+  { id: "" },
 ];
-
 
 const mockAdmins: IAdmin[] = [
   {
@@ -89,11 +89,10 @@ const mockAdmins: IAdmin[] = [
   },
 ];
 
-
-
 // ----------------------------------------------------------------------
 
 export default function VehicleWorkerPage() {
+  useAuthGuard(UserRole.ADMIN);
   const {
     page,
     rowsPerPage,
@@ -105,19 +104,20 @@ export default function VehicleWorkerPage() {
     // onSelectAllRows,
   } = useTable();
 
-  const dataInPage = mockAdmins.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const dataInPage = mockAdmins.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   const { themeStretch } = useSettingsContext();
 
   const navigate = useNavigate();
 
-
   const [tableData, setTableData] = useState(mockAdmins);
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
-  const isNotFound = (!mockAdmins.length);
-
+  const isNotFound = !mockAdmins.length;
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -160,41 +160,36 @@ export default function VehicleWorkerPage() {
   //   }
   // };
 
-
-
-
   return (
     <>
       <Helmet>
         <title>Garage Worker List</title>
       </Helmet>
 
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
           heading="Garage Worker"
           links={[
-            { name: 'Dashboard', href: PATH_ADMIN.root },
-            { name: 'User', href: PATH_ADMIN.profile },
-            { name: 'Garage Worker' },
+            { name: "Dashboard", href: PATH_ADMIN.root },
+            { name: "User", href: PATH_ADMIN.profile },
+            { name: "Garage Worker" },
           ]}
-        // action={
-        //   <Button
-        //     component={RouterLink}
-        //     to={PATH_DASHBOARD.user.new}
-        //     variant="contained"
-        //     startIcon={<Iconify icon="eva:plus-fill" />}
-        //   >
-        //     Add new contract
-        //   </Button>
-        // }
+          // action={
+          //   <Button
+          //     component={RouterLink}
+          //     to={PATH_DASHBOARD.user.new}
+          //     variant="contained"
+          //     startIcon={<Iconify icon="eva:plus-fill" />}
+          //   >
+          //     Add new contract
+          //   </Button>
+          // }
         />
 
         <Card>
-
-          <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-
+          <TableContainer sx={{ position: "relative", overflow: "unset" }}>
             <Scrollbar>
-              <Table size={'medium'} sx={{ minWidth: 800 }}>
+              <Table size={"medium"} sx={{ minWidth: 800 }}>
                 <TableHeadCustom
                   headLabel={TABLE_HEAD}
                   rowCount={tableData.length}
@@ -204,10 +199,7 @@ export default function VehicleWorkerPage() {
                   {mockAdmins
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => (
-                      <GarageWorkerRow
-                        key={row.adminID}
-                        row={row}
-                      />
+                      <GarageWorkerRow key={row.adminID} row={row} />
                     ))}
 
                   <TableEmptyRows
@@ -219,10 +211,8 @@ export default function VehicleWorkerPage() {
               </Table>
             </Scrollbar>
           </TableContainer>
-
         </Card>
       </Container>
-
     </>
   );
 }

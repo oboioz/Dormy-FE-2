@@ -1,36 +1,36 @@
-import { useState } from 'react';
+import { useState } from "react";
 // @mui
-import { Box, Card, Container, Tab, Tabs } from '@mui/material';
+import { Box, Card, Container, Tab, Tabs } from "@mui/material";
 
 // components
-import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
-import Iconify from '../../components/iconify';
+import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
+import Iconify from "../../components/iconify";
 // sections
-import { Helmet } from 'react-helmet-async';
-import { useSettingsContext } from '../../components/settings';
-import AdminProfile from '../../sections/@dashboard/admin/AdminProfile';
-import AccountChangePassword from '../../sections/@dashboard/user/account/AccountChangePassword';
-import {
-  ProfileCover,
-} from '../../sections/@dashboard/user/profile';
+import { Helmet } from "react-helmet-async";
+import { useSettingsContext } from "../../components/settings";
+import AdminProfile from "../../sections/@dashboard/admin/AdminProfile";
+import AccountChangePassword from "../../sections/@dashboard/user/account/AccountChangePassword";
+import { ProfileCover } from "../../sections/@dashboard/user/profile";
+import { useAuthGuard } from "../../auth/AuthGuard";
 
 // ----------------------------------------------------------------------
 
 export default function AdminProfilePage() {
+  useAuthGuard(UserRole.ADMIN);
   const { themeStretch } = useSettingsContext();
 
-  const [currentTab, setCurrentTab] = useState('profile');
+  const [currentTab, setCurrentTab] = useState("profile");
 
   const TABS = [
     {
-      value: 'profile',
-      label: 'Profile',
+      value: "profile",
+      label: "Profile",
       icon: <Iconify icon="ic:round-account-box" />,
       component: <AdminProfile />,
     },
     {
-      value: 'change_password',
-      label: 'Change password',
+      value: "change_password",
+      label: "Change password",
       icon: <Iconify icon="ic:round-vpn-key" />,
       component: <AccountChangePassword />,
     },
@@ -42,22 +42,16 @@ export default function AdminProfilePage() {
         <title> Admin: Profile</title>
       </Helmet>
 
-
-
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
           heading="Profile"
-          links={[
-            { name: 'Dashboard' },
-            { name: 'Admin' },
-            { name: 'Name' },
-          ]}
+          links={[{ name: "Dashboard" }, { name: "Admin" }, { name: "Name" }]}
         />
         <Card
           sx={{
             mb: 3,
             height: 280,
-            position: 'relative',
+            position: "relative",
           }}
         >
           <ProfileCover />
@@ -69,25 +63,33 @@ export default function AdminProfilePage() {
               width: 1,
               bottom: 0,
               zIndex: 9,
-              position: 'absolute',
-              bgcolor: 'background.paper',
-              '& .MuiTabs-flexContainer': {
+              position: "absolute",
+              bgcolor: "background.paper",
+              "& .MuiTabs-flexContainer": {
                 pr: { md: 3 },
                 justifyContent: {
-                  sm: 'center',
-                  md: 'flex-end',
+                  sm: "center",
+                  md: "flex-end",
                 },
               },
             }}
           >
             {TABS.map((tab) => (
-              <Tab key={tab.value} value={tab.value} icon={tab.icon} label={tab.label} />
+              <Tab
+                key={tab.value}
+                value={tab.value}
+                icon={tab.icon}
+                label={tab.label}
+              />
             ))}
           </Tabs>
         </Card>
 
         {TABS.map(
-          (tab) => tab.value === currentTab && <Box key={tab.value}> {tab.component} </Box>
+          (tab) =>
+            tab.value === currentTab && (
+              <Box key={tab.value}> {tab.component} </Box>
+            )
         )}
       </Container>
     </>

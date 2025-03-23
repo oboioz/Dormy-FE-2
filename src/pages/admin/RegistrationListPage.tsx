@@ -1,5 +1,4 @@
-
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 // @mui
 import {
   Button,
@@ -7,47 +6,50 @@ import {
   Container,
   Table,
   TableBody,
-  TableContainer
-} from '@mui/material';
+  TableContainer,
+} from "@mui/material";
 // routes
 
 // components
-import { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
-import mockRegistrationForm from '../../_mock/assets/form';
-import ConfirmDialog from '../../components/confirm-dialog';
-import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
-import Scrollbar from '../../components/scrollbar';
-import { useSettingsContext } from '../../components/settings';
+import { useState } from "react";
+import { Helmet } from "react-helmet-async";
+import mockRegistrationForm from "../../_mock/assets/form";
+import ConfirmDialog from "../../components/confirm-dialog";
+import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
+import Scrollbar from "../../components/scrollbar";
+import { useSettingsContext } from "../../components/settings";
 import {
   emptyRows,
   TableEmptyRows,
   TableHeadCustom,
   TableNoData,
-  useTable
-} from '../../components/table';
-import { PATH_ADMIN } from '../../routes/paths';
-import RoomTypeRow from '../../sections/@dashboard/admin/venue/RoomTypeRow';
+  useTable,
+} from "../../components/table";
+import { PATH_ADMIN } from "../../routes/paths";
+import RoomTypeRow from "../../sections/@dashboard/admin/venue/RoomTypeRow";
+import { useAuthGuard } from "../../auth/AuthGuard";
+import { UserRole } from "../../models/enums/DormyEnums";
 // sections
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'contractID', label: 'ID', align: 'left' },
-  { id: 'timestamp', label: 'Timestamp', align: 'left' },
-  { id: 'email', label: 'Email', align: 'left' },
-  { id: 'phoneNumber', label: 'Phone Number', align: 'left' },
-  { id: 'gender', label: 'Gender', align: 'center' },
-  { id: 'room', label: 'Room', align: 'center' },
-  { id: 'roomType', label: 'Room Type', align: 'center' },
-  { id: '' },
+  { id: "contractID", label: "ID", align: "left" },
+  { id: "timestamp", label: "Timestamp", align: "left" },
+  { id: "email", label: "Email", align: "left" },
+  { id: "phoneNumber", label: "Phone Number", align: "left" },
+  { id: "gender", label: "Gender", align: "center" },
+  { id: "room", label: "Room", align: "center" },
+  { id: "roomType", label: "Room Type", align: "center" },
+  { id: "" },
 ];
 
-const _mockData = mockRegistrationForm
+const _mockData = mockRegistrationForm;
 
 // ----------------------------------------------------------------------
 
 export default function RegistrationListPage() {
+  useAuthGuard(UserRole.ADMIN);
   const {
     page,
     rowsPerPage,
@@ -59,19 +61,20 @@ export default function RegistrationListPage() {
     onSelectAllRows,
   } = useTable();
 
-  const dataInPage = _mockData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const dataInPage = _mockData.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   const { themeStretch } = useSettingsContext();
 
   const navigate = useNavigate();
 
-
   const [tableData, setTableData] = useState(_mockData);
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
-  const isNotFound = (!_mockData.length);
-
+  const isNotFound = !_mockData.length;
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -86,7 +89,11 @@ export default function RegistrationListPage() {
   };
 
   const handleDeleteRow = (id: string) => {
-    const deleteRow = tableData.filter((row) => row.registrationInformation.generalInformation.contract.contractID.toString() !== id);
+    const deleteRow = tableData.filter(
+      (row) =>
+        row.registrationInformation.generalInformation.contract.contractID.toString() !==
+        id
+    );
     setSelected([]);
     setTableData(deleteRow);
 
@@ -97,40 +104,36 @@ export default function RegistrationListPage() {
     }
   };
 
-
-
   return (
     <>
       <Helmet>
         <title>Registration List</title>
       </Helmet>
 
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
           heading="Registration List"
           links={[
-            { name: 'Dashboard', href: PATH_ADMIN.root },
-            { name: 'Admin', href: PATH_ADMIN.profile },
-            { name: 'Registration' },
+            { name: "Dashboard", href: PATH_ADMIN.root },
+            { name: "Admin", href: PATH_ADMIN.profile },
+            { name: "Registration" },
           ]}
-        // action={
-        //   <Button
-        //     component={RouterLink}
-        //     to={PATH_DASHBOARD.user.new}
-        //     variant="contained"
-        //     startIcon={<Iconify icon="eva:plus-fill" />}
-        //   >
-        //     Add new contract
-        //   </Button>
-        // }
+          // action={
+          //   <Button
+          //     component={RouterLink}
+          //     to={PATH_DASHBOARD.user.new}
+          //     variant="contained"
+          //     startIcon={<Iconify icon="eva:plus-fill" />}
+          //   >
+          //     Add new contract
+          //   </Button>
+          // }
         />
 
         <Card>
-
-          <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-
+          <TableContainer sx={{ position: "relative", overflow: "unset" }}>
             <Scrollbar>
-              <Table size={'medium'} sx={{ minWidth: 800 }}>
+              <Table size={"medium"} sx={{ minWidth: 800 }}>
                 <TableHeadCustom
                   headLabel={TABLE_HEAD}
                   rowCount={tableData.length}
@@ -138,11 +141,13 @@ export default function RegistrationListPage() {
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
                       checked,
-                      tableData.map((row) => row.registrationInformation.generalInformation.contract.contractID.toString())
+                      tableData.map((row) =>
+                        row.registrationInformation.generalInformation.contract.contractID.toString()
+                      )
                     )
                   }
 
-                // rowCount={tableData.length}
+                  // rowCount={tableData.length}
                 />
 
                 <TableBody>
@@ -150,12 +155,29 @@ export default function RegistrationListPage() {
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => (
                       <RoomTypeRow
-                        key={row.registrationInformation.generalInformation.contract.contractID}
+                        key={
+                          row.registrationInformation.generalInformation
+                            .contract.contractID
+                        }
                         row={row}
-                        selected={selected.includes(row.registrationInformation.generalInformation.contract.contractID.toString())}
-                        onSelectRow={() => onSelectRow(row.registrationInformation.generalInformation.contract.contractID.toString())}
-                        onEditRow={() => handleEditRow(row.registrationInformation.generalInformation.contract.contractID.toString())}
-                        onDeleteRow={() => handleDeleteRow(row.registrationInformation.generalInformation.contract.contractID.toString())}
+                        selected={selected.includes(
+                          row.registrationInformation.generalInformation.contract.contractID.toString()
+                        )}
+                        onSelectRow={() =>
+                          onSelectRow(
+                            row.registrationInformation.generalInformation.contract.contractID.toString()
+                          )
+                        }
+                        onEditRow={() =>
+                          handleEditRow(
+                            row.registrationInformation.generalInformation.contract.contractID.toString()
+                          )
+                        }
+                        onDeleteRow={() =>
+                          handleDeleteRow(
+                            row.registrationInformation.generalInformation.contract.contractID.toString()
+                          )
+                        }
                       />
                     ))}
 
@@ -168,7 +190,6 @@ export default function RegistrationListPage() {
               </Table>
             </Scrollbar>
           </TableContainer>
-
         </Card>
       </Container>
 
@@ -178,7 +199,8 @@ export default function RegistrationListPage() {
         title="Delete"
         content={
           <>
-            Are you sure want to delete <strong> {selected.length} </strong> items?
+            Are you sure want to delete <strong> {selected.length} </strong>{" "}
+            items?
           </>
         }
         action={
@@ -194,7 +216,6 @@ export default function RegistrationListPage() {
           </Button>
         }
       />
-
     </>
   );
 }

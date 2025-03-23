@@ -14,6 +14,8 @@ import { useSettingsContext } from '../../components/settings';
 import GarageWorkers from '../../sections/myVehicle/GarageWorkers';
 import HistoryPartition from '../../sections/myVehicle/HistoryPartition';
 import VehicleDetails from '../../sections/myVehicle/VehicleDetails';
+import { useAuthGuard } from '../../auth/AuthGuard';
+import { UserRole } from '../../models/enums/DormyEnums';
 
 // ----------------------------------------------------------------------
 
@@ -132,6 +134,7 @@ const mockHistory: IHistory[] = [
 
 
 export default function MyVehiclePage() {
+  useAuthGuard(UserRole.CUSTOMER);
   const { vehicle } = useParams();
   const { history } = useParams();
   const { themeStretch } = useSettingsContext();

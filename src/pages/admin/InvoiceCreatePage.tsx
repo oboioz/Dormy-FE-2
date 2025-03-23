@@ -1,17 +1,20 @@
-import { Helmet } from 'react-helmet-async';
+import { Helmet } from "react-helmet-async";
 // @mui
-import { Container } from '@mui/material';
+import { Container } from "@mui/material";
 // components
-import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
-import { useSettingsContext } from '../../components/settings';
+import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
+import { useSettingsContext } from "../../components/settings";
 // sections
 
-import { PATH_ADMIN } from '../../routes/paths';
-import InvoiceNewEditForm from '../../sections/@dashboard/admin/invoices/form';
+import { PATH_ADMIN } from "../../routes/paths";
+import InvoiceNewEditForm from "../../sections/@dashboard/admin/invoices/form";
+import { useAuthGuard } from "../../auth/AuthGuard";
+import { UserRole } from "../../models/enums/DormyEnums";
 
 // ----------------------------------------------------------------------
 
 export default function InvoiceCreatePage() {
+  useAuthGuard(UserRole.ADMIN);
   const { themeStretch } = useSettingsContext();
 
   return (
@@ -20,24 +23,24 @@ export default function InvoiceCreatePage() {
         <title> Invoices: Create a new invoice | Dormy</title>
       </Helmet>
 
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
           heading="Create a new invoice"
           links={[
             {
-              name: 'Dashboard',
+              name: "Dashboard",
               href: PATH_ADMIN.root,
             },
             {
-              name: 'Admin',
+              name: "Admin",
               href: PATH_ADMIN.profile,
             },
             {
-              name: 'Invoices',
+              name: "Invoices",
               href: PATH_ADMIN.invoice.list,
             },
             {
-              name: 'New invoice',
+              name: "New invoice",
             },
           ]}
         />

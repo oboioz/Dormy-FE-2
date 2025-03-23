@@ -12,6 +12,7 @@ import { CustomAvatar } from "../../../components/custom-avatar";
 import MenuPopover from "../../../components/menu-popover";
 import { useSnackbar } from "../../../components/snackbar";
 import { useAuthContext } from "../../../auth/JwtContext";
+import { UserRole } from "../../../models/enums/DormyEnums";
 
 // ----------------------------------------------------------------------
 
@@ -31,7 +32,7 @@ const OPTIONS = [
 export default function AccountPopover() {
   const navigate = useNavigate();
 
-  const { signOut } = useAuthContext();
+  const { user, signOut } = useAuthContext();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -95,11 +96,11 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {"First Name"}
+            {`${user?.name || "--"}`}
           </Typography>
 
           <Typography variant="body2" sx={{ color: "text.secondary" }} noWrap>
-            {"Role"}
+            {`Role: ${user?.role == UserRole.ADMIN ? "Admin" : "Customer"}`}
           </Typography>
         </Box>
 

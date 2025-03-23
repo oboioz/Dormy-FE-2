@@ -1,4 +1,3 @@
-
 // @mui
 import {
   Button,
@@ -11,25 +10,25 @@ import {
   TableCell,
   TableContainer,
   TableRow,
-  Typography
-} from '@mui/material';
+  Typography,
+} from "@mui/material";
 // components
-import { Helmet } from 'react-helmet-async';
-import { Link as RouterLink } from 'react-router-dom';
-import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
-import Iconify from '../../components/iconify';
-import Label from '../../components/label';
-import Scrollbar from '../../components/scrollbar';
-import { useSettingsContext } from '../../components/settings';
+import { Helmet } from "react-helmet-async";
+import { Link as RouterLink } from "react-router-dom";
+import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
+import Iconify from "../../components/iconify";
+import Label from "../../components/label";
+import Scrollbar from "../../components/scrollbar";
+import { useSettingsContext } from "../../components/settings";
 import {
   TableHeadCustom,
   TablePaginationCustom,
   useTable,
-} from '../../components/table';
-import { PATH_USER } from '../../routes/paths';
-import { fDate, fDateTime } from '../../utils/formatTime';
-
-
+} from "../../components/table";
+import { PATH_USER } from "../../routes/paths";
+import { fDate, fDateTime } from "../../utils/formatTime";
+import { useAuthGuard } from "../../auth/AuthGuard";
+import { UserRole } from "../../models/enums/DormyEnums";
 
 // ----------------------------------------------------------------------
 
@@ -42,58 +41,52 @@ const StyledIcon = styled(Iconify)(({ theme }) => ({
 }));
 
 const TABLE_HEAD = [
-  { id: 'absenceDate', label: 'Absence Date', align: 'left' },
-  { id: 'sendAt', label: 'Send At', align: 'left' },
-  { id: 'reason', label: 'Reason', align: 'center' },
-  { id: 'status', label: 'Status', align: 'left' },
+  { id: "absenceDate", label: "Absence Date", align: "left" },
+  { id: "sendAt", label: "Send At", align: "left" },
+  { id: "reason", label: "Reason", align: "center" },
+  { id: "status", label: "Status", align: "left" },
 ];
 
 const mockAbsences = [
   {
-    absenceDate: new Date('2024-10-01'),
-    sendAt: new Date('2024-09-30T14:00:00'),
-    reason: 'Medical Leave',
-    status: 'Approved',
+    absenceDate: new Date("2024-10-01"),
+    sendAt: new Date("2024-09-30T14:00:00"),
+    reason: "Medical Leave",
+    status: "Approved",
   },
   {
-    absenceDate: new Date('2024-10-05'),
-    sendAt: new Date('2024-10-04T09:30:00'),
-    reason: 'Family Emergency',
-    status: 'Pending',
+    absenceDate: new Date("2024-10-05"),
+    sendAt: new Date("2024-10-04T09:30:00"),
+    reason: "Family Emergency",
+    status: "Pending",
   },
   {
-    absenceDate: new Date('2024-10-10'),
-    sendAt: new Date('2024-10-09T16:45:00'),
-    reason: 'Personal Leave',
-    status: 'Rejected',
+    absenceDate: new Date("2024-10-10"),
+    sendAt: new Date("2024-10-09T16:45:00"),
+    reason: "Personal Leave",
+    status: "Rejected",
   },
   {
-    absenceDate: new Date('2024-10-15'),
-    sendAt: new Date('2024-10-14T08:15:00'),
-    reason: 'Vacation',
-    status: 'Approved',
+    absenceDate: new Date("2024-10-15"),
+    sendAt: new Date("2024-10-14T08:15:00"),
+    reason: "Vacation",
+    status: "Approved",
   },
   {
-    absenceDate: new Date('2024-10-20'),
-    sendAt: new Date('2024-10-19T12:00:00'),
-    reason: 'Work from Home',
-    status: 'Pending',
+    absenceDate: new Date("2024-10-20"),
+    sendAt: new Date("2024-10-19T12:00:00"),
+    reason: "Work from Home",
+    status: "Pending",
   },
 ];
 
 // ----------------------------------------------------------------------
 
 export default function OvernightAbsencePage() {
-  const {
-    page,
-    rowsPerPage,
-    onChangePage,
-    onChangeRowsPerPage,
-  } = useTable();
+  useAuthGuard(UserRole.CUSTOMER);
+  const { page, rowsPerPage, onChangePage, onChangeRowsPerPage } = useTable();
 
   const { themeStretch } = useSettingsContext();
-
-
 
   return (
     <>
@@ -101,13 +94,13 @@ export default function OvernightAbsencePage() {
         <title>Overnight Absence</title>
       </Helmet>
 
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
           heading="Overnight Absence"
           links={[
-            { name: 'Dashboard', href: PATH_USER.root },
-            { name: 'User', href: PATH_USER.profile },
-            { name: 'Overnight Absence' },
+            { name: "Dashboard", href: PATH_USER.root },
+            { name: "User", href: PATH_USER.profile },
+            { name: "Overnight Absence" },
           ]}
           action={
             <Button
@@ -121,9 +114,12 @@ export default function OvernightAbsencePage() {
           }
         />
 
-
         <Card sx={{ p: 3 }}>
-          <Typography variant="overline" component="div" sx={{ color: 'text.secondary' }}>
+          <Typography
+            variant="overline"
+            component="div"
+            sx={{ color: "text.secondary" }}
+          >
             Activity
           </Typography>
 
@@ -152,27 +148,31 @@ export default function OvernightAbsencePage() {
         </Card>
 
         <Card>
-
-          <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-
+          <TableContainer sx={{ position: "relative", overflow: "unset" }}>
             <Scrollbar>
-              <Table size={'medium'} sx={{ minWidth: 800 }}>
+              <Table size={"medium"} sx={{ minWidth: 800 }}>
                 <TableHeadCustom
                   headLabel={TABLE_HEAD}
-                // rowCount={tableData.length}
+                  // rowCount={tableData.length}
                 />
 
                 <TableBody>
                   {mockAbsences.map((row, index) => (
                     <TableRow key={index}>
-                      <TableCell align="left">{fDate(row.absenceDate)}</TableCell>
-                      <TableCell align="left">{fDateTime(row.sendAt)}</TableCell>
+                      <TableCell align="left">
+                        {fDate(row.absenceDate)}
+                      </TableCell>
+                      <TableCell align="left">
+                        {fDateTime(row.sendAt)}
+                      </TableCell>
                       <TableCell align="left">{row.reason}</TableCell>
                       <TableCell align="left">
                         <Label
                           variant="soft"
-                          color={(row.status === 'Active' && 'success') || 'error'}
-                          sx={{ textTransform: 'capitalize' }}
+                          color={
+                            (row.status === "Active" && "success") || "error"
+                          }
+                          sx={{ textTransform: "capitalize" }}
                         >
                           {row.status}
                         </Label>
@@ -191,10 +191,8 @@ export default function OvernightAbsencePage() {
             onPageChange={onChangePage}
             onRowsPerPageChange={onChangeRowsPerPage}
           />
-
         </Card>
       </Container>
-
     </>
   );
 }

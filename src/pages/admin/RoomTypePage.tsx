@@ -1,5 +1,4 @@
-
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 // @mui
 import {
   Button,
@@ -9,16 +8,16 @@ import {
   Table,
   TableBody,
   TableContainer,
-  Tooltip
-} from '@mui/material';
+  Tooltip,
+} from "@mui/material";
 
 // components
-import { useState } from 'react';
-import ConfirmDialog from '../../components/confirm-dialog';
-import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
-import Iconify from '../../components/iconify';
-import Scrollbar from '../../components/scrollbar';
-import { useSettingsContext } from '../../components/settings';
+import { useState } from "react";
+import ConfirmDialog from "../../components/confirm-dialog";
+import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
+import Iconify from "../../components/iconify";
+import Scrollbar from "../../components/scrollbar";
+import { useSettingsContext } from "../../components/settings";
 import {
   emptyRows,
   TableEmptyRows,
@@ -26,22 +25,23 @@ import {
   TableNoData,
   TableSelectedAction,
   useTable,
-} from '../../components/table';
-import { PATH_ADMIN } from '../../routes/paths';
-import RoomTypeRow from '../../sections/@dashboard/admin/venue/RoomTypeRow';
+} from "../../components/table";
+import { PATH_ADMIN } from "../../routes/paths";
+import RoomTypeRow from "../../sections/@dashboard/admin/venue/RoomTypeRow";
+import { useAuthGuard } from "../../auth/AuthGuard";
+import { UserRole } from "../../models/enums/DormyEnums";
 // sections
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'roomTypeID', label: 'ID', align: 'left' },
-  { id: 'roomTypeName', label: 'Name', align: 'left' },
-  { id: 'capacity', label: 'Capacity', align: 'left' },
-  { id: 'description', label: 'Description', align: 'left' },
-  { id: 'price', label: 'Price', align: 'center' },
-  { id: '' },
+  { id: "roomTypeID", label: "ID", align: "left" },
+  { id: "roomTypeName", label: "Name", align: "left" },
+  { id: "capacity", label: "Capacity", align: "left" },
+  { id: "description", label: "Description", align: "left" },
+  { id: "price", label: "Price", align: "center" },
+  { id: "" },
 ];
-
 
 const _roomTypeList = [...Array(5)].map((_, index) => ({
   roomTypeID: index + 1,
@@ -57,10 +57,10 @@ const _roomTypeList = [...Array(5)].map((_, index) => ({
   capacity: [1, 2, 4, 6, 10][index], // Adding capacity field
 }));
 
-
 // ----------------------------------------------------------------------
 
 export default function RoomTypePage() {
+  useAuthGuard(UserRole.ADMIN);
   const {
     page,
     rowsPerPage,
@@ -72,19 +72,20 @@ export default function RoomTypePage() {
     onSelectAllRows,
   } = useTable();
 
-  const dataInPage = _roomTypeList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const dataInPage = _roomTypeList.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   const { themeStretch } = useSettingsContext();
 
   const navigate = useNavigate();
 
-
   const [tableData, setTableData] = useState(_roomTypeList);
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
-  const isNotFound = (!_roomTypeList.length);
-
+  const isNotFound = !_roomTypeList.length;
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -100,7 +101,9 @@ export default function RoomTypePage() {
   };
 
   const handleDeleteRow = (id: string) => {
-    const deleteRow = tableData.filter((row) => row.roomTypeID.toString() !== id);
+    const deleteRow = tableData.filter(
+      (row) => row.roomTypeID.toString() !== id
+    );
     setSelected([]);
     setTableData(deleteRow);
 
@@ -112,7 +115,9 @@ export default function RoomTypePage() {
   };
 
   const handleDeleteRows = (selectedRows: string[]) => {
-    const deleteRows = tableData.filter((row) => !selectedRows.includes(row.roomTypeID.toString()));
+    const deleteRows = tableData.filter(
+      (row) => !selectedRows.includes(row.roomTypeID.toString())
+    );
     setSelected([]);
     setTableData(deleteRows);
 
@@ -122,14 +127,12 @@ export default function RoomTypePage() {
       } else if (selectedRows.length === _roomTypeList.length) {
         setPage(0);
       } else if (selectedRows.length > dataInPage.length) {
-        const newPage = Math.ceil((tableData.length - selectedRows.length) / rowsPerPage) - 1;
+        const newPage =
+          Math.ceil((tableData.length - selectedRows.length) / rowsPerPage) - 1;
         setPage(newPage);
       }
     }
   };
-
-
-
 
   return (
     <>
@@ -137,13 +140,13 @@ export default function RoomTypePage() {
         <title>Contract List</title>
       </Helmet> */}
 
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
           heading="Contract List"
           links={[
-            { name: 'Dashboard', href: PATH_ADMIN.root },
-            { name: 'Admin', href: PATH_ADMIN.profile },
-            { name: 'Room Type' },
+            { name: "Dashboard", href: PATH_ADMIN.root },
+            { name: "Admin", href: PATH_ADMIN.profile },
+            { name: "Room Type" },
           ]}
           action={
             <Button
@@ -158,8 +161,7 @@ export default function RoomTypePage() {
         />
 
         <Card>
-
-          <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+          <TableContainer sx={{ position: "relative", overflow: "unset" }}>
             <TableSelectedAction
               numSelected={selected.length}
               rowCount={tableData.length}
@@ -179,7 +181,7 @@ export default function RoomTypePage() {
             />
 
             <Scrollbar>
-              <Table size={'medium'} sx={{ minWidth: 800 }}>
+              <Table size={"medium"} sx={{ minWidth: 800 }}>
                 <TableHeadCustom
                   headLabel={TABLE_HEAD}
                   rowCount={tableData.length}
@@ -191,7 +193,7 @@ export default function RoomTypePage() {
                     )
                   }
 
-                // rowCount={tableData.length}
+                  // rowCount={tableData.length}
                 />
 
                 <TableBody>
@@ -202,9 +204,15 @@ export default function RoomTypePage() {
                         key={row.roomTypeID}
                         row={row}
                         selected={selected.includes(row.roomTypeID.toString())}
-                        onSelectRow={() => onSelectRow(row.roomTypeID.toString())}
-                        onEditRow={() => handleEditRow(row.roomTypeID.toString())}
-                        onDeleteRow={() => handleDeleteRow(row.roomTypeID.toString())}
+                        onSelectRow={() =>
+                          onSelectRow(row.roomTypeID.toString())
+                        }
+                        onEditRow={() =>
+                          handleEditRow(row.roomTypeID.toString())
+                        }
+                        onDeleteRow={() =>
+                          handleDeleteRow(row.roomTypeID.toString())
+                        }
                       />
                     ))}
 
@@ -217,7 +225,6 @@ export default function RoomTypePage() {
               </Table>
             </Scrollbar>
           </TableContainer>
-
         </Card>
       </Container>
 
@@ -227,7 +234,8 @@ export default function RoomTypePage() {
         title="Delete"
         content={
           <>
-            Are you sure want to delete <strong> {selected.length} </strong> items?
+            Are you sure want to delete <strong> {selected.length} </strong>{" "}
+            items?
           </>
         }
         action={
@@ -243,7 +251,6 @@ export default function RoomTypePage() {
           </Button>
         }
       />
-
     </>
   );
 }

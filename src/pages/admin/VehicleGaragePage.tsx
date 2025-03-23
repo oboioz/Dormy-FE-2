@@ -1,5 +1,4 @@
-
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 // @mui
 import {
   Button,
@@ -9,17 +8,17 @@ import {
   Table,
   TableBody,
   TableContainer,
-  Tooltip
-} from '@mui/material';
+  Tooltip,
+} from "@mui/material";
 // components
-import { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
-import { IParkingSpot } from '../../@types/vehicle';
-import ConfirmDialog from '../../components/confirm-dialog';
-import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
-import Iconify from '../../components/iconify';
-import Scrollbar from '../../components/scrollbar';
-import { useSettingsContext } from '../../components/settings';
+import { useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { IParkingSpot } from "../../@types/vehicle";
+import ConfirmDialog from "../../components/confirm-dialog";
+import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
+import Iconify from "../../components/iconify";
+import Scrollbar from "../../components/scrollbar";
+import { useSettingsContext } from "../../components/settings";
 import {
   emptyRows,
   TableEmptyRows,
@@ -27,22 +26,23 @@ import {
   TableNoData,
   TableSelectedAction,
   useTable,
-} from '../../components/table';
-import { PATH_ADMIN } from '../../routes/paths';
-import GarageListRow from '../../sections/@dashboard/admin/garage/GarageListRow';
+} from "../../components/table";
+import { PATH_ADMIN } from "../../routes/paths";
+import GarageListRow from "../../sections/@dashboard/admin/garage/GarageListRow";
+import { useAuthGuard } from "../../auth/AuthGuard";
+import { UserRole } from "../../models/enums/DormyEnums";
 // sections
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'roomTypeID', label: 'ID', align: 'left' },
-  { id: 'roomTypeName', label: 'Name', align: 'left' },
-  { id: 'capacity', label: 'Capacity', align: 'left' },
-  { id: 'description', label: 'Description', align: 'left' },
-  { id: 'price', label: 'Price', align: 'center' },
-  { id: '' },
+  { id: "roomTypeID", label: "ID", align: "left" },
+  { id: "roomTypeName", label: "Name", align: "left" },
+  { id: "capacity", label: "Capacity", align: "left" },
+  { id: "description", label: "Description", align: "left" },
+  { id: "price", label: "Price", align: "center" },
+  { id: "" },
 ];
-
 
 // Mock Parking Spots
 const mockParkingSpots: IParkingSpot[] = [
@@ -80,11 +80,10 @@ const mockParkingSpots: IParkingSpot[] = [
   },
 ];
 
-
-
 // ----------------------------------------------------------------------
 
 export default function VehicleGaragePage() {
+  useAuthGuard(UserRole.ADMIN);
   const {
     page,
     rowsPerPage,
@@ -96,19 +95,20 @@ export default function VehicleGaragePage() {
     onSelectAllRows,
   } = useTable();
 
-  const dataInPage = mockParkingSpots.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const dataInPage = mockParkingSpots.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   const { themeStretch } = useSettingsContext();
 
   const navigate = useNavigate();
 
-
   const [tableData, setTableData] = useState(mockParkingSpots);
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
-  const isNotFound = (!mockParkingSpots.length);
-
+  const isNotFound = !mockParkingSpots.length;
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -123,7 +123,9 @@ export default function VehicleGaragePage() {
   };
 
   const handleDeleteRow = (id: string) => {
-    const deleteRow = tableData.filter((row) => row.parkingSpotID.toString() !== id);
+    const deleteRow = tableData.filter(
+      (row) => row.parkingSpotID.toString() !== id
+    );
     setSelected([]);
     setTableData(deleteRow);
 
@@ -135,7 +137,9 @@ export default function VehicleGaragePage() {
   };
 
   const handleDeleteRows = (selectedRows: string[]) => {
-    const deleteRows = tableData.filter((row) => !selectedRows.includes(row.parkingSpotID.toString()));
+    const deleteRows = tableData.filter(
+      (row) => !selectedRows.includes(row.parkingSpotID.toString())
+    );
     setSelected([]);
     setTableData(deleteRows);
 
@@ -145,14 +149,12 @@ export default function VehicleGaragePage() {
       } else if (selectedRows.length === mockParkingSpots.length) {
         setPage(0);
       } else if (selectedRows.length > dataInPage.length) {
-        const newPage = Math.ceil((tableData.length - selectedRows.length) / rowsPerPage) - 1;
+        const newPage =
+          Math.ceil((tableData.length - selectedRows.length) / rowsPerPage) - 1;
         setPage(newPage);
       }
     }
   };
-
-
-
 
   return (
     <>
@@ -160,13 +162,13 @@ export default function VehicleGaragePage() {
         <title>Garage List</title>
       </Helmet>
 
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
           heading="Garage List"
           links={[
-            { name: 'Dashboard', href: PATH_ADMIN.root },
-            { name: 'User', href: PATH_ADMIN.profile },
-            { name: 'Garage List' },
+            { name: "Dashboard", href: PATH_ADMIN.root },
+            { name: "User", href: PATH_ADMIN.profile },
+            { name: "Garage List" },
           ]}
           action={
             <Button
@@ -181,8 +183,7 @@ export default function VehicleGaragePage() {
         />
 
         <Card>
-
-          <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+          <TableContainer sx={{ position: "relative", overflow: "unset" }}>
             <TableSelectedAction
               numSelected={selected.length}
               rowCount={tableData.length}
@@ -202,7 +203,7 @@ export default function VehicleGaragePage() {
             />
 
             <Scrollbar>
-              <Table size={'medium'} sx={{ minWidth: 800 }}>
+              <Table size={"medium"} sx={{ minWidth: 800 }}>
                 <TableHeadCustom
                   headLabel={TABLE_HEAD}
                   rowCount={tableData.length}
@@ -214,7 +215,7 @@ export default function VehicleGaragePage() {
                     )
                   }
 
-                // rowCount={tableData.length}
+                  // rowCount={tableData.length}
                 />
 
                 <TableBody>
@@ -224,10 +225,18 @@ export default function VehicleGaragePage() {
                       <GarageListRow
                         key={row.parkingSpotID}
                         row={row}
-                        selected={selected.includes(row.parkingSpotID.toString())}
-                        onSelectRow={() => onSelectRow(row.parkingSpotID.toString())}
-                        onEditRow={() => handleEditRow(row.parkingSpotID.toString())}
-                        onDeleteRow={() => handleDeleteRow(row.parkingSpotID.toString())}
+                        selected={selected.includes(
+                          row.parkingSpotID.toString()
+                        )}
+                        onSelectRow={() =>
+                          onSelectRow(row.parkingSpotID.toString())
+                        }
+                        onEditRow={() =>
+                          handleEditRow(row.parkingSpotID.toString())
+                        }
+                        onDeleteRow={() =>
+                          handleDeleteRow(row.parkingSpotID.toString())
+                        }
                       />
                     ))}
 
@@ -240,7 +249,6 @@ export default function VehicleGaragePage() {
               </Table>
             </Scrollbar>
           </TableContainer>
-
         </Card>
       </Container>
 
@@ -250,7 +258,8 @@ export default function VehicleGaragePage() {
         title="Delete"
         content={
           <>
-            Are you sure want to delete <strong> {selected.length} </strong> items?
+            Are you sure want to delete <strong> {selected.length} </strong>{" "}
+            items?
           </>
         }
         action={
@@ -266,7 +275,6 @@ export default function VehicleGaragePage() {
           </Button>
         }
       />
-
     </>
   );
 }

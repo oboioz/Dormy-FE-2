@@ -11,6 +11,8 @@ import { useSettingsContext } from '../../components/settings';
 import { PATH_USER } from '../../routes/paths';
 import RoomDetails from '../../sections/roomdetails/RoomDetails';
 import RoomateInformation from '../../sections/roomdetails/RoomateInformation';
+import { useAuthGuard } from '../../auth/AuthGuard';
+import { UserRole } from '../../models/enums/DormyEnums';
 
 // ----------------------------------------------------------------------
 
@@ -40,6 +42,7 @@ const mockRoomData: IRoom = {
 
 
 export default function RoomDetailsPage() {
+  useAuthGuard(UserRole.CUSTOMER);
   const { id } = useParams();
   const { arr } = useParams();
 

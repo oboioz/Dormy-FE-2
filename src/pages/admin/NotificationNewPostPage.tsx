@@ -1,17 +1,20 @@
-import { Helmet } from 'react-helmet-async';
+import { Helmet } from "react-helmet-async";
 // @mui
-import { Container } from '@mui/material';
+import { Container } from "@mui/material";
 
 // components
-import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
-import { useSettingsContext } from '../../components/settings';
+import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
+import { useSettingsContext } from "../../components/settings";
 // sections
-import { PATH_ADMIN, PATH_USER } from '../../routes/paths';
-import NotificationNewPostForm from '../../sections/@dashboard/admin/NotificationNewPostForm';
+import { PATH_ADMIN, PATH_USER } from "../../routes/paths";
+import NotificationNewPostForm from "../../sections/@dashboard/admin/NotificationNewPostForm";
+import { useAuthGuard } from "../../auth/AuthGuard";
+import { UserRole } from "../../models/enums/DormyEnums";
 
 // ----------------------------------------------------------------------
 
 export default function NotificationNewPostPage() {
+  useAuthGuard(UserRole.ADMIN);
   const { themeStretch } = useSettingsContext();
 
   return (
@@ -20,24 +23,24 @@ export default function NotificationNewPostPage() {
         <title> Notification | Admin</title>
       </Helmet>
 
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
           heading="Create a new post"
           links={[
             {
-              name: 'Dashboard',
+              name: "Dashboard",
               href: PATH_ADMIN.root,
             },
             {
-              name: 'Admin',
+              name: "Admin",
               href: PATH_ADMIN.profile,
             },
             {
-              name: 'Notification',
+              name: "Notification",
               href: PATH_USER.notification.notification,
             },
             {
-              name: 'Create',
+              name: "Create",
             },
           ]}
         />

@@ -1,5 +1,4 @@
-
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 // @mui
 import {
   Button,
@@ -7,37 +6,39 @@ import {
   Container,
   Table,
   TableBody,
-  TableContainer
-} from '@mui/material';
+  TableContainer,
+} from "@mui/material";
 // components
-import { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
-import { mockParkingRequests } from '../../_mock/assets/vehicleRegistration';
-import ConfirmDialog from '../../components/confirm-dialog';
-import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
-import Scrollbar from '../../components/scrollbar';
-import { useSettingsContext } from '../../components/settings';
+import { useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { mockParkingRequests } from "../../_mock/assets/vehicleRegistration";
+import ConfirmDialog from "../../components/confirm-dialog";
+import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
+import Scrollbar from "../../components/scrollbar";
+import { useSettingsContext } from "../../components/settings";
 import {
   emptyRows,
   TableEmptyRows,
   TableHeadCustom,
   TableNoData,
-  useTable
-} from '../../components/table';
-import { PATH_ADMIN } from '../../routes/paths';
-import VehicleRegistrationRow from '../../sections/@dashboard/admin/garage/VehicleRegistrationRow';
+  useTable,
+} from "../../components/table";
+import { PATH_ADMIN } from "../../routes/paths";
+import VehicleRegistrationRow from "../../sections/@dashboard/admin/garage/VehicleRegistrationRow";
+import { useAuthGuard } from "../../auth/AuthGuard";
+import { UserRole } from "../../models/enums/DormyEnums";
 // sections
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'registrationID', label: 'ID', align: 'left' },
-  { id: 'timestamp', label: 'Timestamp', align: 'left' },
-  { id: 'name', label: 'Name', align: 'left' },
-  { id: 'phoneNumber', label: 'Phone Number', align: 'left' },
-  { id: 'vehicleType', label: 'Vehicle Type', align: 'center' },
-  { id: 'license', label: 'License', align: 'center' },
-  { id: '' },
+  { id: "registrationID", label: "ID", align: "left" },
+  { id: "timestamp", label: "Timestamp", align: "left" },
+  { id: "name", label: "Name", align: "left" },
+  { id: "phoneNumber", label: "Phone Number", align: "left" },
+  { id: "vehicleType", label: "Vehicle Type", align: "center" },
+  { id: "license", label: "License", align: "center" },
+  { id: "" },
 ];
 
 const _mockData = mockParkingRequests;
@@ -45,6 +46,7 @@ const _mockData = mockParkingRequests;
 // ----------------------------------------------------------------------
 
 export default function VehicleRegistrationListPage() {
+  useAuthGuard(UserRole.ADMIN);
   const {
     page,
     rowsPerPage,
@@ -56,19 +58,20 @@ export default function VehicleRegistrationListPage() {
     onSelectAllRows,
   } = useTable();
 
-  const dataInPage = _mockData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const dataInPage = _mockData.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   const { themeStretch } = useSettingsContext();
 
   const navigate = useNavigate();
 
-
   const [tableData, setTableData] = useState(_mockData);
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
-  const isNotFound = (!_mockData.length);
-
+  const isNotFound = !_mockData.length;
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -83,7 +86,11 @@ export default function VehicleRegistrationListPage() {
   };
 
   const handleDeleteRow = (id: string) => {
-    const deleteRow = tableData.filter((row) => row.registrationInformation.generalInformation.contract.contractID.toString() !== id);
+    const deleteRow = tableData.filter(
+      (row) =>
+        row.registrationInformation.generalInformation.contract.contractID.toString() !==
+        id
+    );
     setSelected([]);
     setTableData(deleteRow);
 
@@ -94,52 +101,48 @@ export default function VehicleRegistrationListPage() {
     }
   };
 
-
-
   return (
     <>
       <Helmet>
         <title>Vehicle Registration List</title>
       </Helmet>
 
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
           heading="Vehicle Registration List"
           links={[
-            { name: 'Dashboard', href: PATH_ADMIN.root },
-            { name: 'User', href: PATH_ADMIN.profile },
-            { name: 'Vehicle Registration List' },
+            { name: "Dashboard", href: PATH_ADMIN.root },
+            { name: "User", href: PATH_ADMIN.profile },
+            { name: "Vehicle Registration List" },
           ]}
-        // action={
-        //   <Button
-        //     component={RouterLink}
-        //     to={PATH_DASHBOARD.user.new}
-        //     variant="contained"
-        //     startIcon={<Iconify icon="eva:plus-fill" />}
-        //   >
-        //     Add new contract
-        //   </Button>
-        // }
+          // action={
+          //   <Button
+          //     component={RouterLink}
+          //     to={PATH_DASHBOARD.user.new}
+          //     variant="contained"
+          //     startIcon={<Iconify icon="eva:plus-fill" />}
+          //   >
+          //     Add new contract
+          //   </Button>
+          // }
         />
 
         <Card>
-
-          <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-
+          <TableContainer sx={{ position: "relative", overflow: "unset" }}>
             <Scrollbar>
-              <Table size={'medium'} sx={{ minWidth: 800 }}>
+              <Table size={"medium"} sx={{ minWidth: 800 }}>
                 <TableHeadCustom
                   headLabel={TABLE_HEAD}
                   rowCount={tableData.length}
-                // numSelected={selected.length}
-                // onSelectAllRows={(checked) =>
-                //   onSelectAllRows(
-                //     checked,
-                //     tableData.map((row) => row.registrationInformation.generalInformation.contract.contractID.toString())
-                //   )
-                // }
+                  // numSelected={selected.length}
+                  // onSelectAllRows={(checked) =>
+                  //   onSelectAllRows(
+                  //     checked,
+                  //     tableData.map((row) => row.registrationInformation.generalInformation.contract.contractID.toString())
+                  //   )
+                  // }
 
-                // rowCount={tableData.length}
+                  // rowCount={tableData.length}
                 />
 
                 <TableBody>
@@ -163,7 +166,6 @@ export default function VehicleRegistrationListPage() {
               </Table>
             </Scrollbar>
           </TableContainer>
-
         </Card>
       </Container>
 
@@ -173,7 +175,8 @@ export default function VehicleRegistrationListPage() {
         title="Delete"
         content={
           <>
-            Are you sure want to delete <strong> {selected.length} </strong> items?
+            Are you sure want to delete <strong> {selected.length} </strong>{" "}
+            items?
           </>
         }
         action={
@@ -189,7 +192,6 @@ export default function VehicleRegistrationListPage() {
           </Button>
         }
       />
-
     </>
   );
 }

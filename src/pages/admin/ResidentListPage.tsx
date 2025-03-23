@@ -1,6 +1,5 @@
-
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 // @mui
 import {
   Button,
@@ -10,16 +9,15 @@ import {
   Table,
   TableBody,
   TableContainer,
-  Tooltip
-} from '@mui/material';
-
+  Tooltip,
+} from "@mui/material";
 
 // components
-import ConfirmDialog from '../../components/confirm-dialog';
-import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
-import Iconify from '../../components/iconify';
-import Scrollbar from '../../components/scrollbar';
-import { useSettingsContext } from '../../components/settings';
+import ConfirmDialog from "../../components/confirm-dialog";
+import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
+import Iconify from "../../components/iconify";
+import Scrollbar from "../../components/scrollbar";
+import { useSettingsContext } from "../../components/settings";
 import {
   emptyRows,
   getComparator,
@@ -29,26 +27,28 @@ import {
   TablePaginationCustom,
   TableSelectedAction,
   useTable,
-} from '../../components/table';
+} from "../../components/table";
 // sections
-import { Helmet } from 'react-helmet-async';
-import { IUser } from '../../@types/user';
-import _mock from '../../_mock';
-import { PATH_ADMIN } from '../../routes/paths';
-import ResidentTableRow from '../../sections/@dashboard/admin/resident/ResidentTableRow';
-import ResidentTableToolbar from '../../sections/@dashboard/admin/resident/ResidentTableToolbar';
+import { Helmet } from "react-helmet-async";
+import { IUser } from "../../@types/user";
+import _mock from "../../_mock";
+import { PATH_ADMIN } from "../../routes/paths";
+import ResidentTableRow from "../../sections/@dashboard/admin/resident/ResidentTableRow";
+import ResidentTableToolbar from "../../sections/@dashboard/admin/resident/ResidentTableToolbar";
+import { useAuthGuard } from "../../auth/AuthGuard";
+import { UserRole } from "../../models/enums/DormyEnums";
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Name', align: 'left' },
-  { id: 'gender', label: 'Gender', align: 'left' },
-  { id: 'id', label: 'Resident ID', align: 'left' },
-  { id: 'place', label: 'Place', align: 'left' },
-  { id: 'phoneNumber', label: 'Phone Number', align: 'left' },
-  { id: 'email', label: 'Email', align: 'left' },
-  { id: 'status', label: 'Status', align: 'center' },
-  { id: '' },
+  { id: "name", label: "Name", align: "left" },
+  { id: "gender", label: "Gender", align: "left" },
+  { id: "id", label: "Resident ID", align: "left" },
+  { id: "place", label: "Place", align: "left" },
+  { id: "phoneNumber", label: "Phone Number", align: "left" },
+  { id: "email", label: "Email", align: "left" },
+  { id: "status", label: "Status", align: "center" },
+  { id: "" },
 ];
 
 const _userList = [...Array(24)].map((_, index) => ({
@@ -58,55 +58,54 @@ const _userList = [...Array(24)].map((_, index) => ({
   lastName: _mock.name.lastName(index),
   email: _mock.email(index),
   phoneNumber: _mock.phoneNumber(index),
-  gender: _mock.boolean(index) ? 'Male' : 'Female',
+  gender: _mock.boolean(index) ? "Male" : "Female",
   dateOfBirth: _mock.time(index),
   nationalIDNumber: `ID-${index + 1000}`,
-  status: _mock.boolean(index) ? 'active' : 'inactive',
+  status: _mock.boolean(index) ? "active" : "inactive",
   contract: {
     contractID: _mock.id(index),
     startDate: _mock.time(index),
     endDate: _mock.time(index + 10),
-    status: _mock.boolean(index) ? 'valid' : 'expired',
+    status: _mock.boolean(index) ? "valid" : "expired",
     roomID: {
       roomNumber: _mock.number.age(index),
       floorNumber: _mock.number.age(index),
       building: {
-        name: _mock.name.firstName(index)
-      }
-    }
+        name: _mock.name.firstName(index),
+      },
+    },
   },
-  priorities: [...Array(_mock.number.age(index) % 3 + 1)].map(() =>
+  priorities: [...Array((_mock.number.age(index) % 3) + 1)].map(() =>
     _mock.text.title(index)
   ), // Example: picking random priority titles
   guardian: {
     name: _mock.name.fullName(index),
-    relationship: _mock.boolean(index) ? 'Parent' : 'Sibling',
+    relationship: _mock.boolean(index) ? "Parent" : "Sibling",
     phoneNumber: _mock.phoneNumber(index),
     email: _mock.email(index),
     address: _mock.address.fullAddress(index),
   },
   workplace: _mock.boolean(index)
     ? {
-      companyName: _mock.company(index),
-      position: _mock.role(index),
-      address: _mock.address.fullAddress(index),
-      phoneNumber: _mock.phoneNumber(index),
-    }
+        companyName: _mock.company(index),
+        position: _mock.role(index),
+        address: _mock.address.fullAddress(index),
+        phoneNumber: _mock.phoneNumber(index),
+      }
     : null,
   healthInsurance: _mock.boolean(index)
     ? {
-      provider: _mock.company(index),
-      policyNumber: `HI-${index + 5000}`,
-      coverageDetails: _mock.text.description(index),
-    }
+        provider: _mock.company(index),
+        policyNumber: `HI-${index + 5000}`,
+        coverageDetails: _mock.text.description(index),
+      }
     : null,
 }));
-
-
 
 // ----------------------------------------------------------------------
 
 export default function ResidentListPage() {
+  useAuthGuard(UserRole.ADMIN);
   const {
     page,
     order,
@@ -129,7 +128,7 @@ export default function ResidentListPage() {
 
   const [tableData, setTableData] = useState(_userList);
 
-  const [filterName, setFilterName] = useState('');
+  const [filterName, setFilterName] = useState("");
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
@@ -139,11 +138,10 @@ export default function ResidentListPage() {
     filterName,
   });
 
-  const isFiltered = filterName !== '';
+  const isFiltered = filterName !== "";
 
   const isNotFound =
-    (!dataFiltered.length && !!filterName) ||
-    (!dataFiltered.length);
+    (!dataFiltered.length && !!filterName) || !dataFiltered.length;
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -163,7 +161,7 @@ export default function ResidentListPage() {
   };
 
   const handleResetFilter = () => {
-    setFilterName('');
+    setFilterName("");
   };
 
   return (
@@ -172,28 +170,27 @@ export default function ResidentListPage() {
         <title> Resident List | Admin </title>
       </Helmet>
 
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
           heading="Resident List"
           links={[
-            { name: 'Dashboard', href: PATH_ADMIN.root },
-            { name: 'Admin', href: PATH_ADMIN.profile },
-            { name: 'Resident List' },
+            { name: "Dashboard", href: PATH_ADMIN.root },
+            { name: "Admin", href: PATH_ADMIN.profile },
+            { name: "Resident List" },
           ]}
-        // action={
-        //   <Button
-        //     component={RouterLink}
-        //     to={PATH_DASHBOARD.user.new}
-        //     variant="contained"
-        //     startIcon={<Iconify icon="eva:plus-fill" />}
-        //   >
-        //     New User
-        //   </Button>
-        // }
+          // action={
+          //   <Button
+          //     component={RouterLink}
+          //     to={PATH_DASHBOARD.user.new}
+          //     variant="contained"
+          //     startIcon={<Iconify icon="eva:plus-fill" />}
+          //   >
+          //     New User
+          //   </Button>
+          // }
         />
 
         <Card>
-
           <ResidentTableToolbar
             isFiltered={isFiltered}
             filterName={filterName}
@@ -201,7 +198,7 @@ export default function ResidentListPage() {
             onResetFilter={handleResetFilter}
           />
 
-          <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+          <TableContainer sx={{ position: "relative", overflow: "unset" }}>
             <TableSelectedAction
               numSelected={selected.length}
               rowCount={tableData.length}
@@ -221,7 +218,7 @@ export default function ResidentListPage() {
             />
 
             <Scrollbar>
-              <Table size={'medium'} sx={{ minWidth: 800 }}>
+              <Table size={"medium"} sx={{ minWidth: 800 }}>
                 <TableHeadCustom
                   order={order}
                   orderBy={orderBy}
@@ -276,7 +273,8 @@ export default function ResidentListPage() {
         title="Delete"
         content={
           <>
-            Are you sure want to delete <strong> {selected.length} </strong> items?
+            Are you sure want to delete <strong> {selected.length} </strong>{" "}
+            items?
           </>
         }
         action={
@@ -319,7 +317,8 @@ function applyFilter({
 
   if (filterName) {
     inputData = inputData.filter(
-      (user) => user.firstName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+      (user) =>
+        user.firstName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 

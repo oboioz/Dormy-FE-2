@@ -1,11 +1,13 @@
 // components
-import SvgColor from '../../../components/svg-color';
-import { PATH_ADMIN, PATH_USER } from '../../../routes/paths';
+import SvgColor from "../../../components/svg-color";
+import { PATH_ADMIN, PATH_USER } from "../../../routes/paths";
 // import { PATH_DASHBOARD } from '../../../routes/paths';
 
 // ----------------------------------------------------------------------
 
-const createIcon = (name: string) => <SvgColor src={name} sx={{ width: 1, height: 1 }} />;
+const createIcon = (name: string) => (
+  <SvgColor src={name} sx={{ width: 1, height: 1 }} />
+);
 
 const ICONS = {
   dashboard: createIcon("mdi:view-dashboard"),
@@ -28,44 +30,51 @@ const ICONS = {
   request: createIcon("mdi:clipboard-list"),
   notification: createIcon("mdi:bell"),
   violation: createIcon("mdi:alert-circle"),
-
 };
 
-const navConfig = [
-  // User
-  // ----------------------------------------------------------------------
+const userNavConfig = [
   {
-    subheader: 'user',
+    subheader: "user",
     items: [
       {
-        title: 'residential',
+        title: "residential",
         path: PATH_USER.residential.root,
         icon: ICONS.user, // General user-related actions
         children: [
-          { title: 'contract', path: PATH_USER.residential.contract }, // File represents contracts/documents
-          { title: 'room details', path: PATH_USER.residential.roomDetails }, // Folder for room-related data
+          { title: "contract", path: PATH_USER.residential.contract }, // File represents contracts/documents
+          { title: "room details", path: PATH_USER.residential.roomDetails }, // Folder for room-related data
         ],
       },
-      { title: 'overnight absence', path: PATH_USER.overnight, icon: ICONS.overnight }, // Calendar represents staying overnight
-      { title: 'my vehicle', path: PATH_USER.vehicle, icon: ICONS.vehicle }, // Cart is the closest to vehicle-related actions
       {
-        title: 'invoice',
+        title: "overnight absence",
+        path: PATH_USER.overnight,
+        icon: ICONS.overnight,
+      }, // Calendar represents staying overnight
+      { title: "my vehicle", path: PATH_USER.vehicle, icon: ICONS.vehicle }, // Cart is the closest to vehicle-related actions
+      {
+        title: "invoice",
         path: PATH_USER.invoice.root,
         icon: ICONS.invoice, // Invoice represents billing
         children: [
-          { title: 'rental fee', path: PATH_USER.invoice.rent },
-          { title: 'water fee', path: PATH_USER.invoice.water }, // Banking is relevant for utilities
-          { title: 'electric fee', path: PATH_USER.invoice.electric }, // Banking is relevant for utilities
-          { title: 'parking fee', path: PATH_USER.invoice.parking }, // Banking is relevant for utilities
-          { title: 'others', path: PATH_USER.invoice.others }, // Miscellaneous financial matters
+          { title: "rental fee", path: PATH_USER.invoice.rent },
+          { title: "water fee", path: PATH_USER.invoice.water }, // Banking is relevant for utilities
+          { title: "electric fee", path: PATH_USER.invoice.electric }, // Banking is relevant for utilities
+          { title: "parking fee", path: PATH_USER.invoice.parking }, // Banking is relevant for utilities
+          { title: "others", path: PATH_USER.invoice.others }, // Miscellaneous financial matters
         ],
       },
-      { title: 'request', path: PATH_USER.request, icon: ICONS.request }, // Booking represents requests
-      { title: 'violation', path: PATH_USER.violation, icon: ICONS.violation },
-      { title: 'notification', path: PATH_USER.notification.notification, icon: ICONS.notification }, // Label is used for notifications/messages
+      { title: "request", path: PATH_USER.request, icon: ICONS.request }, // Booking represents requests
+      { title: "violation", path: PATH_USER.violation, icon: ICONS.violation },
+      {
+        title: "notification",
+        path: PATH_USER.notification.notification,
+        icon: ICONS.notification,
+      }, // Label is used for notifications/messages
     ],
   },
+];
 
+const adminNavConfig = [
   {
     subheader: "admin",
     items: [
@@ -74,7 +83,6 @@ const navConfig = [
         path: PATH_ADMIN.dashboard,
         icon: ICONS.dashboard,
         // roles: ['admin'],
-
       },
       { title: "Settings", path: PATH_ADMIN.settings, icon: ICONS.settings },
 
@@ -107,7 +115,6 @@ const navConfig = [
         path: PATH_ADMIN.register,
         icon: ICONS.registration,
         // roles: ['admin'],
-
       },
 
       {
@@ -133,7 +140,10 @@ const navConfig = [
           { title: "Garage List", path: PATH_ADMIN.garage.list },
           { title: "Vehicle List", path: PATH_ADMIN.garage.vehiclelist },
           { title: "Worker List", path: PATH_ADMIN.garage.worker },
-          { title: "Parking Request", path: PATH_ADMIN.garage.registrationlist },
+          {
+            title: "Parking Request",
+            path: PATH_ADMIN.garage.registrationlist,
+          },
         ],
       },
 
@@ -164,12 +174,11 @@ const navConfig = [
         icon: ICONS.notification,
         // roles: ['admin'],
       },
-
     ],
   },
-
-
-
 ];
 
-export default navConfig;
+export const navConfig = {
+  adminNavConfig: adminNavConfig,
+  userNavConfig: userNavConfig,
+};

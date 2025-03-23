@@ -6,69 +6,71 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableRow
-} from '@mui/material';
+  TableRow,
+} from "@mui/material";
 // routes
 // utils
-import { fDate } from '../../utils/formatTime';
+import { fDate } from "../../utils/formatTime";
 // _mock_
 // @types
 // components
-import { Helmet } from 'react-helmet-async';
-import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
-import Label from '../../components/label';
-import Scrollbar from '../../components/scrollbar';
-import { useSettingsContext } from '../../components/settings';
+import { Helmet } from "react-helmet-async";
+import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
+import Label from "../../components/label";
+import Scrollbar from "../../components/scrollbar";
+import { useSettingsContext } from "../../components/settings";
 import {
   TableHeadCustom,
   TablePaginationCustom,
-  useTable
-} from '../../components/table';
-import { PATH_USER } from '../../routes/paths';
+  useTable,
+} from "../../components/table";
+import { PATH_USER } from "../../routes/paths";
+import { useAuthGuard } from "../../auth/AuthGuard";
+import { UserRole } from "../../models/enums/DormyEnums";
 // sections
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'invoiceID', label: 'Invoice ID', align: 'left' },
-  { id: 'createDate', label: 'Create', align: 'left' },
-  { id: 'dueDate', label: 'Due', align: 'left' },
-  { id: 'price', label: 'Amount', align: 'center', width: 140 },
-  { id: 'description', label: 'Description', align: 'center', width: 140 },
-  { id: 'status', label: 'Status', align: 'left' },
+  { id: "invoiceID", label: "Invoice ID", align: "left" },
+  { id: "createDate", label: "Create", align: "left" },
+  { id: "dueDate", label: "Due", align: "left" },
+  { id: "price", label: "Amount", align: "center", width: 140 },
+  { id: "description", label: "Description", align: "center", width: 140 },
+  { id: "status", label: "Status", align: "left" },
 ];
 
 const mockInvoices = [
   {
     invoiceID: 1,
-    createDate: new Date('2024-09-01'),
-    dueDate: new Date('2024-09-10'),
+    createDate: new Date("2024-09-01"),
+    dueDate: new Date("2024-09-10"),
     price: 500,
-    description: 'Monthly rental fee',
-    status: 'Paid',
+    description: "Monthly rental fee",
+    status: "Paid",
   },
   {
     invoiceID: 2,
-    createDate: new Date('2024-10-01'),
-    dueDate: new Date('2024-10-10'),
+    createDate: new Date("2024-10-01"),
+    dueDate: new Date("2024-10-10"),
     price: 500,
-    description: 'Monthly rental fee',
-    status: 'Unpaid',
+    description: "Monthly rental fee",
+    status: "Unpaid",
   },
   {
     invoiceID: 3,
-    createDate: new Date('2024-11-01'),
-    dueDate: new Date('2024-11-10'),
+    createDate: new Date("2024-11-01"),
+    dueDate: new Date("2024-11-10"),
     price: 500,
-    description: 'Monthly rental fee',
-    status: 'Paid',
+    description: "Monthly rental fee",
+    status: "Paid",
   },
 ];
 
 // ----------------------------------------------------------------------
 
 export default function InvoiceWaterPage() {
-
+  useAuthGuard(UserRole.CUSTOMER);
   const { themeStretch } = useSettingsContext();
 
   const {
@@ -77,7 +79,7 @@ export default function InvoiceWaterPage() {
     //
     onChangePage,
     onChangeRowsPerPage,
-  } = useTable({ defaultOrderBy: 'createDate' });
+  } = useTable({ defaultOrderBy: "createDate" });
 
   // const TABS = [
   //   { value: 'rentalFee', label: 'Rental Fee', color: 'info', count: tableData.length },
@@ -93,29 +95,27 @@ export default function InvoiceWaterPage() {
         <title> Invoice: List | Water</title>
       </Helmet>
 
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
           heading="Invoice List"
           links={[
             {
-              name: 'Dashboard',
+              name: "Dashboard",
               href: PATH_USER.root,
             },
             {
-              name: 'User',
+              name: "User",
               href: PATH_USER.profile,
             },
             {
-              name: 'Invoice',
+              name: "Invoice",
               href: PATH_USER.invoice,
             },
           ]}
         />
 
         <Card>
-
-          <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-
+          <TableContainer sx={{ position: "relative", overflow: "unset" }}>
             <Scrollbar>
               <Table sx={{ minWidth: 800 }}>
                 <TableHeadCustom
@@ -127,15 +127,19 @@ export default function InvoiceWaterPage() {
                   {mockInvoices.map((row, index) => (
                     <TableRow key={index}>
                       <TableCell align="left">{row.invoiceID}</TableCell>
-                      <TableCell align="left">{fDate(row.createDate)}</TableCell>
+                      <TableCell align="left">
+                        {fDate(row.createDate)}
+                      </TableCell>
                       <TableCell align="left">{fDate(row.dueDate)}</TableCell>
                       <TableCell align="center">{row.price}</TableCell>
                       <TableCell align="left">{row.description}</TableCell>
                       <TableCell align="left">
                         <Label
                           variant="soft"
-                          color={(row.status === 'Active' && 'success') || 'error'}
-                          sx={{ textTransform: 'capitalize' }}
+                          color={
+                            (row.status === "Active" && "success") || "error"
+                          }
+                          sx={{ textTransform: "capitalize" }}
                         >
                           {row.status}
                         </Label>

@@ -1,6 +1,5 @@
-
-import { useState } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 // @mui
 import {
   Button,
@@ -10,16 +9,16 @@ import {
   Table,
   TableBody,
   TableContainer,
-  Tooltip
-} from '@mui/material';
+  Tooltip,
+} from "@mui/material";
 // routes
 
 // components
-import ConfirmDialog from '../../components/confirm-dialog';
-import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
-import Iconify from '../../components/iconify';
-import Scrollbar from '../../components/scrollbar';
-import { useSettingsContext } from '../../components/settings';
+import ConfirmDialog from "../../components/confirm-dialog";
+import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
+import Iconify from "../../components/iconify";
+import Scrollbar from "../../components/scrollbar";
+import { useSettingsContext } from "../../components/settings";
 import {
   emptyRows,
   getComparator,
@@ -29,33 +28,32 @@ import {
   TablePaginationCustom,
   TableSelectedAction,
   useTable,
-} from '../../components/table';
+} from "../../components/table";
 // sections
-import { Helmet } from 'react-helmet-async';
-import { IRoom } from '../../@types/room';
-import _roomList from '../../_mock/assets/room';
-import { PATH_ADMIN } from '../../routes/paths';
-import RoomTableRow from '../../sections/@dashboard/admin/venue/RoomTableRow';
-import RoomTableToolbar from '../../sections/@dashboard/admin/venue/RoomTableToolbar';
+import { Helmet } from "react-helmet-async";
+import { IRoom } from "../../@types/room";
+import _roomList from "../../_mock/assets/room";
+import { PATH_ADMIN } from "../../routes/paths";
+import RoomTableRow from "../../sections/@dashboard/admin/venue/RoomTableRow";
+import RoomTableToolbar from "../../sections/@dashboard/admin/venue/RoomTableToolbar";
+import { useAuthGuard } from "../../auth/AuthGuard";
+import { UserRole } from "../../models/enums/DormyEnums";
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'floor', label: 'Floor Number', align: 'left' },
-  { id: 'room', label: 'Room Number', align: 'left' },
-  { id: 'bed', label: 'Bed', align: 'left' },
-  { id: 'roomtype', label: 'Room Type', align: 'left' },
-  { id: 'status', label: 'Status', align: 'center' },
-  { id: '' },
+  { id: "floor", label: "Floor Number", align: "left" },
+  { id: "room", label: "Room Number", align: "left" },
+  { id: "bed", label: "Bed", align: "left" },
+  { id: "roomtype", label: "Room Type", align: "left" },
+  { id: "status", label: "Status", align: "center" },
+  { id: "" },
 ];
-
-
-
-
 
 // ----------------------------------------------------------------------
 
 export default function DormitoryRoomListPage() {
+  useAuthGuard(UserRole.ADMIN);
   const {
     page,
     order,
@@ -78,7 +76,7 @@ export default function DormitoryRoomListPage() {
 
   const [tableData, setTableData] = useState(_roomList);
 
-  const [filterName, setFilterName] = useState('');
+  const [filterName, setFilterName] = useState("");
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
@@ -88,11 +86,10 @@ export default function DormitoryRoomListPage() {
     filterName,
   });
 
-  const isFiltered = filterName !== '';
+  const isFiltered = filterName !== "";
 
   const isNotFound =
-    (!dataFiltered.length && !!filterName) ||
-    (!dataFiltered.length);
+    (!dataFiltered.length && !!filterName) || !dataFiltered.length;
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -112,7 +109,7 @@ export default function DormitoryRoomListPage() {
   };
 
   const handleResetFilter = () => {
-    setFilterName('');
+    setFilterName("");
   };
 
   return (
@@ -121,14 +118,14 @@ export default function DormitoryRoomListPage() {
         <title> Room List | Building</title>
       </Helmet>
 
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
           heading="Room List"
           links={[
-            { name: 'Dashboard', href: PATH_ADMIN.root },
-            { name: 'User', href: PATH_ADMIN.profile },
-            { name: 'Building', href: PATH_ADMIN.dormitory.structure },
-            { name: 'Building Room List' },
+            { name: "Dashboard", href: PATH_ADMIN.root },
+            { name: "User", href: PATH_ADMIN.profile },
+            { name: "Building", href: PATH_ADMIN.dormitory.structure },
+            { name: "Building Room List" },
           ]}
           action={
             <Button
@@ -143,7 +140,6 @@ export default function DormitoryRoomListPage() {
         />
 
         <Card>
-
           <RoomTableToolbar
             isFiltered={isFiltered}
             filterName={filterName}
@@ -151,7 +147,7 @@ export default function DormitoryRoomListPage() {
             onResetFilter={handleResetFilter}
           />
 
-          <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+          <TableContainer sx={{ position: "relative", overflow: "unset" }}>
             <TableSelectedAction
               numSelected={selected.length}
               rowCount={tableData.length}
@@ -171,7 +167,7 @@ export default function DormitoryRoomListPage() {
             />
 
             <Scrollbar>
-              <Table size={'medium'} sx={{ minWidth: 800 }}>
+              <Table size={"medium"} sx={{ minWidth: 800 }}>
                 <TableHeadCustom
                   order={order}
                   orderBy={orderBy}
@@ -226,7 +222,8 @@ export default function DormitoryRoomListPage() {
         title="Delete"
         content={
           <>
-            Are you sure want to delete <strong> {selected.length} </strong> items?
+            Are you sure want to delete <strong> {selected.length} </strong>{" "}
+            items?
           </>
         }
         action={
@@ -269,7 +266,8 @@ function applyFilter({
 
   if (filterName) {
     inputData = inputData.filter(
-      (room) => room.roomNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+      (room) =>
+        room.roomNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 

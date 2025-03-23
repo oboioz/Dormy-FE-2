@@ -1,6 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
 import { CustomAvatar } from "../../../components/custom-avatar";
+import { useAuthContext } from "../../../auth/JwtContext";
 
 const StyledRoot = styled("div")(({ theme }) => ({
   display: "flex",
@@ -11,23 +12,23 @@ const StyledRoot = styled("div")(({ theme }) => ({
 }));
 
 export default function NavAccount() {
+  const { user } = useAuthContext();
+
   const name = "Guest";
   const avatarURL = `https://ui-avatars.com/api/?name=${encodeURIComponent(
     name
   )}&background=random&size=128`;
   return (
     <StyledRoot>
-
-
       <CustomAvatar src={avatarURL} />
 
       <Box sx={{ ml: 2, minWidth: 0 }}>
         <Typography variant="subtitle2" noWrap>
-          Username
+          {user?.name || "--"}
         </Typography>
 
         <Typography variant="body2" noWrap sx={{ color: "text.secondary" }}>
-          Role
+          Role: {user?.role || "--"}
         </Typography>
       </Box>
     </StyledRoot>

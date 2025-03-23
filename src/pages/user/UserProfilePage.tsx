@@ -1,38 +1,35 @@
-import { useState } from 'react';
+import { useState } from "react";
 // @mui
-import { Box, Card, Container, Tab, Tabs } from '@mui/material';
+import { Box, Card, Container, Tab, Tabs } from "@mui/material";
 
 // components
-import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
-import Iconify from '../../components/iconify';
+import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
+import Iconify from "../../components/iconify";
 // sections
-import { Helmet } from 'react-helmet-async';
-import { useSettingsContext } from '../../components/settings';
-import AccountChangePassword from '../../sections/@dashboard/user/account/AccountChangePassword';
-import {
-  Profile,
-  ProfileCover,
-} from '../../sections/@dashboard/user/profile';
+import { Helmet } from "react-helmet-async";
+import { useSettingsContext } from "../../components/settings";
+import AccountChangePassword from "../../sections/@dashboard/user/account/AccountChangePassword";
+import { Profile, ProfileCover } from "../../sections/@dashboard/user/profile";
+import { useAuthGuard } from "../../auth/AuthGuard";
+import { UserRole } from "../../models/enums/DormyEnums";
 
 // ----------------------------------------------------------------------
 
 export default function UserProfilePage() {
+  useAuthGuard(UserRole.CUSTOMER);
   const { themeStretch } = useSettingsContext();
-
-  const [currentTab, setCurrentTab] = useState('profile');
-
-  // const { user } = useAuthContext();
+  const [currentTab, setCurrentTab] = useState("profile");
 
   const TABS = [
     {
-      value: 'profile',
-      label: 'Profile',
+      value: "profile",
+      label: "Profile",
       icon: <Iconify icon="ic:round-account-box" />,
       component: <Profile />,
     },
     {
-      value: 'change_password',
-      label: 'Change password',
+      value: "change_password",
+      label: "Change password",
       icon: <Iconify icon="ic:round-vpn-key" />,
       component: <AccountChangePassword />,
     },
@@ -44,22 +41,16 @@ export default function UserProfilePage() {
         <title> User: Profile</title>
       </Helmet>
 
-
-
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
           heading="Profile"
-          links={[
-            { name: 'Dashboard' },
-            { name: 'User' },
-            { name: 'Name' },
-          ]}
+          links={[{ name: "Dashboard" }, { name: "User" }, { name: "Name" }]}
         />
         <Card
           sx={{
             mb: 3,
             height: 280,
-            position: 'relative',
+            position: "relative",
           }}
         >
           <ProfileCover />
@@ -71,25 +62,33 @@ export default function UserProfilePage() {
               width: 1,
               bottom: 0,
               zIndex: 9,
-              position: 'absolute',
-              bgcolor: 'background.paper',
-              '& .MuiTabs-flexContainer': {
+              position: "absolute",
+              bgcolor: "background.paper",
+              "& .MuiTabs-flexContainer": {
                 pr: { md: 3 },
                 justifyContent: {
-                  sm: 'center',
-                  md: 'flex-end',
+                  sm: "center",
+                  md: "flex-end",
                 },
               },
             }}
           >
             {TABS.map((tab) => (
-              <Tab key={tab.value} value={tab.value} icon={tab.icon} label={tab.label} />
+              <Tab
+                key={tab.value}
+                value={tab.value}
+                icon={tab.icon}
+                label={tab.label}
+              />
             ))}
           </Tabs>
         </Card>
 
         {TABS.map(
-          (tab) => tab.value === currentTab && <Box key={tab.value}> {tab.component} </Box>
+          (tab) =>
+            tab.value === currentTab && (
+              <Box key={tab.value}> {tab.component} </Box>
+            )
         )}
       </Container>
     </>

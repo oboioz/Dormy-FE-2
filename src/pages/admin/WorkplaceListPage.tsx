@@ -1,5 +1,4 @@
-
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 // @mui
 import {
   Button,
@@ -9,18 +8,18 @@ import {
   Table,
   TableBody,
   TableContainer,
-  Tooltip
-} from '@mui/material';
+  Tooltip,
+} from "@mui/material";
 
 // components
-import { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
-import _mock from '../../_mock';
-import ConfirmDialog from '../../components/confirm-dialog';
-import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
-import Iconify from '../../components/iconify';
-import Scrollbar from '../../components/scrollbar';
-import { useSettingsContext } from '../../components/settings';
+import { useState } from "react";
+import { Helmet } from "react-helmet-async";
+import _mock from "../../_mock";
+import ConfirmDialog from "../../components/confirm-dialog";
+import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
+import Iconify from "../../components/iconify";
+import Scrollbar from "../../components/scrollbar";
+import { useSettingsContext } from "../../components/settings";
 import {
   emptyRows,
   TableEmptyRows,
@@ -28,23 +27,24 @@ import {
   TableNoData,
   TableSelectedAction,
   useTable,
-} from '../../components/table';
-import { PATH_ADMIN } from '../../routes/paths';
-import WorkplaceTableRow from '../../sections/@dashboard/admin/resident/WorkplaceTableRow';
+} from "../../components/table";
+import { PATH_ADMIN } from "../../routes/paths";
+import WorkplaceTableRow from "../../sections/@dashboard/admin/resident/WorkplaceTableRow";
+import { useAuthGuard } from "../../auth/AuthGuard";
+import { UserRole } from "../../models/enums/DormyEnums";
 // sections
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   // { id: 'workplaceID', label: 'ID', align: 'left' },
-  { id: 'workplaceName', label: 'Workplace Name', align: 'left' },
-  { id: 'abbreviation', label: 'Abbreviation', align: 'left' },
-  { id: 'createdBy', label: 'Created By', align: 'center' },
-  { id: 'createdAt', label: 'Created At', align: 'left' },
-  { id: 'amount', label: 'Amount', align: 'left' },
-  { id: '' },
+  { id: "workplaceName", label: "Workplace Name", align: "left" },
+  { id: "abbreviation", label: "Abbreviation", align: "left" },
+  { id: "createdBy", label: "Created By", align: "center" },
+  { id: "createdAt", label: "Created At", align: "left" },
+  { id: "amount", label: "Amount", align: "left" },
+  { id: "" },
 ];
-
 
 const _workplaceList = [...Array(24)].map((_, index) => ({
   workplaceID: index + 1, // Numeric ID
@@ -58,6 +58,7 @@ const _workplaceList = [...Array(24)].map((_, index) => ({
 // ----------------------------------------------------------------------
 
 export default function WorkplaceListPage() {
+  useAuthGuard(UserRole.ADMIN);
   const {
     page,
     rowsPerPage,
@@ -69,21 +70,22 @@ export default function WorkplaceListPage() {
     onSelectAllRows,
   } = useTable();
 
-  const dataInPage = _workplaceList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const dataInPage = _workplaceList.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   const { themeStretch } = useSettingsContext();
 
   const navigate = useNavigate();
 
-
   const [tableData, setTableData] = useState(_workplaceList);
 
-  const [filterName, setFilterName] = useState('');
+  const [filterName, setFilterName] = useState("");
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
-  const isNotFound = (!_workplaceList.length && !!filterName);
-
+  const isNotFound = !_workplaceList.length && !!filterName;
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -98,7 +100,9 @@ export default function WorkplaceListPage() {
   };
 
   const handleDeleteRow = (id: string) => {
-    const deleteRow = tableData.filter((row) => row.workplaceID.toString() !== id);
+    const deleteRow = tableData.filter(
+      (row) => row.workplaceID.toString() !== id
+    );
     setSelected([]);
     setTableData(deleteRow);
 
@@ -110,7 +114,9 @@ export default function WorkplaceListPage() {
   };
 
   const handleDeleteRows = (selectedRows: string[]) => {
-    const deleteRows = tableData.filter((row) => !selectedRows.includes(row.workplaceID.toString()));
+    const deleteRows = tableData.filter(
+      (row) => !selectedRows.includes(row.workplaceID.toString())
+    );
     setSelected([]);
     setTableData(deleteRows);
 
@@ -120,14 +126,12 @@ export default function WorkplaceListPage() {
       } else if (selectedRows.length === _workplaceList.length) {
         setPage(0);
       } else if (selectedRows.length > dataInPage.length) {
-        const newPage = Math.ceil((tableData.length - selectedRows.length) / rowsPerPage) - 1;
+        const newPage =
+          Math.ceil((tableData.length - selectedRows.length) / rowsPerPage) - 1;
         setPage(newPage);
       }
     }
   };
-
-
-
 
   return (
     <>
@@ -135,13 +139,13 @@ export default function WorkplaceListPage() {
         <title>Workplace List</title>
       </Helmet>
 
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
           heading="Workplace List"
           links={[
-            { name: 'Dashboard', href: PATH_ADMIN.root },
-            { name: 'User', href: PATH_ADMIN.profile },
-            { name: 'Workplace List' },
+            { name: "Dashboard", href: PATH_ADMIN.root },
+            { name: "User", href: PATH_ADMIN.profile },
+            { name: "Workplace List" },
           ]}
           action={
             <Button
@@ -156,8 +160,7 @@ export default function WorkplaceListPage() {
         />
 
         <Card>
-
-          <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
+          <TableContainer sx={{ position: "relative", overflow: "unset" }}>
             <TableSelectedAction
               numSelected={selected.length}
               rowCount={tableData.length}
@@ -177,7 +180,7 @@ export default function WorkplaceListPage() {
             />
 
             <Scrollbar>
-              <Table size={'medium'} sx={{ minWidth: 800 }}>
+              <Table size={"medium"} sx={{ minWidth: 800 }}>
                 <TableHeadCustom
                   headLabel={TABLE_HEAD}
                   rowCount={tableData.length}
@@ -189,7 +192,7 @@ export default function WorkplaceListPage() {
                     )
                   }
 
-                // rowCount={tableData.length}
+                  // rowCount={tableData.length}
                 />
 
                 <TableBody>
@@ -200,9 +203,15 @@ export default function WorkplaceListPage() {
                         key={row.workplaceID}
                         row={row}
                         selected={selected.includes(row.workplaceID.toString())}
-                        onSelectRow={() => onSelectRow(row.workplaceID.toString())}
-                        onEditRow={() => handleEditRow(row.workplaceID.toString())}
-                        onDeleteRow={() => handleDeleteRow(row.workplaceID.toString())}
+                        onSelectRow={() =>
+                          onSelectRow(row.workplaceID.toString())
+                        }
+                        onEditRow={() =>
+                          handleEditRow(row.workplaceID.toString())
+                        }
+                        onDeleteRow={() =>
+                          handleDeleteRow(row.workplaceID.toString())
+                        }
                       />
                     ))}
 
@@ -215,7 +224,6 @@ export default function WorkplaceListPage() {
               </Table>
             </Scrollbar>
           </TableContainer>
-
         </Card>
       </Container>
 
@@ -225,7 +233,8 @@ export default function WorkplaceListPage() {
         title="Delete"
         content={
           <>
-            Are you sure want to delete <strong> {selected.length} </strong> items?
+            Are you sure want to delete <strong> {selected.length} </strong>{" "}
+            items?
           </>
         }
         action={
@@ -241,7 +250,6 @@ export default function WorkplaceListPage() {
           </Button>
         }
       />
-
     </>
   );
 }

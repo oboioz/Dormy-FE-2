@@ -23,6 +23,8 @@ import {
   useTable,
 } from '../../components/table';
 import { PATH_REGISTER, PATH_USER } from '../../routes/paths';
+import { useAuthGuard } from '../../auth/AuthGuard';
+import { UserRole } from '../../models/enums/DormyEnums';
 // sections
 
 // ----------------------------------------------------------------------
@@ -156,6 +158,7 @@ const MOCK_DATA = [
 // ----------------------------------------------------------------------
 
 export default function ContractListPage() {
+  useAuthGuard(UserRole.CUSTOMER);
   const {
     page,
   } = useTable();
