@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Box, Divider, MenuItem, Stack, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 // routes
-import { PATH_AUTH, PATH_USER } from "../../../routes/paths";
+import { PATH_ADMIN, PATH_AUTH, PATH_USER } from "../../../routes/paths";
 // auth
 // components
 import { IconButtonAnimate } from "../../../components/animate";
@@ -15,17 +15,6 @@ import { useAuthContext } from "../../../auth/JwtContext";
 import { UserRole } from "../../../models/enums/DormyEnums";
 
 // ----------------------------------------------------------------------
-
-const OPTIONS = [
-  {
-    label: "Home",
-    linkTo: "/",
-  },
-  {
-    label: "Profile",
-    linkTo: PATH_USER.profile,
-  },
-];
 
 // ----------------------------------------------------------------------
 
@@ -40,6 +29,18 @@ export default function AccountPopover() {
   const avatarURL = `https://ui-avatars.com/api/?name=${encodeURIComponent(
     name
   )}&background=random&size=128`;
+
+  const OPTIONS = [
+    {
+      label: "Home",
+      linkTo: "/",
+    },
+    {
+      label: "Profile",
+      linkTo:
+        user?.role === UserRole.ADMIN ? PATH_ADMIN.profile : PATH_USER.profile,
+    },
+  ];
 
   const [openPopover, setOpenPopover] = useState<HTMLElement | null>(null);
 

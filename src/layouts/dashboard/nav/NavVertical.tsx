@@ -12,7 +12,7 @@ import { NavSectionVertical } from "../../../components/nav-section";
 import Scrollbar from "../../../components/scrollbar";
 //
 import { Link as RouterLink } from "react-router-dom";
-import { PATH_USER } from "../../../routes/paths";
+import { PATH_ADMIN, PATH_USER } from "../../../routes/paths";
 import NavAccount from "./NavAccount";
 import NavDocs from "./NavDocs";
 import NavToggleButton from "./NavToggleButton";
@@ -68,7 +68,11 @@ export default function NavVertical({ openNav, onCloseNav }: Props) {
 
         <Box
           component={RouterLink}
-          to={PATH_USER.profile}
+          to={
+            user?.role === UserRole.ADMIN
+              ? PATH_ADMIN.profile
+              : PATH_USER.profile
+          }
           sx={{
             textDecoration: "none",
             color: "inherit", // Prevents default link color change

@@ -12,6 +12,7 @@ import AdminProfile from "../../sections/@dashboard/admin/AdminProfile";
 import AccountChangePassword from "../../sections/@dashboard/user/account/AccountChangePassword";
 import { ProfileCover } from "../../sections/@dashboard/user/profile";
 import { useAuthGuard } from "../../auth/AuthGuard";
+import { UserRole } from "../../models/enums/DormyEnums";
 
 // ----------------------------------------------------------------------
 

@@ -2,6 +2,7 @@ import { Box, Typography } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
 import { CustomAvatar } from "../../../components/custom-avatar";
 import { useAuthContext } from "../../../auth/JwtContext";
+import { UserRole } from "../../../models/enums/DormyEnums";
 
 const StyledRoot = styled("div")(({ theme }) => ({
   display: "flex",
@@ -28,7 +29,7 @@ export default function NavAccount() {
         </Typography>
 
         <Typography variant="body2" noWrap sx={{ color: "text.secondary" }}>
-          Role: {user?.role || "--"}
+          Role: {user?.role == UserRole.ADMIN ? "Admin" : "Customer"}
         </Typography>
       </Box>
     </StyledRoot>
