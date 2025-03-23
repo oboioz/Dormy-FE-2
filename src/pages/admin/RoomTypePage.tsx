@@ -8,11 +8,12 @@ import {
   Table,
   TableBody,
   TableContainer,
+  TablePagination,
   Tooltip,
 } from "@mui/material";
 
 // components
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ConfirmDialog from "../../components/confirm-dialog";
 import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
 import Iconify from "../../components/iconify";
@@ -30,62 +31,45 @@ import { PATH_ADMIN } from "../../routes/paths";
 import RoomTypeRow from "../../sections/@dashboard/admin/venue/RoomTypeRow";
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
-// sections
-
-// ----------------------------------------------------------------------
+import { roomTypeService } from "../../services/roomTypeService";
+import { IRoomType } from "../../models/responses/RoomTypeModels";
+import { httpClient } from "../../services";
+import { toast } from "react-toastify";
 
 const TABLE_HEAD = [
-  { id: "roomTypeID", label: "ID", align: "left" },
   { id: "roomTypeName", label: "Name", align: "left" },
   { id: "capacity", label: "Capacity", align: "left" },
   { id: "description", label: "Description", align: "left" },
-  { id: "price", label: "Price", align: "center" },
+  { id: "price", label: "Price", align: "left" },
+  { id: "isDeleted", label: "Is Deleted?", align: "left" },
   { id: "" },
 ];
 
-const _roomTypeList = [...Array(5)].map((_, index) => ({
-  roomTypeID: index + 1,
-  roomTypeName: ["Single", "Double", "Suite", "Deluxe", "Penthouse"][index],
-  description: [
-    "A small room for one person with basic amenities.",
-    "A room for two people with a shared bed or two single beds.",
-    "A luxurious room with extra space and amenities.",
-    "A high-end room with premium facilities.",
-    "The most luxurious option with the best view and services.",
-  ][index],
-  price: [50, 80, 120, 200, 500][index], // Sample pricing
-  capacity: [1, 2, 4, 6, 10][index], // Adding capacity field
-}));
-
-// ----------------------------------------------------------------------
-
 export default function RoomTypePage() {
   useAuthGuard(UserRole.ADMIN);
+  const navigate = useNavigate();
+  const [roomTypes, setRoomTypes] = useState<IRoomType[]>([]);
   const {
     page,
     rowsPerPage,
-    setPage,
-    //
     selected,
+    setPage,
     setSelected,
     onSelectRow,
     onSelectAllRows,
+    setRowsPerPage,
   } = useTable();
 
-  const dataInPage = _roomTypeList.slice(
+  const dataInPage = roomTypes.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
   );
 
   const { themeStretch } = useSettingsContext();
 
-  const navigate = useNavigate();
-
-  const [tableData, setTableData] = useState(_roomTypeList);
-
   const [openConfirm, setOpenConfirm] = useState(false);
 
-  const isNotFound = !_roomTypeList.length;
+  const isNotFound = !roomTypes.length;
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -96,50 +80,52 @@ export default function RoomTypePage() {
   };
 
   const handleEditRow = (id: string) => {
-    // navigate(PATH_ADMIN.user.edit(paramCase(id)));
-    navigate(PATH_ADMIN.dormitory.roomTypeForm);
+    navigate(`${PATH_ADMIN.dormitory.roomTypeForm}?id=${id}`);
   };
 
-  const handleDeleteRow = (id: string) => {
-    const deleteRow = tableData.filter(
-      (row) => row.roomTypeID.toString() !== id
-    );
-    setSelected([]);
-    setTableData(deleteRow);
-
-    if (page > 0) {
-      if (dataInPage.length < 2) {
-        setPage(page - 1);
+  const handleDeleteRow = async (id: string) => {
+    try {
+      var response = await httpClient.roomTypeService.softDeleteRoomType(id);
+      if (response) {
+        toast.success("Deleted");
+        window.location.reload();
+      } else {
+        toast.error("Error");
       }
+    } catch (error) {
+      toast.error("Error");
     }
   };
 
   const handleDeleteRows = (selectedRows: string[]) => {
-    const deleteRows = tableData.filter(
-      (row) => !selectedRows.includes(row.roomTypeID.toString())
-    );
-    setSelected([]);
-    setTableData(deleteRows);
+    toast.info("Featuer is maintained");
+  };
 
-    if (page > 0) {
-      if (selectedRows.length === dataInPage.length) {
-        setPage(page - 1);
-      } else if (selectedRows.length === _roomTypeList.length) {
-        setPage(0);
-      } else if (selectedRows.length > dataInPage.length) {
-        const newPage =
-          Math.ceil((tableData.length - selectedRows.length) / rowsPerPage) - 1;
-        setPage(newPage);
-      }
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const fetchRoomTypes = async () => {
+    var response = await httpClient.roomTypeService.getRoomTypeBatch();
+    if (response) {
+      setRoomTypes(response);
+      console.log(response);
     }
   };
 
+  useEffect(() => {
+    fetchRoomTypes();
+  }, []);
+
   return (
     <>
-      {/* <Helmet>
-        <title>Contract List</title>
-      </Helmet> */}
-
       <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
           heading="Room Type List"
@@ -164,11 +150,11 @@ export default function RoomTypePage() {
           <TableContainer sx={{ position: "relative", overflow: "unset" }}>
             <TableSelectedAction
               numSelected={selected.length}
-              rowCount={tableData.length}
+              rowCount={roomTypes.length}
               onSelectAllRows={(checked) =>
                 onSelectAllRows(
                   checked,
-                  tableData.map((row) => row.roomTypeID.toString())
+                  roomTypes.map((row) => row.id.toString())
                 )
               }
               action={
@@ -184,40 +170,32 @@ export default function RoomTypePage() {
               <Table size={"medium"} sx={{ minWidth: 800 }}>
                 <TableHeadCustom
                   headLabel={TABLE_HEAD}
-                  rowCount={tableData.length}
+                  rowCount={roomTypes.length}
                   numSelected={selected.length}
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
                       checked,
-                      tableData.map((row) => row.roomTypeID.toString())
+                      roomTypes.map((row) => row.id.toString())
                     )
                   }
-
-                  // rowCount={tableData.length}
                 />
 
                 <TableBody>
-                  {_roomTypeList
+                  {roomTypes
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => (
                       <RoomTypeRow
-                        key={row.roomTypeID}
+                        key={row.id}
                         row={row}
-                        selected={selected.includes(row.roomTypeID.toString())}
-                        onSelectRow={() =>
-                          onSelectRow(row.roomTypeID.toString())
-                        }
-                        onEditRow={() =>
-                          handleEditRow(row.roomTypeID.toString())
-                        }
-                        onDeleteRow={() =>
-                          handleDeleteRow(row.roomTypeID.toString())
-                        }
+                        selected={selected.includes(row.id.toString())}
+                        onSelectRow={() => onSelectRow(row.id.toString())}
+                        onEditRow={() => handleEditRow(row.id.toString())}
+                        onDeleteRow={() => handleDeleteRow(row.id.toString())}
                       />
                     ))}
 
                   <TableEmptyRows
-                    emptyRows={emptyRows(page, rowsPerPage, tableData.length)}
+                    emptyRows={emptyRows(page, rowsPerPage, roomTypes.length)}
                   />
 
                   <TableNoData isNotFound={isNotFound} />
@@ -227,7 +205,15 @@ export default function RoomTypePage() {
           </TableContainer>
         </Card>
       </Container>
-
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={roomTypes.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
       <ConfirmDialog
         open={openConfirm}
         onClose={handleCloseConfirm}
@@ -254,5 +240,3 @@ export default function RoomTypePage() {
     </>
   );
 }
-
-// ----------------------------------------------------------------------

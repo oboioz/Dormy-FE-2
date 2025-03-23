@@ -22,4 +22,10 @@ export const API_URL = {
     UPDATE: "room-service",
     SOFT_DELETE_BATCH: "room-service/batch/soft-delete",
   },
+  ROOM_TYPE: {
+    GET_BATCH: "room-type/all",
+    GET_SINGLE: "room-type/id/",
+    BASE: "room-type",
+    SOFT_DELETE: "room-type/id/{id}/soft-delete"
+  },
 };

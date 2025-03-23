@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 // @mui
 import {
   Button,
@@ -7,16 +7,13 @@ import {
   MenuItem,
   TableCell,
   TableRow,
-  Typography,
-} from '@mui/material';
+} from "@mui/material";
 // @types
 // components
-import { IRoomType } from '../../../../@types/room';
-import ConfirmDialog from '../../../../components/confirm-dialog';
-import Iconify from '../../../../components/iconify';
-import MenuPopover from '../../../../components/menu-popover';
-
-// ----------------------------------------------------------------------
+import ConfirmDialog from "../../../../components/confirm-dialog";
+import Iconify from "../../../../components/iconify";
+import MenuPopover from "../../../../components/menu-popover";
+import { IRoomType } from "../../../../models/responses/RoomTypeModels";
 
 type Props = {
   row: IRoomType;
@@ -33,8 +30,7 @@ export default function RoomTypeRow({
   onSelectRow,
   onDeleteRow,
 }: Props) {
-
-  const { roomTypeID, roomTypeName, description, price, capacity } = row;
+  const { roomTypeName, description, price, capacity, isDeleted } = row;
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
@@ -56,19 +52,11 @@ export default function RoomTypeRow({
     setOpenPopover(null);
   };
 
-
-
   return (
     <>
       <TableRow hover selected={selected}>
         <TableCell padding="checkbox">
           <Checkbox checked={selected} onClick={onSelectRow} />
-        </TableCell>
-
-        <TableCell>
-          <Typography variant="subtitle2" noWrap>
-            {roomTypeID}
-          </Typography>
         </TableCell>
 
         <TableCell align="left">{roomTypeName}</TableCell>
@@ -79,9 +67,15 @@ export default function RoomTypeRow({
 
         <TableCell align="left">{price}</TableCell>
 
+        <TableCell align="left" sx={{ color: isDeleted ? "red" : "green" }}>
+          {isDeleted ? "Yes" : "No"}
+        </TableCell>
 
         <TableCell align="right">
-          <IconButton color={openPopover ? 'inherit' : 'default'} onClick={handleOpenPopover}>
+          <IconButton
+            color={openPopover ? "inherit" : "default"}
+            onClick={handleOpenPopover}
+          >
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
         </TableCell>
@@ -98,7 +92,8 @@ export default function RoomTypeRow({
             handleOpenConfirm();
             handleClosePopover();
           }}
-          sx={{ color: 'error.main' }}
+          sx={{ color: "error.main" }}
+          disabled={isDeleted}
         >
           <Iconify icon="eva:trash-2-outline" />
           Delete
@@ -109,6 +104,7 @@ export default function RoomTypeRow({
             onEditRow();
             handleClosePopover();
           }}
+          disabled={isDeleted}
         >
           <Iconify icon="eva:edit-fill" />
           Edit
@@ -121,7 +117,7 @@ export default function RoomTypeRow({
         title="Delete"
         content="Are you sure want to delete?"
         action={
-          <Button variant="contained" color="error" onClick={handleOpenConfirm}>
+          <Button variant="contained" color="error" onClick={onDeleteRow}>
             Delete
           </Button>
         }

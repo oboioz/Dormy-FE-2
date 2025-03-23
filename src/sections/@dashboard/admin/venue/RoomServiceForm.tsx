@@ -4,7 +4,6 @@ import {
   Container,
   Grid,
   MenuItem,
-  Select,
   Stack,
   Typography,
 } from "@mui/material";
@@ -30,7 +29,6 @@ import { RHFCheckbox } from "../../../../components/hook-form/RHFCheckbox";
 import { toast } from "react-toastify";
 import { RHFSelect } from "../../../../components/hook-form/RHFSelect";
 import { useEffect, useState } from "react";
-// import { httpClient } from "../../../../utils/axios";
 import { httpClient } from "../../../../services";
 
 const UpdateSchema = Yup.object().shape({
@@ -74,7 +72,9 @@ export default function RoomServiceForm() {
   } = methods;
 
   const createRoomService = async (data: IRoomServiceCreate) => {
-    var response = await httpClient.roomServiceService.createRoomServiceBatch([data]);
+    var response = await httpClient.roomServiceService.createRoomServiceBatch([
+      data,
+    ]);
     if (response && response?.length > 0) {
       toast.success("Create room service successfully");
       navigate(PATH_ADMIN.dormitory.roomService);
@@ -139,8 +139,6 @@ export default function RoomServiceForm() {
       getRoomServiceDetail(id);
     }
   }, [id]);
-
-  console.log(roomServiceEnums);
 
   return (
     <>
