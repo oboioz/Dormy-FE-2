@@ -120,7 +120,6 @@ export default function RoomServiceForm() {
   const getRoomServiceDetail = async (id: string) => {
     var response = await httpClient.getRoomServiceBatch({
       ids: [id],
-      isGetAll: false,
     });
 
     if (response && response.length > 0) {

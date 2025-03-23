@@ -118,7 +118,6 @@ export default function RoomServicePage() {
 
   const fetchRoomServices = async () => {
     var response = await httpClient.getRoomServiceBatch({
-      isGetAll: true,
       ids: [],
     });
     console.log(response);
