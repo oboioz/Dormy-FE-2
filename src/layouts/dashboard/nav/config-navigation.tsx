@@ -107,6 +107,7 @@ const adminNavConfig = [
         children: [
           { title: "Structure", path: PATH_ADMIN.dormitory.structure },
           { title: "Room Types", path: PATH_ADMIN.dormitory.roomType },
+          { title: "Room Services", path: PATH_ADMIN.dormitory.roomService },
         ],
       },
 

@@ -125,7 +125,10 @@ export const PATH_ADMIN = {
 
 
     roomType: path(ROOTS_ADMIN, '/roomtype'),
-    roomtypeForm: path(ROOTS_ADMIN, '/roomtypeedit'),
+    roomTypeForm: path(ROOTS_ADMIN, '/roomtypeedit'),
+
+    roomService: path(ROOTS_ADMIN, '/roomservice'),
+    roomServiceForm: path(ROOTS_ADMIN, '/roomserviceedit'),
     // edit: (name: string) => path(ROOTS_ADMIN, `/user/${name}/edit`),
   }
 };

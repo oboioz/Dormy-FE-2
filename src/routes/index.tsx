@@ -42,6 +42,8 @@ import {
   RoomPickingPage,
   RoomTypeFormPage,
   RoomTypePage,
+  RoomServicePage,
+  RoomServiceFormPage,
   SystemSettingsPage,
   UserProfilePage,
   VehicleGarageCreatePage,
@@ -158,7 +160,8 @@ export default function Router() {
         // { path: 'structure/structurename/roomcreate', element: (<DormitoryRoomCreatePage />), },
 
         { path: "roomtype", element: <RoomTypePage /> },
-        // { path: 'roomtypeedit', element: (<RoomTypeFormPage />), },
+        { path: "roomservice", element: <RoomServicePage /> },
+        { path: "roomserviceedit", element: <RoomServiceFormPage /> },
 
         { path: "notification", element: <NotificationsPage /> },
         { path: "notificationpost", element: <NotificationPostPage /> },

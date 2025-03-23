@@ -38,7 +38,7 @@ export default function RoomTypeForm() {
 
 
   const methods = useForm<FormValuesProps>({
-    resolver: yupResolver(UpdateSchema),
+    resolver: yupResolver(UpdateSchema) as any,
     defaultValues,
   });
 

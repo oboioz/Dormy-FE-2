@@ -14,4 +14,11 @@ export const API_URL = {
   GUARDIAN: {
     GET: "guardian/all",
   },
+  ROOM_SERVICE: {
+    GET_ENUM: "room-service/room-service-type/all",
+    GET_BATCH: "room-service/batch",
+    GET_BY_ID: "room-service/id/",
+    CREATE_BATCH: "room-service/batch/create",
+    UPDATE: "room-service",
+  },
 };

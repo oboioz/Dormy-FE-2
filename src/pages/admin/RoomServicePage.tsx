@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 
 // components
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ConfirmDialog from "../../components/confirm-dialog";
 import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
 import Iconify from "../../components/iconify";
@@ -27,65 +27,59 @@ import {
   useTable,
 } from "../../components/table";
 import { PATH_ADMIN } from "../../routes/paths";
-import RoomTypeRow from "../../sections/@dashboard/admin/venue/RoomTypeRow";
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
-// sections
-
-// ----------------------------------------------------------------------
+import { httpClient } from "../../utils/axios";
+import {
+  IRoomService,
+  RoomServiceEnum,
+} from "../../models/responses/RoomServiceModels";
+import RoomServiceRow from "../../sections/@dashboard/admin/venue/RoomServiceRow";
 
 const TABLE_HEAD = [
-  { id: "roomTypeID", label: "ID", align: "left" },
-  { id: "roomTypeName", label: "Name", align: "left" },
-  { id: "capacity", label: "Capacity", align: "left" },
-  { id: "description", label: "Description", align: "left" },
-  { id: "price", label: "Price", align: "center" },
+  { id: "roomServiceName", label: "Service Name", align: "left" },
+  { id: "cost", label: "Price", align: "left" },
+  { id: "unit", label: "Unit", align: "left" },
+  { id: "roomServiceType", label: "Type", align: "left" },
+  {
+    id: "isServiceIndicatorUsed",
+    label: "Is Indicator Used?",
+    align: "left",
+  },
   { id: "" },
 ];
 
-const _roomTypeList = [...Array(5)].map((_, index) => ({
-  roomTypeID: index + 1,
-  roomTypeName: ["Single", "Double", "Suite", "Deluxe", "Penthouse"][index],
-  description: [
-    "A small room for one person with basic amenities.",
-    "A room for two people with a shared bed or two single beds.",
-    "A luxurious room with extra space and amenities.",
-    "A high-end room with premium facilities.",
-    "The most luxurious option with the best view and services.",
-  ][index],
-  price: [50, 80, 120, 200, 500][index], // Sample pricing
-  capacity: [1, 2, 4, 6, 10][index], // Adding capacity field
-}));
-
-// ----------------------------------------------------------------------
-
-export default function RoomTypePage() {
+export default function RoomServicePage() {
   useAuthGuard(UserRole.ADMIN);
+  const navigate = useNavigate();
+
+  const [roomServices, setRoomServices] = useState<IRoomService[]>([]);
+  const [roomServiceEnums, setRoomServiceEnums] = useState<RoomServiceEnum[]>(
+    []
+  );
+
   const {
     page,
     rowsPerPage,
-    setPage,
-    //
     selected,
+    setPage,
     setSelected,
     onSelectRow,
     onSelectAllRows,
   } = useTable();
 
-  const dataInPage = _roomTypeList.slice(
+  const dataInPage = roomServices.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
   );
 
   const { themeStretch } = useSettingsContext();
 
-  const navigate = useNavigate();
-
-  const [tableData, setTableData] = useState(_roomTypeList);
+  const [tableData, setTableData] = useState(roomServices);
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
-  const isNotFound = !_roomTypeList.length;
+  const isNotFound = !roomServices.length;
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -96,14 +90,11 @@ export default function RoomTypePage() {
   };
 
   const handleEditRow = (id: string) => {
-    // navigate(PATH_ADMIN.user.edit(paramCase(id)));
     navigate(PATH_ADMIN.dormitory.roomTypeForm);
   };
 
   const handleDeleteRow = (id: string) => {
-    const deleteRow = tableData.filter(
-      (row) => row.roomTypeID.toString() !== id
-    );
+    const deleteRow = roomServices.filter((row) => row.id.toString() !== id);
     setSelected([]);
     setTableData(deleteRow);
 
@@ -116,7 +107,7 @@ export default function RoomTypePage() {
 
   const handleDeleteRows = (selectedRows: string[]) => {
     const deleteRows = tableData.filter(
-      (row) => !selectedRows.includes(row.roomTypeID.toString())
+      (row) => !selectedRows.includes(row.id.toString())
     );
     setSelected([]);
     setTableData(deleteRows);
@@ -124,7 +115,7 @@ export default function RoomTypePage() {
     if (page > 0) {
       if (selectedRows.length === dataInPage.length) {
         setPage(page - 1);
-      } else if (selectedRows.length === _roomTypeList.length) {
+      } else if (selectedRows.length === roomServices.length) {
         setPage(0);
       } else if (selectedRows.length > dataInPage.length) {
         const newPage =
@@ -134,28 +125,44 @@ export default function RoomTypePage() {
     }
   };
 
+  const fetchRoomServices = async () => {
+    var response = await httpClient.getRoomServiceBatch({
+      isGetAll: true,
+      ids: [],
+    });
+    console.log(response);
+    setRoomServices(response || []);
+  };
+
+  const fetchRoomServiceEnums = async () => {
+    var response = await httpClient.getRoomServiceEnums();
+    console.log(response);
+    setRoomServiceEnums(response || []);
+  };
+
+  useEffect(() => {
+    fetchRoomServices();
+    fetchRoomServiceEnums();
+  }, []);
+
   return (
     <>
-      {/* <Helmet>
-        <title>Contract List</title>
-      </Helmet> */}
-
       <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
-          heading="Room Type List"
+          heading="Room Service List"
           links={[
             { name: "Dashboard", href: PATH_ADMIN.root },
             { name: "Admin", href: PATH_ADMIN.profile },
-            { name: "Room Type" },
+            { name: "Room Service" },
           ]}
           action={
             <Button
               component={RouterLink}
-              to={PATH_ADMIN.dormitory.roomTypeForm}
+              to={PATH_ADMIN.dormitory.roomServiceForm}
               variant="contained"
               startIcon={<Iconify icon="eva:plus-fill" />}
             >
-              New Room Type
+              New Room Service
             </Button>
           }
         />
@@ -164,11 +171,11 @@ export default function RoomTypePage() {
           <TableContainer sx={{ position: "relative", overflow: "unset" }}>
             <TableSelectedAction
               numSelected={selected.length}
-              rowCount={tableData.length}
+              rowCount={roomServices.length}
               onSelectAllRows={(checked) =>
                 onSelectAllRows(
                   checked,
-                  tableData.map((row) => row.roomTypeID.toString())
+                  roomServices.map((row) => row.id.toString())
                 )
               }
               action={
@@ -184,40 +191,36 @@ export default function RoomTypePage() {
               <Table size={"medium"} sx={{ minWidth: 800 }}>
                 <TableHeadCustom
                   headLabel={TABLE_HEAD}
-                  rowCount={tableData.length}
+                  rowCount={roomServices.length}
                   numSelected={selected.length}
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
                       checked,
-                      tableData.map((row) => row.roomTypeID.toString())
+                      roomServices.map((row) => row.id.toString())
                     )
                   }
-
-                  // rowCount={tableData.length}
                 />
 
                 <TableBody>
-                  {_roomTypeList
+                  {roomServices
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => (
-                      <RoomTypeRow
-                        key={row.roomTypeID}
+                      <RoomServiceRow
+                        key={row.id}
                         row={row}
-                        selected={selected.includes(row.roomTypeID.toString())}
-                        onSelectRow={() =>
-                          onSelectRow(row.roomTypeID.toString())
-                        }
-                        onEditRow={() =>
-                          handleEditRow(row.roomTypeID.toString())
-                        }
-                        onDeleteRow={() =>
-                          handleDeleteRow(row.roomTypeID.toString())
-                        }
+                        selected={selected.includes(row.id.toString())}
+                        onSelectRow={() => onSelectRow(row.id.toString())}
+                        onEditRow={() => handleEditRow(row.id.toString())}
+                        onDeleteRow={() => handleDeleteRow(row.id.toString())}
                       />
                     ))}
 
                   <TableEmptyRows
-                    emptyRows={emptyRows(page, rowsPerPage, tableData.length)}
+                    emptyRows={emptyRows(
+                      page,
+                      rowsPerPage,
+                      roomServices.length
+                    )}
                   />
 
                   <TableNoData isNotFound={isNotFound} />

@@ -9,6 +9,12 @@ import {
 import { DormyLocalStorage } from "../consts/DormyConstants";
 import { WorkplaceModel } from "../models/responses/WorkplaceModels";
 import { GuardianModel } from "../models/responses/GuardianModels";
+import {
+  IRoomService,
+  IRoomServiceCreate,
+  RoomServiceEnum,
+} from "../models/responses/RoomServiceModels";
+import { GetBatchRequestModel } from "../models/requests/CommonModels";
 
 const axiosInstance = axios.create({ baseURL: API_URL.BASE_URL });
 
@@ -91,10 +97,73 @@ const getUserGuardian = async () => {
   }
 };
 
+// Room Services
+const getRoomServiceEnums = async () => {
+  try {
+    const token = localStorage.getItem(DormyLocalStorage.dormyToken);
+    var response = await axiosInstance.get(API_URL.ROOM_SERVICE.GET_ENUM, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (response.status === HttpStatusCode.Ok) {
+      return response.data as RoomServiceEnum[];
+    }
+    return [];
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getRoomServiceBatch = async (payload: GetBatchRequestModel) => {
+  try {
+    const token = localStorage.getItem(DormyLocalStorage.dormyToken);
+    var response = await axiosInstance.post(
+      API_URL.ROOM_SERVICE.GET_BATCH,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.status === HttpStatusCode.Ok) {
+      return response.data.result as IRoomService[];
+    }
+    return [];
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const createRoomServiceBatch = async (payload: IRoomServiceCreate[]) => {
+  try {
+    const token = localStorage.getItem(DormyLocalStorage.dormyToken);
+    var response = await axiosInstance.post(
+      API_URL.ROOM_SERVICE.CREATE_BATCH,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.status === HttpStatusCode.Created) {
+      return response.data.result as string[];
+    }
+    return [];
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const httpClient = {
   adminSignIn: adminSignIn,
   userSignIn: userSignIn,
   userGetProfile: userGetProfile,
   getUserWorkplace: getUserWorkplace,
   getUserGuardian: getUserGuardian,
+  getRoomServiceEnums: getRoomServiceEnums,
+  getRoomServiceBatch: getRoomServiceBatch,
+  createRoomServiceBatch: createRoomServiceBatch,
 };
