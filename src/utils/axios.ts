@@ -12,6 +12,7 @@ import { GuardianModel } from "../models/responses/GuardianModels";
 import {
   IRoomService,
   IRoomServiceCreate,
+  IRoomServiceUpdate,
   RoomServiceEnum,
 } from "../models/responses/RoomServiceModels";
 import { GetBatchRequestModel } from "../models/requests/CommonModels";
@@ -157,6 +158,48 @@ const createRoomServiceBatch = async (payload: IRoomServiceCreate[]) => {
   }
 };
 
+const updateRoomServiceBatch = async (payload: IRoomServiceUpdate) => {
+  try {
+    const token = localStorage.getItem(DormyLocalStorage.dormyToken);
+    var response = await axiosInstance.put(
+      API_URL.ROOM_SERVICE.UPDATE,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (response.status === HttpStatusCode.Accepted) {
+      return response.data.result;
+    }
+    return undefined;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const softDeleteRoomServiceBatch = async (payload: string[]) => {
+  try {
+    const token = localStorage.getItem(DormyLocalStorage.dormyToken);
+    var response = await axiosInstance.delete(
+      API_URL.ROOM_SERVICE.SOFT_DELETE_BATCH,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        data: payload,
+      }
+    );
+    if (response.status === HttpStatusCode.Ok) {
+      return response.data.result as string[];
+    }
+    return [];
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const httpClient = {
   adminSignIn: adminSignIn,
   userSignIn: userSignIn,
@@ -166,4 +209,6 @@ export const httpClient = {
   getRoomServiceEnums: getRoomServiceEnums,
   getRoomServiceBatch: getRoomServiceBatch,
   createRoomServiceBatch: createRoomServiceBatch,
+  softDeleteRoomServiceBatch: softDeleteRoomServiceBatch,
+  updateRoomServiceBatch: updateRoomServiceBatch,
 };

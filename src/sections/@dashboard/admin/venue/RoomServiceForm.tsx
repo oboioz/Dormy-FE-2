@@ -12,12 +12,17 @@ import {
 import { yupResolver } from "@hookform/resolvers/yup";
 import { LoadingButton } from "@mui/lab";
 import { useForm } from "react-hook-form";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import {
+  Link as RouterLink,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import * as Yup from "yup";
 import FormProvider, { RHFTextField } from "../../../../components/hook-form";
 import Iconify from "../../../../components/iconify";
 import { PATH_ADMIN } from "../../../../routes/paths";
 import {
+  IRoomService,
   IRoomServiceCreate,
   RoomServiceEnum,
 } from "../../../../models/responses/RoomServiceModels";
@@ -47,6 +52,8 @@ const defaultValues: IRoomServiceCreate = {
 
 export default function RoomServiceForm() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
   const [roomServiceEnums, setRoomServiceEnums] = useState<RoomServiceEnum[]>(
     []
   );
@@ -75,8 +82,26 @@ export default function RoomServiceForm() {
     }
   };
 
+  const updateRoomService = async (data: IRoomServiceCreate) => {
+    var response = await httpClient.updateRoomServiceBatch({
+      ...data,
+      id: id || "",
+    });
+
+    if (response) {
+      toast.success("Update room service successfully");
+      navigate(PATH_ADMIN.dormitory.roomService);
+    } else {
+      toast.error("An error has occurred, please try again later");
+    }
+  };
+
   const onSubmit = async (data: IRoomServiceCreate) => {
-    createRoomService(data);
+    if (id) {
+      updateRoomService(data);
+    } else {
+      createRoomService(data);
+    }
   };
 
   const fetchRoomServiceEnums = async () => {
@@ -84,9 +109,36 @@ export default function RoomServiceForm() {
     setRoomServiceEnums(response || []);
   };
 
+  const setInitData = (data: IRoomService) => {
+    setValue("roomServiceName", data.roomServiceName);
+    setValue("unit", data.unit);
+    setValue("cost", data.cost);
+    setValue("roomServiceType", data.roomServiceType);
+    setValue("isServiceIndicatorUsed", data.isServiceIndicatorUsed);
+  };
+
+  const getRoomServiceDetail = async (id: string) => {
+    var response = await httpClient.getRoomServiceBatch({
+      ids: [id],
+      isGetAll: false,
+    });
+
+    if (response && response.length > 0) {
+      setInitData(response[0]);
+    } else {
+      navigate(PATH_ADMIN.dormitory.roomServiceForm);
+    }
+  };
+
   useEffect(() => {
     fetchRoomServiceEnums();
   }, []);
+
+  useEffect(() => {
+    if (id) {
+      getRoomServiceDetail(id);
+    }
+  }, [id]);
 
   console.log(roomServiceEnums);
 

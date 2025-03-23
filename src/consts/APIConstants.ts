@@ -20,5 +20,6 @@ export const API_URL = {
     GET_BY_ID: "room-service/id/",
     CREATE_BATCH: "room-service/batch/create",
     UPDATE: "room-service",
+    SOFT_DELETE_BATCH: "room-service/batch/soft-delete",
   },
 };

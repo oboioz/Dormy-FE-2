@@ -8,6 +8,7 @@ import {
   Table,
   TableBody,
   TableContainer,
+  TablePagination,
   Tooltip,
 } from "@mui/material";
 
@@ -30,11 +31,9 @@ import { PATH_ADMIN } from "../../routes/paths";
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
 import { httpClient } from "../../utils/axios";
-import {
-  IRoomService,
-  RoomServiceEnum,
-} from "../../models/responses/RoomServiceModels";
+import { IRoomService } from "../../models/responses/RoomServiceModels";
 import RoomServiceRow from "../../sections/@dashboard/admin/venue/RoomServiceRow";
+import { toast } from "react-toastify";
 
 const TABLE_HEAD = [
   { id: "roomServiceName", label: "Service Name", align: "left" },
@@ -46,6 +45,11 @@ const TABLE_HEAD = [
     label: "Is Indicator Used?",
     align: "left",
   },
+  {
+    id: "isDeleted",
+    label: "Is Deleted",
+    align: "left",
+  },
   { id: "" },
 ];
 
@@ -54,9 +58,6 @@ export default function RoomServicePage() {
   const navigate = useNavigate();
 
   const [roomServices, setRoomServices] = useState<IRoomService[]>([]);
-  const [roomServiceEnums, setRoomServiceEnums] = useState<RoomServiceEnum[]>(
-    []
-  );
 
   const {
     page,
@@ -66,16 +67,10 @@ export default function RoomServicePage() {
     setSelected,
     onSelectRow,
     onSelectAllRows,
-  } = useTable();
-
-  const dataInPage = roomServices.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
-  );
+    setRowsPerPage,
+  } = useTable({ defaultRowsPerPage: 10 });
 
   const { themeStretch } = useSettingsContext();
-
-  const [tableData, setTableData] = useState(roomServices);
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
@@ -89,39 +84,35 @@ export default function RoomServicePage() {
     setOpenConfirm(false);
   };
 
-  const handleEditRow = (id: string) => {
-    navigate(PATH_ADMIN.dormitory.roomTypeForm);
+  const handleEditRow = async (id: string) => {
+    navigate(`${PATH_ADMIN.dormitory.roomServiceForm}?id=${id}`);
   };
 
-  const handleDeleteRow = (id: string) => {
-    const deleteRow = roomServices.filter((row) => row.id.toString() !== id);
-    setSelected([]);
-    setTableData(deleteRow);
-
-    if (page > 0) {
-      if (dataInPage.length < 2) {
-        setPage(page - 1);
+  const handleDeleteRow = async (id: string) => {
+    try {
+      var response = await httpClient.softDeleteRoomServiceBatch([id]);
+      if (response) {
+        toast.success("Deleted");
+        window.location.reload();
+      } else {
+        toast.error("Error");
       }
+    } catch (error) {
+      toast.error("Error");
     }
   };
 
-  const handleDeleteRows = (selectedRows: string[]) => {
-    const deleteRows = tableData.filter(
-      (row) => !selectedRows.includes(row.id.toString())
-    );
-    setSelected([]);
-    setTableData(deleteRows);
-
-    if (page > 0) {
-      if (selectedRows.length === dataInPage.length) {
-        setPage(page - 1);
-      } else if (selectedRows.length === roomServices.length) {
-        setPage(0);
-      } else if (selectedRows.length > dataInPage.length) {
-        const newPage =
-          Math.ceil((tableData.length - selectedRows.length) / rowsPerPage) - 1;
-        setPage(newPage);
+  const handleDeleteRows = async (selectedRows: string[]) => {
+    try {
+      var response = await httpClient.softDeleteRoomServiceBatch(selectedRows);
+      if (response) {
+        toast.success("Deleted");
+        window.location.reload();
+      } else {
+        toast.error("Error");
       }
+    } catch (error) {
+      toast.error("Error");
     }
   };
 
@@ -134,15 +125,19 @@ export default function RoomServicePage() {
     setRoomServices(response || []);
   };
 
-  const fetchRoomServiceEnums = async () => {
-    var response = await httpClient.getRoomServiceEnums();
-    console.log(response);
-    setRoomServiceEnums(response || []);
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   useEffect(() => {
     fetchRoomServices();
-    fetchRoomServiceEnums();
   }, []);
 
   return (
@@ -228,6 +223,15 @@ export default function RoomServicePage() {
               </Table>
             </Scrollbar>
           </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={roomServices.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
         </Card>
       </Container>
 
@@ -257,5 +261,3 @@ export default function RoomServicePage() {
     </>
   );
 }
-
-// ----------------------------------------------------------------------

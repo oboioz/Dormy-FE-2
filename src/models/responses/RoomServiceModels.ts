@@ -27,3 +27,7 @@ export interface IRoomServiceCreate {
   roomServiceType: string;
   isServiceIndicatorUsed: boolean;
 }
+
+export interface IRoomServiceUpdate extends IRoomServiceCreate {
+  id: string;
+}

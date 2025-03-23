@@ -14,6 +14,10 @@ import ConfirmDialog from "../../../../components/confirm-dialog";
 import Iconify from "../../../../components/iconify";
 import MenuPopover from "../../../../components/menu-popover";
 import { IRoomService } from "../../../../models/responses/RoomServiceModels";
+import { toast } from "react-toastify";
+import { httpClient } from "../../../../utils/axios";
+import { useNavigate } from "react-router-dom";
+import { PATH_ADMIN } from "../../../../routes/paths";
 
 // ----------------------------------------------------------------------
 
@@ -39,6 +43,7 @@ export default function RoomServiceRow({
     unit,
     isServiceIndicatorUsed,
     roomServiceType,
+    isDeleted,
   } = row;
 
   const [openConfirm, setOpenConfirm] = useState(false);
@@ -80,6 +85,10 @@ export default function RoomServiceRow({
           {isServiceIndicatorUsed ? "Yes" : "No"}
         </TableCell>
 
+        <TableCell align="left" sx={{ color: isDeleted ? "red" : "green" }}>
+          {isDeleted ? "Yes" : "No"}
+        </TableCell>
+
         <TableCell align="right">
           <IconButton
             color={openPopover ? "inherit" : "default"}
@@ -102,6 +111,7 @@ export default function RoomServiceRow({
             handleClosePopover();
           }}
           sx={{ color: "error.main" }}
+          disabled={isDeleted}
         >
           <Iconify icon="eva:trash-2-outline" />
           Delete
@@ -112,6 +122,7 @@ export default function RoomServiceRow({
             onEditRow();
             handleClosePopover();
           }}
+          disabled={isDeleted}
         >
           <Iconify icon="eva:edit-fill" />
           Edit
@@ -124,7 +135,7 @@ export default function RoomServiceRow({
         title="Delete"
         content="Are you sure want to delete?"
         action={
-          <Button variant="contained" color="error" onClick={handleOpenConfirm}>
+          <Button variant="contained" color="error" onClick={onDeleteRow}>
             Delete
           </Button>
         }
