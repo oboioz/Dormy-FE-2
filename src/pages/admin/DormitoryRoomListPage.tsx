@@ -1,5 +1,10 @@
-import { useState } from "react";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import {
+  Link as RouterLink,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 // @mui
 import {
   Button,
@@ -38,19 +43,17 @@ import RoomTableRow from "../../sections/@dashboard/admin/venue/RoomTableRow";
 import RoomTableToolbar from "../../sections/@dashboard/admin/venue/RoomTableToolbar";
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
-
-// ----------------------------------------------------------------------
+import { BuildingModel } from "../../models/responses/BuildingModels";
+import { buildingService } from "../../services/buildingService";
 
 const TABLE_HEAD = [
   { id: "floor", label: "Floor Number", align: "left" },
   { id: "room", label: "Room Number", align: "left" },
-  { id: "bed", label: "Bed", align: "left" },
+  { id: "bed", label: "Occupied Bed", align: "left" },
   { id: "roomtype", label: "Room Type", align: "left" },
-  { id: "status", label: "Status", align: "center" },
+  { id: "status", label: "Status", align: "left" },
   { id: "" },
 ];
-
-// ----------------------------------------------------------------------
 
 export default function DormitoryRoomListPage() {
   useAuthGuard(UserRole.ADMIN);
@@ -73,23 +76,26 @@ export default function DormitoryRoomListPage() {
   const { themeStretch } = useSettingsContext();
 
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const buildingId = searchParams.get("id");
 
-  const [tableData, setTableData] = useState(_roomList);
+  // const [tableData, setTableData] = useState<BuildingModel>();
+  const [building, setBuilding] = useState<BuildingModel>();
 
-  const [filterName, setFilterName] = useState("");
+  // const [filterName, setFilterName] = useState("");
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
-  const dataFiltered = applyFilter({
-    inputData: tableData,
-    comparator: getComparator(order, orderBy),
-    filterName,
-  });
+  // const dataFiltered = applyFilter({
+  //   inputData: building?.rooms || [],
+  //   comparator: getComparator(order, orderBy),
+  //   filterName,
+  // });
 
-  const isFiltered = filterName !== "";
+  // const isFiltered = filterName !== "";
 
-  const isNotFound =
-    (!dataFiltered.length && !!filterName) || !dataFiltered.length;
+  // const isNotFound =
+  //   (!dataFiltered.length && !!filterName) || !dataFiltered.length;
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -101,7 +107,7 @@ export default function DormitoryRoomListPage() {
 
   const handleFilterName = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPage(0);
-    setFilterName(event.target.value);
+    // setFilterName(event.target.value);
   };
 
   const handleEditRow = (id: string) => {
@@ -109,8 +115,23 @@ export default function DormitoryRoomListPage() {
   };
 
   const handleResetFilter = () => {
-    setFilterName("");
+    // setFilterName("");
   };
+
+  const fetchBuilding = async (buildingId: string) => {
+    if (!buildingId) return;
+
+    var response = await buildingService.getBuildingById(buildingId);
+    if (response) {
+      setBuilding(response);
+    }
+  };
+
+  useEffect(() => {
+    if (buildingId) {
+      fetchBuilding(buildingId);
+    }
+  }, []);
 
   return (
     <>
@@ -141,8 +162,8 @@ export default function DormitoryRoomListPage() {
 
         <Card>
           <RoomTableToolbar
-            isFiltered={isFiltered}
-            filterName={filterName}
+            isFiltered={false}
+            filterName={""}
             onFilterName={handleFilterName}
             onResetFilter={handleResetFilter}
           />
@@ -150,11 +171,11 @@ export default function DormitoryRoomListPage() {
           <TableContainer sx={{ position: "relative", overflow: "unset" }}>
             <TableSelectedAction
               numSelected={selected.length}
-              rowCount={tableData.length}
+              rowCount={building?.rooms.length || 0}
               onSelectAllRows={(checked) =>
                 onSelectAllRows(
                   checked,
-                  tableData.map((row) => row.roomID.toString())
+                  (building?.rooms ?? []).map((row) => row.id.toString())
                 )
               }
               action={
@@ -172,42 +193,47 @@ export default function DormitoryRoomListPage() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={tableData.length}
+                  rowCount={building?.rooms.length}
                   numSelected={selected.length}
                   onSort={onSort}
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
                       checked,
-                      tableData.map((row) => row.roomID.toString())
+                      (building?.rooms ?? []).map((row) => row.id.toString())
                     )
                   }
                 />
 
                 <TableBody>
-                  {dataFiltered
+                  {(building?.rooms ?? [])
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .sort((a, b) => a.roomNumber - b.roomNumber)
                     .map((row) => (
                       <RoomTableRow
-                        key={row.roomID}
+                        key={row.id}
                         row={row}
-                        selected={selected.includes(row.roomID.toString())}
-                        onSelectRow={() => onSelectRow(row.roomID.toString())}
-                        onEditRow={() => handleEditRow(row.roomID.toString())}
+                        selected={selected.includes(row.id.toString())}
+                        onSelectRow={() => onSelectRow(row.id.toString())}
+                        onEditRow={() => handleEditRow(row.id.toString())}
                       />
                     ))}
 
                   <TableEmptyRows
-                    emptyRows={emptyRows(page, rowsPerPage, tableData.length)}
+                    emptyRows={emptyRows(
+                      page,
+                      rowsPerPage,
+                      building?.rooms.length || 0
+                    )}
                   />
 
-                  <TableNoData isNotFound={isNotFound} />
+                  <TableNoData isNotFound={false} />
                 </TableBody>
               </Table>
             </Scrollbar>
           </TableContainer>
 
           <TablePaginationCustom
-            count={dataFiltered.length}
+            count={building?.rooms.length || 0}
             page={page}
             rowsPerPage={rowsPerPage}
             onPageChange={onChangePage}

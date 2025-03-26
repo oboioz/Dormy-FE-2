@@ -555,9 +555,9 @@ function applyFilter({
   }
 
   if (filterService !== "all") {
-    inputData = inputData.filter((invoice) =>
-      invoice.invoiceItems.some((c) => c.invoiceId.type === filterService)
-    );
+    // inputData = inputData.filter((invoice) =>
+    //   // invoice.invoiceItems.some((c) => c.invoiceId.type === filterService)
+    // );
   }
 
   if (filterStartDate && filterEndDate) {

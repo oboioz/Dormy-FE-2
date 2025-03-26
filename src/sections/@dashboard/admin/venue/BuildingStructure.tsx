@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 // @mui
 import {
   Box,
@@ -7,51 +7,48 @@ import {
   Link,
   MenuItem,
   Stack,
-  Typography
-} from '@mui/material';
+  Typography,
+} from "@mui/material";
 // @types
 // _mock
 // components
-import { Link as RouterLink } from 'react-router-dom';
-import { IBuilding } from '../../../../@types/room';
-import Iconify from '../../../../components/iconify';
-import MenuPopover from '../../../../components/menu-popover';
-import { PATH_ADMIN } from '../../../../routes/paths';
-
+import { Link as RouterLink } from "react-router-dom";
+import { IBuilding } from "../../../../@types/room";
+import Iconify from "../../../../components/iconify";
+import MenuPopover from "../../../../components/menu-popover";
+import { PATH_ADMIN } from "../../../../routes/paths";
+import { BuildingModel } from "../../../../models/responses/BuildingModels";
 
 // ----------------------------------------------------------------------
-
-
 
 // ----------------------------------------------------------------------
 
 type Props = {
-  buildings: IBuilding[];
+  buildings: BuildingModel[];
 };
 
 export default function BuildingStructure({ buildings }: Props) {
-
   return (
     <>
       <Box
         gap={3}
         display="grid"
         gridTemplateColumns={{
-          xs: 'repeat(1, 1fr)',
-          sm: 'repeat(2, 1fr)',
-          md: 'repeat(3, 1fr)',
+          xs: "repeat(1, 1fr)",
+          sm: "repeat(2, 1fr)",
+          md: "repeat(3, 1fr)",
         }}
       >
         {buildings.map((building) => (
           <Box
-            key={building.buildingID}
+            key={building.id}
             component={RouterLink}
             // to={`${PATH_ADMIN.dormitory.roomList}/${building.buildingID}`} // Adjust URL structure as needed
-            to={PATH_ADMIN.dormitory.roomList} // Adjust URL structure as needed
+            to={PATH_ADMIN.dormitory.roomList + `?id=${building.id}`} // Adjust URL structure as needed
             sx={{
-              textDecoration: 'none', // Remove underline from links
-              color: 'inherit', // Keep the default text color
-              '&:hover': { opacity: 0.8 }, // Optional hover effect
+              textDecoration: "none", // Remove underline from links
+              color: "inherit", // Keep the default text color
+              "&:hover": { opacity: 0.8 }, // Optional hover effect
             }}
           >
             <BuildingCard building={building} />
@@ -65,11 +62,11 @@ export default function BuildingStructure({ buildings }: Props) {
 // ----------------------------------------------------------------------
 
 type BuildingCardProps = {
-  building: IBuilding;
+  building: BuildingModel;
 };
 
 function BuildingCard({ building }: BuildingCardProps) {
-  const { name, floorNumber, genderRestriction } = building;
+  const { name, totalFloors, totalRooms, genderRestriction } = building;
 
   const [openPopover, setOpenPopover] = useState<HTMLElement | null>(null);
 
@@ -83,12 +80,12 @@ function BuildingCard({ building }: BuildingCardProps) {
 
   const handleDelete = () => {
     handleClosePopover();
-    console.log('DELETE', name);
+    console.log("DELETE", name);
   };
 
   const handleEdit = () => {
     handleClosePopover();
-    console.log('EDIT', name);
+    console.log("EDIT", name);
   };
 
   return (
@@ -96,16 +93,20 @@ function BuildingCard({ building }: BuildingCardProps) {
       <Card
         sx={{
           py: 5,
-          display: 'flex',
-          position: 'relative',
-          alignItems: 'center',
-          flexDirection: 'column',
+          display: "flex",
+          position: "relative",
+          alignItems: "center",
+          flexDirection: "column",
         }}
       >
         {/* <Avatar alt={name} src={avatarUrl} sx={{ width: 64, height: 64, mb: 3 }} /> */}
 
         <Iconify
-          icon={genderRestriction === "MALE" ? "mdi:gender-male" : "mdi:gender-female"}
+          icon={
+            genderRestriction === "MALE"
+              ? "mdi:gender-male"
+              : "mdi:gender-female"
+          }
           sx={{
             width: 64,
             height: 64,
@@ -118,34 +119,57 @@ function BuildingCard({ building }: BuildingCardProps) {
         </Link>
 
         {/* <Stack spacing={2.5}> */}
-        <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2.5}>
-
-          <Stack direction="column" justifyContent="space-between" alignItems="center" spacing={2.5}>
-            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1, mt: 0.5 }}>
-              Floor Number: {floorNumber}
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          spacing={2.5}
+        >
+          <Stack
+            direction="column"
+            justifyContent="space-between"
+            alignItems="center"
+            spacing={2.5}
+          >
+            <Typography
+              variant="body2"
+              sx={{ color: "text.secondary", mb: 1, mt: 0.5 }}
+            >
+              Floor Number: {totalFloors}
             </Typography>
           </Stack>
 
-          <Stack direction="column" justifyContent="space-between" alignItems="center" spacing={2.5}>
-            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1, mt: 0.5 }}>
+          <Stack
+            direction="column"
+            justifyContent="space-between"
+            alignItems="center"
+            spacing={2.5}
+          >
+            <Typography
+              variant="body2"
+              sx={{ color: "text.secondary", mb: 1, mt: 0.5 }}
+            >
               Empty Bed: 200
             </Typography>
           </Stack>
-
         </Stack>
         {/* </Stack> */}
 
         <IconButton
-          color={openPopover ? 'inherit' : 'default'}
+          color={openPopover ? "inherit" : "default"}
           onClick={handleOpenPopover}
-          sx={{ top: 8, right: 8, position: 'absolute' }}
+          sx={{ top: 8, right: 8, position: "absolute" }}
         >
           <Iconify icon="eva:more-vertical-fill" />
         </IconButton>
       </Card>
 
-      <MenuPopover open={openPopover} onClose={handleClosePopover} arrow="right-top">
-        <MenuItem onClick={handleDelete} sx={{ color: 'error.main' }}>
+      <MenuPopover
+        open={openPopover}
+        onClose={handleClosePopover}
+        arrow="right-top"
+      >
+        <MenuItem onClick={handleDelete} sx={{ color: "error.main" }}>
           <Iconify icon="eva:trash-2-outline" />
           Delete
         </MenuItem>

@@ -10,6 +10,11 @@ import { PATH_ADMIN } from "../../routes/paths";
 import BuildingStructure from "../../sections/@dashboard/admin/venue/BuildingStructure";
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
+import { useAuthContext } from "../../auth/JwtContext";
+import { buildingService } from "../../services/buildingService";
+import { BuildingModel } from "../../models/responses/BuildingModels";
+import { useEffect, useState } from "react";
+import { set } from "lodash";
 // sections
 
 // ----------------------------------------------------------------------
@@ -27,6 +32,18 @@ const _buildingList = [...Array(10)].map((_, index) => ({
 export default function DormitoryBuildingPage() {
   useAuthGuard(UserRole.ADMIN);
   const { themeStretch } = useSettingsContext();
+  const { user } = useAuthContext();
+  const [buildingList, setBuildingList] = useState<BuildingModel[]>([]);
+
+  const fetchBuildingList = async () => {
+    // Fetch building list from API}
+    var response = await buildingService.getBuildingBatch({ ids: [] });
+    setBuildingList(response);
+  };
+
+  useEffect(() => {
+    fetchBuildingList();
+  }, []);
 
   return (
     <>
@@ -55,7 +72,7 @@ export default function DormitoryBuildingPage() {
         />
 
         <Card>
-          <BuildingStructure buildings={_buildingList} />
+          <BuildingStructure buildings={buildingList} />
         </Card>
       </Container>
     </>

@@ -26,6 +26,10 @@ export const API_URL = {
     GET_BATCH: "room-type/all",
     GET_SINGLE: "room-type/id/",
     BASE: "room-type",
-    SOFT_DELETE: "room-type/id/{id}/soft-delete"
+    SOFT_DELETE: "room-type/id/{id}/soft-delete",
+  },
+  BUILDING: {
+    GET_BATCH: "building/batch",
+    GET_SINGLE: "building/id/",
   },
 };

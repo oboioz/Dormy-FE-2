@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 // @mui
 import {
   Button,
@@ -8,19 +8,17 @@ import {
   TableCell,
   TableRow,
   Typography,
-} from '@mui/material';
+} from "@mui/material";
 // @types
 // components
-import { IRoom } from '../../../../@types/room';
-import ConfirmDialog from '../../../../components/confirm-dialog';
-import Iconify from '../../../../components/iconify';
-import Label from '../../../../components/label';
-import MenuPopover from '../../../../components/menu-popover';
-
-// ----------------------------------------------------------------------
+import ConfirmDialog from "../../../../components/confirm-dialog";
+import Iconify from "../../../../components/iconify";
+import Label from "../../../../components/label";
+import MenuPopover from "../../../../components/menu-popover";
+import { Room } from "../../../../models/responses/BuildingModels";
 
 type Props = {
-  row: IRoom;
+  row: Room;
   selected: boolean;
   onEditRow: VoidFunction;
   onSelectRow: VoidFunction;
@@ -32,8 +30,15 @@ export default function RoomTableRow({
   onEditRow,
   onSelectRow,
 }: Props) {
-
-  const { roomNumber, floorNumber, totalUsedBed, totalAvailableBed, status, roomType } = row;
+  const {
+    roomNumber,
+    floorNumber,
+    totalUsedBed,
+    totalAvailableBed,
+    status,
+    roomTypeId,
+    roomTypeName,
+  } = row;
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
@@ -70,24 +75,27 @@ export default function RoomTableRow({
           </Typography>
         </TableCell>
 
-        <TableCell align="left">{totalUsedBed.toString() + "/" + totalAvailableBed.toString()}</TableCell>
-
-        <TableCell align="center">
-          {roomType.roomTypeName}
+        <TableCell align="left">
+          {totalUsedBed.toString() + "/" + totalAvailableBed.toString()}
         </TableCell>
+
+        <TableCell align="left">{roomTypeName?.toUpperCase()}</TableCell>
 
         <TableCell align="left">
           <Label
             variant="soft"
-            color={(status === 'banned' && 'error') || 'success'}
-            sx={{ textTransform: 'capitalize' }}
+            color={(status === "banned" && "error") || "success"}
+            sx={{ textTransform: "capitalize" }}
           >
-            {status}
+            {status?.toUpperCase()}
           </Label>
         </TableCell>
 
-        <TableCell align="right">
-          <IconButton color={openPopover ? 'inherit' : 'default'} onClick={handleOpenPopover}>
+        <TableCell align="left">
+          <IconButton
+            color={openPopover ? "inherit" : "default"}
+            onClick={handleOpenPopover}
+          >
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
         </TableCell>
@@ -104,7 +112,7 @@ export default function RoomTableRow({
             handleOpenConfirm();
             handleClosePopover();
           }}
-          sx={{ color: 'error.main' }}
+          sx={{ color: "error.main" }}
         >
           <Iconify icon="eva:trash-2-outline" />
           Delete
