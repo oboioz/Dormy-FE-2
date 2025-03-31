@@ -34,3 +34,16 @@ export interface Room {
   lastUpdatedBy: string;
   isDeleted: boolean;
 }
+
+export interface BuildingCreateModel {
+  name: string;
+  totalFloors: number;
+  genderRestriction: string;
+  rooms: RoomCreateModel[];
+}
+
+export interface RoomCreateModel {
+  roomTypeId: string;
+  floorNumber: number;
+  totalRoomsWantToCreate: number;
+}

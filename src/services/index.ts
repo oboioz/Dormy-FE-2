@@ -1,4 +1,5 @@
 import { authService } from "./authService";
+import { buildingService } from "./buildingService";
 import { guardianService } from "./guardianService";
 import { roomServiceService } from "./roomServiceService";
 import { roomTypeService } from "./roomTypeService";
@@ -12,4 +13,5 @@ export const httpClient = {
     userService: userService,
     guardianService: guardianService,
     workplaceService: workplaceService,
+    buildingService: buildingService,
 };

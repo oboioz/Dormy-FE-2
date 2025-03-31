@@ -1,4 +1,3 @@
-import { extend } from "lodash";
 import { IRoomService } from "./RoomServiceModels";
 
 export interface IRoomType {

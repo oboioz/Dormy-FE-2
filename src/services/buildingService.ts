@@ -1,6 +1,9 @@
 import { HttpStatusCode } from "axios";
 import { privateAxios } from "../libs/axios";
-import { BuildingModel } from "../models/responses/BuildingModels";
+import {
+  BuildingCreateModel,
+  BuildingModel,
+} from "../models/responses/BuildingModels";
 import { API_URL } from "../consts/APIConstants";
 import { GetBatchRequestModel } from "../models/requests/CommonModels";
 
@@ -31,7 +34,20 @@ const getBuildingById = async (id: string) => {
   }
 };
 
+const createBuilding = async (payload: BuildingCreateModel) => {
+  try {
+    var response = await privateAxios.post(API_URL.BUILDING.CREATE, payload);
+    if (response.status === HttpStatusCode.Created) {
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const buildingService = {
   getBuildingBatch: getBuildingBatch,
   getBuildingById: getBuildingById,
+  createBuilding: createBuilding,
 };

@@ -12,12 +12,11 @@ import {
 // @types
 // _mock
 // components
-import { Link as RouterLink } from "react-router-dom";
-import { IBuilding } from "../../../../@types/room";
 import Iconify from "../../../../components/iconify";
 import MenuPopover from "../../../../components/menu-popover";
-import { PATH_ADMIN } from "../../../../routes/paths";
 import { BuildingModel } from "../../../../models/responses/BuildingModels";
+import { useNavigate } from "react-router-dom";
+import { PATH_ADMIN } from "../../../../routes/paths";
 
 // ----------------------------------------------------------------------
 
@@ -42,9 +41,6 @@ export default function BuildingStructure({ buildings }: Props) {
         {buildings.map((building) => (
           <Box
             key={building.id}
-            component={RouterLink}
-            // to={`${PATH_ADMIN.dormitory.roomList}/${building.buildingID}`} // Adjust URL structure as needed
-            to={PATH_ADMIN.dormitory.roomList + `?id=${building.id}`} // Adjust URL structure as needed
             sx={{
               textDecoration: "none", // Remove underline from links
               color: "inherit", // Keep the default text color
@@ -59,14 +55,13 @@ export default function BuildingStructure({ buildings }: Props) {
   );
 }
 
-// ----------------------------------------------------------------------
-
 type BuildingCardProps = {
   building: BuildingModel;
 };
 
 function BuildingCard({ building }: BuildingCardProps) {
   const { name, totalFloors, totalRooms, genderRestriction } = building;
+  const navigate = useNavigate();
 
   const [openPopover, setOpenPopover] = useState<HTMLElement | null>(null);
 
@@ -76,6 +71,10 @@ function BuildingCard({ building }: BuildingCardProps) {
 
   const handleClosePopover = () => {
     setOpenPopover(null);
+  };
+
+  const handleCheckDetail = () => {
+    navigate(PATH_ADMIN.dormitory.roomList + `?id=${building.id}`);
   };
 
   const handleDelete = () => {
@@ -169,6 +168,11 @@ function BuildingCard({ building }: BuildingCardProps) {
         onClose={handleClosePopover}
         arrow="right-top"
       >
+        <MenuItem onClick={handleCheckDetail} sx={{ color: "primary.main" }}>
+          <Iconify icon="eva:info-outline" />
+          Detail
+        </MenuItem>
+
         <MenuItem onClick={handleDelete} sx={{ color: "error.main" }}>
           <Iconify icon="eva:trash-2-outline" />
           Delete

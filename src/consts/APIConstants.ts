@@ -29,6 +29,7 @@ export const API_URL = {
     SOFT_DELETE: "room-type/id/{id}/soft-delete",
   },
   BUILDING: {
+    CREATE: "building",
     GET_BATCH: "building/batch",
     GET_SINGLE: "building/id/",
   },
