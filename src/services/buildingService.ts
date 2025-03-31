@@ -43,6 +43,22 @@ const createBuilding = async (payload: BuildingCreateModel) => {
     return false;
   } catch (err) {
     console.log(err);
+    return false;
+  }
+};
+
+const softDeleteBuilding = async (id: string) => {
+  try {
+    var response = await privateAxios.delete(
+      API_URL.BUILDING.SOFT_DELETE.replace("{id}", id)
+    );
+    if (response.status === HttpStatusCode.Ok) {
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.log(err);
+    return false;
   }
 };
 
@@ -50,4 +66,5 @@ export const buildingService = {
   getBuildingBatch: getBuildingBatch,
   getBuildingById: getBuildingById,
   createBuilding: createBuilding,
+  softDeleteBuilding: softDeleteBuilding,
 };

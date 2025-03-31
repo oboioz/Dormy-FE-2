@@ -17,6 +17,8 @@ import MenuPopover from "../../../../components/menu-popover";
 import { BuildingModel } from "../../../../models/responses/BuildingModels";
 import { useNavigate } from "react-router-dom";
 import { PATH_ADMIN } from "../../../../routes/paths";
+import { httpClient } from "../../../../services";
+import { toast } from "react-toastify";
 
 // ----------------------------------------------------------------------
 
@@ -38,18 +40,27 @@ export default function BuildingStructure({ buildings }: Props) {
           md: "repeat(3, 1fr)",
         }}
       >
-        {buildings.map((building) => (
-          <Box
-            key={building.id}
-            sx={{
-              textDecoration: "none", // Remove underline from links
-              color: "inherit", // Keep the default text color
-              "&:hover": { opacity: 0.8 }, // Optional hover effect
-            }}
-          >
-            <BuildingCard building={building} />
-          </Box>
-        ))}
+        {buildings
+          .sort((a, b) => {
+            // Sort by isDeleted: non-deleted buildings come first
+            if (a.isDeleted && !b.isDeleted) return 1;
+            if (!a.isDeleted && b.isDeleted) return -1;
+
+            // If both have the same isDeleted status, sort by name alphabetically
+            return a.name.localeCompare(b.name);
+          })
+          .map((building) => (
+            <Box
+              key={building.id}
+              sx={{
+                textDecoration: "none", // Remove underline from links
+                color: "inherit", // Keep the default text color
+                "&:hover": { opacity: 0.8 }, // Optional hover effect
+              }}
+            >
+              <BuildingCard building={building} />
+            </Box>
+          ))}
       </Box>
     </>
   );
@@ -77,9 +88,17 @@ function BuildingCard({ building }: BuildingCardProps) {
     navigate(PATH_ADMIN.dormitory.roomList + `?id=${building.id}`);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     handleClosePopover();
-    console.log("DELETE", name);
+    var isDeleted = await httpClient.buildingService.softDeleteBuilding(
+      building.id
+    );
+    if (isDeleted) {
+      toast.success(`Delete building ${building.name} success`);
+      window.location.reload();
+    } else {
+      toast.error("An error occurred, please try again later");
+    }
   };
 
   const handleEdit = () => {
@@ -96,6 +115,11 @@ function BuildingCard({ building }: BuildingCardProps) {
           position: "relative",
           alignItems: "center",
           flexDirection: "column",
+          backgroundColor: building.isDeleted
+            ? "rgba(255, 0, 0, 0.1)"
+            : "white", // Light red background for deleted buildings
+          border: building.isDeleted ? "2px dashed red" : "1px solid #e0e0e0", // Dashed red border for deleted buildings
+          opacity: building.isDeleted ? 0.7 : 1, // Slight transparency for deleted buildings
         }}
       >
         {/* <Avatar alt={name} src={avatarUrl} sx={{ width: 64, height: 64, mb: 3 }} /> */}
@@ -168,17 +192,25 @@ function BuildingCard({ building }: BuildingCardProps) {
         onClose={handleClosePopover}
         arrow="right-top"
       >
-        <MenuItem onClick={handleCheckDetail} sx={{ color: "primary.main" }}>
+        <MenuItem
+          onClick={handleCheckDetail}
+          disabled={building.isDeleted}
+          sx={{ color: "primary.main" }}
+        >
           <Iconify icon="eva:info-outline" />
           Detail
         </MenuItem>
 
-        <MenuItem onClick={handleDelete} sx={{ color: "error.main" }}>
+        <MenuItem
+          onClick={handleDelete}
+          disabled={building.isDeleted}
+          sx={{ color: "error.main" }}
+        >
           <Iconify icon="eva:trash-2-outline" />
           Delete
         </MenuItem>
 
-        <MenuItem onClick={handleEdit}>
+        <MenuItem onClick={handleEdit} disabled={building.isDeleted}>
           <Iconify icon="eva:edit-fill" />
           Edit
         </MenuItem>

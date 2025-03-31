@@ -32,5 +32,6 @@ export const API_URL = {
     CREATE: "building",
     GET_BATCH: "building/batch",
     GET_SINGLE: "building/id/",
+    SOFT_DELETE: "building/id/{id}/soft-delete",
   },
 };
