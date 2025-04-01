@@ -1,33 +1,21 @@
 // @mui
-import { Button, Container, Grid, Stack, Typography } from '@mui/material';
+import { Button, Container, Grid, Stack, Typography } from "@mui/material";
 // @types
 // _mock
 // components
 //
-import { yupResolver } from '@hookform/resolvers/yup';
-import { LoadingButton } from '@mui/lab';
-import { useForm } from 'react-hook-form';
-import { Link as RouterLink } from 'react-router-dom';
+import { yupResolver } from "@hookform/resolvers/yup";
+import { LoadingButton } from "@mui/lab";
+import { useForm } from "react-hook-form";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-import { IUserWorkplace } from '../../../../@types/user';
-import FormProvider, { RHFTextField } from '../../../../components/hook-form';
-import Iconify from '../../../../components/iconify';
-import { PATH_ADMIN } from '../../../../routes/paths';
-
-
-
-// ----------------------------------------------------------------------
-
-const OPTIONS = [
-  { value: 'option 1', label: 'Option 1' },
-  { value: 'option 2', label: 'Option 2' },
-  { value: 'option 3', label: 'Option 3' },
-  { value: 'option 4', label: 'Option 4' },
-  { value: 'option 5', label: 'Option 5' },
-  { value: 'option 6', label: 'Option 6' },
-  { value: 'option 7', label: 'Option 7' },
-  { value: 'option 8', label: 'Option 8' },
-];
+import { IUserWorkplace } from "../../../../@types/user";
+import FormProvider, { RHFTextField } from "../../../../components/hook-form";
+import Iconify from "../../../../components/iconify";
+import { PATH_ADMIN, PATH_PAGE } from "../../../../routes/paths";
+import { WorkplaceCreateModel } from "../../../../models/responses/WorkplaceModels";
+import { httpClient } from "../../../../services";
+import { toast } from "react-toastify";
 
 type Props = {
   workplaceInformation: IUserWorkplace | null;
@@ -41,23 +29,22 @@ type FormValuesProps = {
 
 const UpdateSchema = Yup.object().shape({
   name: Yup.string()
-    .required('Name is required')
-    .min(6, 'Mininum 6 characters'),
-  address: Yup.string().required('Address is required!'),
-  abbreviation: Yup.string().required('Abbreviation is required!'),
+    .required("Workplace name is required")
+    .min(1, "Minimum 1 characters"),
+  address: Yup.string().required("Address is required!"),
+  abbrevation: Yup.string().required("Abbreviation is required!"),
 });
 
-const defaultValues: FormValuesProps = {
-  name: '',
-  address: '',
-  abbreviation: '',
+const defaultValues: WorkplaceCreateModel = {
+  name: "",
+  address: "",
+  abbrevation: "",
 };
 
 export default function WorkplaceForm({ workplaceInformation }: Props) {
-
-
-  const methods = useForm<FormValuesProps>({
-    resolver: yupResolver(UpdateSchema),
+  const navigate = useNavigate();
+  const methods = useForm<WorkplaceCreateModel>({
+    resolver: yupResolver(UpdateSchema) as any,
     defaultValues,
   });
 
@@ -70,20 +57,28 @@ export default function WorkplaceForm({ workplaceInformation }: Props) {
     formState: { isSubmitting },
   } = methods;
 
-  const onSubmit = async (data: FormValuesProps) => {
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    console.log('DATA', data);
-    reset();
+  const onSubmit = async (data: WorkplaceCreateModel) => {
+    var response = await httpClient.workplaceService.createWorkplace(data);
+    if (response) {
+      toast.success("Create workplace success");
+      navigate(PATH_ADMIN.workplace.list);
+    } else {
+      toast.error("An error has occurred, please try again later");
+    }
   };
-
 
   return (
     <>
-      <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 5 }}>
-        Please fill the form
+      <Typography variant="h4" sx={{ fontWeight: "bold", mb: 5 }}>
+        Create Workplace
       </Typography>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-        <Grid container spacing={5} alignContent={'center'} justifyContent={'center'}>
+        <Grid
+          container
+          spacing={5}
+          alignContent={"center"}
+          justifyContent={"center"}
+        >
           <Grid item xs={12} md={6}>
             <Stack spacing={2}>
               <Typography variant="h6">Workplace Information</Typography>
@@ -92,9 +87,7 @@ export default function WorkplaceForm({ workplaceInformation }: Props) {
 
               <RHFTextField name="address" label="Address" />
 
-              <RHFTextField name="abbreviation" label="Abbreviation" />
-
-
+              <RHFTextField name="abbrevation" label="Abbreviation" />
             </Stack>
           </Grid>
 
@@ -106,7 +99,7 @@ export default function WorkplaceForm({ workplaceInformation }: Props) {
             <Stack spacing={3} direction="row" justifyContent="space-between">
               <Button
                 variant="outlined"
-                size='large'
+                size="large"
                 component={RouterLink} // Use RouterLink for navigation
                 to={PATH_ADMIN.workplace.list}
               >
@@ -117,19 +110,16 @@ export default function WorkplaceForm({ workplaceInformation }: Props) {
               <LoadingButton
                 variant="contained"
                 endIcon={<Iconify icon="eva:arrow-ios-forward-fill" />}
-                size='large'
+                size="large"
                 type="submit"
                 loading={isSubmitting}
               >
                 Next Step
               </LoadingButton>
             </Stack>
-
           </Container>
-
         </Grid>
       </FormProvider>
     </>
   );
 }
-

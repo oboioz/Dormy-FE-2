@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 // @mui
 import {
   Button,
@@ -8,20 +8,19 @@ import {
   TableCell,
   TableRow,
   Typography,
-} from '@mui/material';
+} from "@mui/material";
 // @types
-import { IUserWorkplace } from '../../../../@types/user';
 // components
-import ConfirmDialog from '../../../../components/confirm-dialog';
-import Iconify from '../../../../components/iconify';
-import Label from '../../../../components/label';
-import MenuPopover from '../../../../components/menu-popover';
-import { fDateTime } from '../../../../utils/formatTime';
+import ConfirmDialog from "../../../../components/confirm-dialog";
+import Iconify from "../../../../components/iconify";
+import MenuPopover from "../../../../components/menu-popover";
+import { fDateTime } from "../../../../utils/formatTime";
+import { WorkplaceModel } from "../../../../models/responses/WorkplaceModels";
 
 // ----------------------------------------------------------------------
 
 type Props = {
-  row: IUserWorkplace;
+  row: WorkplaceModel;
   selected: boolean;
   onEditRow: VoidFunction;
   onSelectRow: VoidFunction;
@@ -35,8 +34,15 @@ export default function WorkplaceTableRow({
   onSelectRow,
   onDeleteRow,
 }: Props) {
-
-  const { workplaceID, name, address, createdBy, createdAt, abbreviation } = row;
+  const {
+    id,
+    name,
+    address,
+    createdBy,
+    createdDateUtc,
+    abbrevation,
+    createdByCreator,
+  } = row;
 
   // const amount = 8000;
 
@@ -60,8 +66,6 @@ export default function WorkplaceTableRow({
     setOpenPopover(null);
   };
 
-
-
   return (
     <>
       <TableRow hover selected={selected}>
@@ -75,16 +79,19 @@ export default function WorkplaceTableRow({
           </Typography>
         </TableCell>
 
-        <TableCell align="left">{abbreviation}</TableCell>
-
         <TableCell align="left">{address}</TableCell>
 
-        <TableCell align="left">{createdBy}</TableCell>
+        <TableCell align="left">{abbrevation}</TableCell>
 
-        <TableCell align="left">{fDateTime(createdAt)}</TableCell>
+        <TableCell align="left">{createdByCreator}</TableCell>
+
+        <TableCell align="left">{fDateTime(createdDateUtc)}</TableCell>
 
         <TableCell align="right">
-          <IconButton color={openPopover ? 'inherit' : 'default'} onClick={handleOpenPopover}>
+          <IconButton
+            color={openPopover ? "inherit" : "default"}
+            onClick={handleOpenPopover}
+          >
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
         </TableCell>
@@ -101,7 +108,7 @@ export default function WorkplaceTableRow({
             handleOpenConfirm();
             handleClosePopover();
           }}
-          sx={{ color: 'error.main' }}
+          sx={{ color: "error.main" }}
         >
           <Iconify icon="eva:trash-2-outline" />
           Delete

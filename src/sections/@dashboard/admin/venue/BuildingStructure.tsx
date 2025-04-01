@@ -2,7 +2,13 @@ import { useState } from "react";
 // @mui
 import {
   Box,
+  Button,
   Card,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   IconButton,
   Link,
   MenuItem,
@@ -75,7 +81,7 @@ function BuildingCard({ building }: BuildingCardProps) {
   const navigate = useNavigate();
 
   const [openPopover, setOpenPopover] = useState<HTMLElement | null>(null);
-
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false); // State for confirmation dialog
   const handleOpenPopover = (event: React.MouseEvent<HTMLElement>) => {
     setOpenPopover(event.currentTarget);
   };
@@ -88,9 +94,29 @@ function BuildingCard({ building }: BuildingCardProps) {
     navigate(PATH_ADMIN.dormitory.roomList + `?id=${building.id}`);
   };
 
-  const handleDelete = async () => {
+  // const handleDelete = async () => {
+  //   handleClosePopover();
+  //   var isDeleted = await httpClient.buildingService.softDeleteBuilding(
+  //     building.id
+  //   );
+  //   if (isDeleted) {
+  //     toast.success(`Delete building ${building.name} success`);
+  //     window.location.reload();
+  //   } else {
+  //     toast.error("An error occurred, please try again later");
+  //   }
+  // };
+
+  const handleEdit = () => {
     handleClosePopover();
-    var isDeleted = await httpClient.buildingService.softDeleteBuilding(
+    console.log("EDIT", name);
+  };
+
+  const handleDelete = async () => {
+    setOpenConfirmDialog(false); // Close the confirmation dialog
+    handleClosePopover(); // Close the popover
+
+    const isDeleted = await httpClient.buildingService.softDeleteBuilding(
       building.id
     );
     if (isDeleted) {
@@ -101,9 +127,12 @@ function BuildingCard({ building }: BuildingCardProps) {
     }
   };
 
-  const handleEdit = () => {
-    handleClosePopover();
-    console.log("EDIT", name);
+  const handleOpenConfirmDialog = () => {
+    setOpenConfirmDialog(true); // Open the confirmation dialog
+  };
+
+  const handleCloseConfirmDialog = () => {
+    setOpenConfirmDialog(false); // Close the confirmation dialog
   };
 
   return (
@@ -202,7 +231,7 @@ function BuildingCard({ building }: BuildingCardProps) {
         </MenuItem>
 
         <MenuItem
-          onClick={handleDelete}
+          onClick={handleOpenConfirmDialog}
           disabled={building.isDeleted}
           sx={{ color: "error.main" }}
         >
@@ -215,6 +244,28 @@ function BuildingCard({ building }: BuildingCardProps) {
           Edit
         </MenuItem>
       </MenuPopover>
+      <Dialog
+        open={openConfirmDialog}
+        onClose={handleCloseConfirmDialog}
+        aria-labelledby="confirm-delete-title"
+        aria-describedby="confirm-delete-description"
+      >
+        <DialogTitle id="confirm-delete-title">Confirm Delete</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="confirm-delete-description">
+            Are you sure you want to delete the building <strong>{name}</strong>
+            ? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseConfirmDialog} color="inherit">
+            Cancel
+          </Button>
+          <Button onClick={handleDelete} color="error" variant="contained">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

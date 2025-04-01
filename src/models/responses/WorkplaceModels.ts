@@ -11,3 +11,9 @@ export interface WorkplaceModel {
   lastUpdatedBy: string;
   isDeleted: boolean;
 }
+
+export interface WorkplaceCreateModel {
+  name: string;
+  address: string;
+  abbrevation: string;
+}

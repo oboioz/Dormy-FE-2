@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 
 // components
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import _mock from "../../_mock";
 import ConfirmDialog from "../../components/confirm-dialog";
@@ -32,28 +32,20 @@ import { PATH_ADMIN } from "../../routes/paths";
 import WorkplaceTableRow from "../../sections/@dashboard/admin/resident/WorkplaceTableRow";
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
+import { WorkplaceModel } from "../../models/responses/WorkplaceModels";
+import { httpClient } from "../../services";
 // sections
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  // { id: 'workplaceID', label: 'ID', align: 'left' },
-  { id: "workplaceName", label: "Workplace Name", align: "left" },
-  { id: "abbreviation", label: "Abbreviation", align: "left" },
-  { id: "createdBy", label: "Created By", align: "center" },
-  { id: "createdAt", label: "Created At", align: "left" },
-  { id: "amount", label: "Amount", align: "left" },
+  { id: "name", label: "Workplace Name", align: "left" },
+  { id: "address", label: "Address", align: "left" },
+  { id: "abbrevation", label: "Abbreviation", align: "left" },
+  { id: "createdByCreator", label: "Abbreviation", align: "left" },
+  { id: "createdDateUtc", label: "Created At", align: "left" },
   { id: "" },
 ];
-
-const _workplaceList = [...Array(24)].map((_, index) => ({
-  workplaceID: index + 1, // Numeric ID
-  name: _mock.company(index), // Mock company name
-  address: _mock.address.fullAddress(index), // Mock full address
-  createdAt: _mock.time(index), // Mock creation date
-  createdBy: _mock.name.fullName(index), // Mock creator name
-  abbreviation: _mock.text.title(index).slice(0, 3).toUpperCase(), // Abbreviation from title
-}));
 
 // ----------------------------------------------------------------------
 
@@ -70,16 +62,16 @@ export default function WorkplaceListPage() {
     onSelectAllRows,
   } = useTable();
 
-  const dataInPage = _workplaceList.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
-  );
-
   const { themeStretch } = useSettingsContext();
 
   const navigate = useNavigate();
 
-  const [tableData, setTableData] = useState(_workplaceList);
+  const [_workplaceList, setWorkplaces] = useState<WorkplaceModel[]>([]);
+
+  const dataInPage = _workplaceList.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   const [filterName, setFilterName] = useState("");
 
@@ -100,11 +92,9 @@ export default function WorkplaceListPage() {
   };
 
   const handleDeleteRow = (id: string) => {
-    const deleteRow = tableData.filter(
-      (row) => row.workplaceID.toString() !== id
-    );
+    const deleteRow = _workplaceList.filter((row) => row.id.toString() !== id);
     setSelected([]);
-    setTableData(deleteRow);
+    setWorkplaces(deleteRow);
 
     if (page > 0) {
       if (dataInPage.length < 2) {
@@ -114,11 +104,11 @@ export default function WorkplaceListPage() {
   };
 
   const handleDeleteRows = (selectedRows: string[]) => {
-    const deleteRows = tableData.filter(
-      (row) => !selectedRows.includes(row.workplaceID.toString())
+    const deleteRows = _workplaceList.filter(
+      (row) => !selectedRows.includes(row.id.toString())
     );
     setSelected([]);
-    setTableData(deleteRows);
+    setWorkplaces(deleteRows);
 
     if (page > 0) {
       if (selectedRows.length === dataInPage.length) {
@@ -127,11 +117,24 @@ export default function WorkplaceListPage() {
         setPage(0);
       } else if (selectedRows.length > dataInPage.length) {
         const newPage =
-          Math.ceil((tableData.length - selectedRows.length) / rowsPerPage) - 1;
+          Math.ceil(
+            (_workplaceList.length - selectedRows.length) / rowsPerPage
+          ) - 1;
         setPage(newPage);
       }
     }
   };
+
+  const fetchWorkplaces = async () => {
+    var response = await httpClient.workplaceService.getAllWorkplace();
+    if (response?.length > 0) {
+      setWorkplaces(response);
+    }
+  };
+
+  useEffect(() => {
+    fetchWorkplaces();
+  }, []);
 
   return (
     <>
@@ -163,11 +166,11 @@ export default function WorkplaceListPage() {
           <TableContainer sx={{ position: "relative", overflow: "unset" }}>
             <TableSelectedAction
               numSelected={selected.length}
-              rowCount={tableData.length}
+              rowCount={_workplaceList.length}
               onSelectAllRows={(checked) =>
                 onSelectAllRows(
                   checked,
-                  tableData.map((row) => row.workplaceID.toString())
+                  _workplaceList.map((row) => row.id.toString())
                 )
               }
               action={
@@ -183,16 +186,14 @@ export default function WorkplaceListPage() {
               <Table size={"medium"} sx={{ minWidth: 800 }}>
                 <TableHeadCustom
                   headLabel={TABLE_HEAD}
-                  rowCount={tableData.length}
+                  rowCount={_workplaceList.length}
                   numSelected={selected.length}
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
                       checked,
-                      tableData.map((row) => row.workplaceID.toString())
+                      _workplaceList.map((row) => row.id.toString())
                     )
                   }
-
-                  // rowCount={tableData.length}
                 />
 
                 <TableBody>
@@ -200,23 +201,21 @@ export default function WorkplaceListPage() {
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => (
                       <WorkplaceTableRow
-                        key={row.workplaceID}
+                        key={row.id}
                         row={row}
-                        selected={selected.includes(row.workplaceID.toString())}
-                        onSelectRow={() =>
-                          onSelectRow(row.workplaceID.toString())
-                        }
-                        onEditRow={() =>
-                          handleEditRow(row.workplaceID.toString())
-                        }
-                        onDeleteRow={() =>
-                          handleDeleteRow(row.workplaceID.toString())
-                        }
+                        selected={selected.includes(row.id.toString())}
+                        onSelectRow={() => onSelectRow(row.id.toString())}
+                        onEditRow={() => handleEditRow(row.id.toString())}
+                        onDeleteRow={() => handleDeleteRow(row.id.toString())}
                       />
                     ))}
 
                   <TableEmptyRows
-                    emptyRows={emptyRows(page, rowsPerPage, tableData.length)}
+                    emptyRows={emptyRows(
+                      page,
+                      rowsPerPage,
+                      _workplaceList.length
+                    )}
                   />
 
                   <TableNoData isNotFound={isNotFound} />

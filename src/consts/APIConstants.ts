@@ -10,6 +10,7 @@ export const API_URL = {
   },
   WORKPLACE: {
     GET: "workplace/all",
+    CREATE: "workplace",
   },
   GUARDIAN: {
     GET: "guardian/all",
