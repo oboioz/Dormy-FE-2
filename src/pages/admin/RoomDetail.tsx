@@ -24,8 +24,6 @@ export default function RoomDetail({ room }: Props) {
     users,
   } = room;
 
-  room.users.push(room.users[0]);
-
   return (
     <>
       <Grid container spacing={3} sx={{ marginLeft: 2 }}>
