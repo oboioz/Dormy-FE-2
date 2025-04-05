@@ -59,6 +59,7 @@ import {
   ViolationMonthListPage,
   WorkplaceFormPage,
   WorkplaceListPage,
+  RoomPage,
 } from "./elements";
 
 export default function Router() {
@@ -151,12 +152,27 @@ export default function Router() {
         },
         { path: "garageworker", element: <VehicleWorkerPage /> },
 
-        { path: "structure", element: <DormitoryBuildingPage /> },
-        { path: "blockedit", element: <DormitoryBuildingFormPage /> },
         {
-          path: "structure/structurename/roomlist",
+          path: "buildings",
+          element: <DormitoryBuildingPage />,
+        },
+        {
+          path: "buildings/:buildingId/rooms",
           element: <DormitoryRoomListPage />,
         },
+        {
+          path: "rooms/:roomId",
+          element: <RoomPage />,
+        },
+        { path: "blockedit", element: <DormitoryBuildingFormPage /> },
+        // {
+        //   path: "structure/structurename/roomlist",
+        //   element: <DormitoryRoomListPage />,
+        // },
+        // {
+        //   path: "structure/structurename/roomlist/room",
+        //   element: <RoomPage />,
+        // },
         // { path: 'structure/structurename/roomcreate', element: (<DormitoryRoomCreatePage />), },
 
         { path: "roomtype", element: <RoomTypePage /> },

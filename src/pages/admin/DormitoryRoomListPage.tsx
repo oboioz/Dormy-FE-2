@@ -1,10 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Link as RouterLink,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
 // @mui
 import {
   Button,
@@ -76,8 +71,7 @@ export default function DormitoryRoomListPage() {
   const { themeStretch } = useSettingsContext();
 
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const buildingId = searchParams.get("id");
+  const { buildingId } = useParams();
 
   // const [tableData, setTableData] = useState<BuildingModel>();
   const [building, setBuilding] = useState<BuildingModel>();
@@ -110,8 +104,8 @@ export default function DormitoryRoomListPage() {
     // setFilterName(event.target.value);
   };
 
-  const handleEditRow = (id: string) => {
-    // navigate(PATH_DASHBOARD.user.edit(paramCase(id)));
+  const handleDetailRow = (id: string) => {
+    navigate(PATH_ADMIN.dormitory.roomDetail(id));
   };
 
   const handleResetFilter = () => {
@@ -145,7 +139,7 @@ export default function DormitoryRoomListPage() {
           links={[
             { name: "Dashboard", href: PATH_ADMIN.root },
             { name: "User", href: PATH_ADMIN.profile },
-            { name: "Building", href: PATH_ADMIN.dormitory.structure },
+            { name: "Building", href: PATH_ADMIN.dormitory.buildings },
             { name: "Building Room List" },
           ]}
           action={
@@ -214,7 +208,7 @@ export default function DormitoryRoomListPage() {
                         row={row}
                         selected={selected.includes(row.id.toString())}
                         onSelectRow={() => onSelectRow(row.id.toString())}
-                        onEditRow={() => handleEditRow(row.id.toString())}
+                        onDetailRow={() => handleDetailRow(row.id.toString())}
                       />
                     ))}
 

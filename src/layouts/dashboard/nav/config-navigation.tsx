@@ -105,7 +105,7 @@ const adminNavConfig = [
         // roles: ['admin'],
 
         children: [
-          { title: "Structure", path: PATH_ADMIN.dormitory.structure },
+          { title: "Structure", path: PATH_ADMIN.dormitory.buildings },
           { title: "Room Types", path: PATH_ADMIN.dormitory.roomType },
           { title: "Room Services", path: PATH_ADMIN.dormitory.roomService },
         ],

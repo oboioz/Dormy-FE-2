@@ -49,7 +49,7 @@ export default function BuildingStructureForm() {
     );
     if (isCreatedSuccess) {
       toast.success("Create building success");
-      navigate(PATH_ADMIN.dormitory.structure);
+      navigate(PATH_ADMIN.dormitory.buildings);
     } else {
       toast.error("An error has occurred, please try again");
       reset();
@@ -241,7 +241,7 @@ export default function BuildingStructureForm() {
                 variant="outlined"
                 size="large"
                 component={RouterLink}
-                to={PATH_ADMIN.dormitory.structure}
+                to={PATH_ADMIN.dormitory.buildings}
               >
                 Back to Building
               </Button>

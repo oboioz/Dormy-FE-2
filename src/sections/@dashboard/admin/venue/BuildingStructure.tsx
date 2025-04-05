@@ -1,5 +1,4 @@
 import { useState } from "react";
-// @mui
 import {
   Box,
   Button,
@@ -15,9 +14,6 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-// @types
-// _mock
-// components
 import Iconify from "../../../../components/iconify";
 import MenuPopover from "../../../../components/menu-popover";
 import { BuildingModel } from "../../../../models/responses/BuildingModels";
@@ -25,10 +21,6 @@ import { useNavigate } from "react-router-dom";
 import { PATH_ADMIN } from "../../../../routes/paths";
 import { httpClient } from "../../../../services";
 import { toast } from "react-toastify";
-
-// ----------------------------------------------------------------------
-
-// ----------------------------------------------------------------------
 
 type Props = {
   buildings: BuildingModel[];
@@ -91,7 +83,7 @@ function BuildingCard({ building }: BuildingCardProps) {
   };
 
   const handleCheckDetail = () => {
-    navigate(PATH_ADMIN.dormitory.roomList + `?id=${building.id}`);
+    navigate(PATH_ADMIN.dormitory.rooms(building.id));
   };
 
   // const handleDelete = async () => {

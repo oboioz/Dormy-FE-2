@@ -20,14 +20,14 @@ import { Room } from "../../../../models/responses/BuildingModels";
 type Props = {
   row: Room;
   selected: boolean;
-  onEditRow: VoidFunction;
+  onDetailRow: VoidFunction;
   onSelectRow: VoidFunction;
 };
 
 export default function RoomTableRow({
   row,
   selected,
-  onEditRow,
+  onDetailRow,
   onSelectRow,
 }: Props) {
   const {
@@ -109,6 +109,15 @@ export default function RoomTableRow({
       >
         <MenuItem
           onClick={() => {
+            onDetailRow();
+            handleClosePopover();
+          }}
+        >
+          <Iconify icon="eva:edit-fill" />
+          Detail
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
             handleOpenConfirm();
             handleClosePopover();
           }}
@@ -116,16 +125,6 @@ export default function RoomTableRow({
         >
           <Iconify icon="eva:trash-2-outline" />
           Delete
-        </MenuItem>
-
-        <MenuItem
-          onClick={() => {
-            onEditRow();
-            handleClosePopover();
-          }}
-        >
-          <Iconify icon="eva:edit-fill" />
-          Edit
         </MenuItem>
       </MenuPopover>
 

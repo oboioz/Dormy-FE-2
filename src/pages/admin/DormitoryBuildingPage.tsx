@@ -1,4 +1,4 @@
-import { Link as RouterLink } from "react-router-dom";
+import { Outlet, Link as RouterLink } from "react-router-dom";
 // @mui
 import { Button, Card, Container } from "@mui/material";
 // components
@@ -78,5 +78,3 @@ export default function DormitoryBuildingPage() {
     </>
   );
 }
-
-// ----------------------------------------------------------------------

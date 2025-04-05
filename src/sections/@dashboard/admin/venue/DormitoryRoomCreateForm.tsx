@@ -115,7 +115,7 @@ export default function DormitoryRoomCreateForm() {
                 variant="outlined"
                 size='large'
                 component={RouterLink} // Use RouterLink for navigation
-                to={PATH_ADMIN.dormitory.roomList}
+                to={PATH_ADMIN.dormitory.rooms}
               >
                 Back to Room List
               </Button>
