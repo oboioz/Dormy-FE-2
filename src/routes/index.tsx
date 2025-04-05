@@ -164,7 +164,7 @@ export default function Router() {
           path: "rooms/:roomId",
           element: <RoomPage />,
         },
-        { path: "blockedit", element: <DormitoryBuildingFormPage /> },
+        { path: "buildingeditor", element: <DormitoryBuildingFormPage /> },
         // {
         //   path: "structure/structurename/roomlist",
         //   element: <DormitoryRoomListPage />,
@@ -190,7 +190,7 @@ export default function Router() {
       children: [
         { path: "workplaceform", element: <WorkplaceFormPage /> },
         {
-          path: "structure/structurename/roomcreate",
+          path: "building/:buildingId/roomcreate",
           element: <DormitoryRoomCreatePage />,
         },
         { path: "roomtypeedit", element: <RoomTypeFormPage /> },

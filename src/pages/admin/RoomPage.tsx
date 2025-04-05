@@ -52,7 +52,7 @@ export default function RoomPage() {
           action={
             <Button
               component={Link}
-              to={PATH_ADMIN.dormitory.blockForm}
+              to={PATH_ADMIN.dormitory.buildingForm}
               variant="contained"
               startIcon={<Iconify icon="eva:plus-fill" />}
             >

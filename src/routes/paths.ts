@@ -113,7 +113,7 @@ export const PATH_ADMIN = {
   dormitory: {
     root: path(ROOTS_ADMIN, "/buildings"),
     buildings: path(ROOTS_ADMIN, "/buildings"),
-    blockForm: path(ROOTS_ADMIN, "/blockedit"),
+    buildingForm: path(ROOTS_ADMIN, "/buildingeditor"),
     // view: (name: string) => path(ROOTS_ADMIN, `/structure/building/${name}`),
     rooms: (buildingId: string) =>
       path(ROOTS_ADMIN, `/buildings/${buildingId}/rooms`),

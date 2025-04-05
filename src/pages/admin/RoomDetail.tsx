@@ -205,13 +205,10 @@ export default function RoomDetail({ room }: Props) {
                               sx={{ color: "primary.main" }}
                             />
                             <Link
-                              component="button"
                               variant="body2"
                               target="_blank"
                               rel="noopener noreferrer"
-                              onClick={() =>
-                                navigate(`/contracts/${user.contractId}`)
-                              }
+                              href={`/contract/${user.contractId}`}
                               sx={{
                                 color: "primary.main",
                                 textDecoration: "underline",

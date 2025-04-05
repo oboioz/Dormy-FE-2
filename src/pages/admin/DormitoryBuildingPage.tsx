@@ -62,11 +62,11 @@ export default function DormitoryBuildingPage() {
           action={
             <Button
               component={RouterLink}
-              to={PATH_ADMIN.dormitory.blockForm}
+              to={PATH_ADMIN.dormitory.buildingForm}
               variant="contained"
               startIcon={<Iconify icon="eva:plus-fill" />}
             >
-              Add new block
+              Add new building
             </Button>
           }
         />
