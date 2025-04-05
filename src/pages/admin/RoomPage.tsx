@@ -47,6 +47,7 @@ export default function RoomPage() {
             { name: "Admin", href: PATH_ADMIN.profile },
             { name: "Building", href: PATH_ADMIN.dormitory.buildings },
             { name: "Room" },
+            { name: `${room?.roomNumber || ''}`},
           ]}
           action={
             <Button

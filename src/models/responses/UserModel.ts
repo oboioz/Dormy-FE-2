@@ -57,4 +57,8 @@ export interface Profile {
   nationalIdNumber: string;
   status: string;
   gender: string;
+  contractId?: string;
+  contractStartDate?: Date;
+  contractEndDate?: Date;
+  contractStatus?: string; 
 }
