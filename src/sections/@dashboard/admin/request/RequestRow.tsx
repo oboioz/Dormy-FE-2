@@ -1,5 +1,4 @@
-import { useState } from 'react';
-// @mui
+import { useState } from "react";
 import {
   Button,
   Checkbox,
@@ -7,37 +6,41 @@ import {
   MenuItem,
   TableCell,
   TableRow,
-  Typography
-} from '@mui/material';
-// @types
-// components
-import { IRequest } from '../../../../@types/request';
-import { phoneNumber } from '../../../../_mock/assets';
-import ConfirmDialog from '../../../../components/confirm-dialog';
-import Iconify from '../../../../components/iconify';
-import Label from '../../../../components/label';
-import MenuPopover from '../../../../components/menu-popover';
-import { fDateTime } from '../../../../utils/formatTime';
-
-// ----------------------------------------------------------------------
+  Typography,
+} from "@mui/material";
+import Iconify from "../../../../components/iconify";
+import Label from "../../../../components/label";
+import MenuPopover from "../../../../components/menu-popover";
+import { fDateTime } from "../../../../utils/formatTime";
+import { IRequest } from "../../../../models/responses/RequestModel";
+import ConfirmDialog from "../../../../components/confirm-dialog";
 
 type Props = {
   row: IRequest;
   selected: boolean;
-  onEditRow: VoidFunction;
+  onApproveRow: VoidFunction;
   onSelectRow: VoidFunction;
-  onDeleteRow: VoidFunction;
+  onRejectRow: VoidFunction;
 };
 
 export default function RequestRow({
   row,
   selected,
-  onEditRow,
+  onApproveRow,
   onSelectRow,
-  onDeleteRow,
+  onRejectRow,
 }: Props) {
-
-  const { description, adminID, requestID, requestType, roomID, status, submissionDate, userID } = row;
+  const {
+    description,
+    requestType,
+    status,
+    createdDateUtc,
+    id,
+    buildingName,
+    roomNumber,
+    isDeleted,
+    userName,
+  } = row;
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
@@ -49,6 +52,7 @@ export default function RequestRow({
 
   const handleCloseConfirm = () => {
     setOpenConfirm(false);
+    onRejectRow();
   };
 
   const handleOpenPopover = (event: React.MouseEvent<HTMLElement>) => {
@@ -58,7 +62,6 @@ export default function RequestRow({
   const handleClosePopover = () => {
     setOpenPopover(null);
   };
-
 
   return (
     <>
@@ -73,29 +76,48 @@ export default function RequestRow({
           </Typography>
         </TableCell>
 
-        <TableCell align="left">{fDateTime(submissionDate)}</TableCell>
+        <TableCell align="left">
+          {new Date(createdDateUtc).toLocaleDateString("en-us", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          })}
+        </TableCell>
 
-        <TableCell align="left">{userID.firstName}</TableCell>
+        <TableCell align="left">{userName}</TableCell>
 
-        <TableCell align="left">{phoneNumber}</TableCell>
+        <TableCell align="left">{buildingName}</TableCell>
 
-        <TableCell align="left">{userID.contract.roomID.building.name}{userID.contract.roomID.floorNumber}{userID.contract.roomID.roomNumber}</TableCell>
+        <TableCell align="left">{roomNumber}</TableCell>
 
         <TableCell align="left">{description}</TableCell>
 
-
-        <TableCell align="right">
+        <TableCell align="left">
           <Label
             variant="soft"
-            color={(status === 'banned' && 'error') || 'success'}
-            sx={{ textTransform: 'capitalize' }}
+            color={
+              status === "SUBMITTED"
+                ? "warning"
+                : status === "REJECTED"
+                ? "error"
+                : status === "APPROVED"
+                ? "success"
+                : status === "CANCELED"
+                ? "default"
+                : undefined
+            }
+            sx={{ textTransform: "capitalize" }}
           >
             {status}
           </Label>
         </TableCell>
 
-        <TableCell align="right">
-          <IconButton color={openPopover ? 'inherit' : 'default'} onClick={handleOpenPopover}>
+        <TableCell align="left">
+          <IconButton
+            color={openPopover ? "inherit" : "default"}
+            onClick={handleOpenPopover}
+            disabled={status !== "SUBMITTED"}
+          >
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
         </TableCell>
@@ -109,34 +131,37 @@ export default function RequestRow({
       >
         <MenuItem
           onClick={() => {
+            handleClosePopover();
+            onApproveRow();
+          }}
+          sx={{ color: "success.main" }}
+        >
+          <Iconify icon="eva:checkmark-circle-outline" />
+          Approve
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
             handleOpenConfirm();
             handleClosePopover();
           }}
-          sx={{ color: 'error.main' }}
+          sx={{ color: "error.main" }}
         >
-          <Iconify icon="eva:trash-2-outline" />
-          Delete
-        </MenuItem>
-
-        <MenuItem
-          onClick={() => {
-            onEditRow();
-            handleClosePopover();
-          }}
-        >
-          <Iconify icon="eva:edit-fill" />
-          Edit
+          <Iconify icon="eva:close-circle-outline" />
+          Reject
         </MenuItem>
       </MenuPopover>
-
       <ConfirmDialog
         open={openConfirm}
         onClose={handleCloseConfirm}
-        title="Delete"
-        content="Are you sure want to delete?"
+        title="Reject"
+        content="Are you sure want to reject?"
         action={
-          <Button variant="contained" color="error" onClick={handleOpenConfirm}>
-            Delete
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => handleCloseConfirm()}
+          >
+            Reject
           </Button>
         }
       />

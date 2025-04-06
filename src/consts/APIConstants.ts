@@ -58,4 +58,11 @@ export const API_URL = {
     CREATE: "overnight-absence",
     UPDATE: "overnight-absence",
   },
+  REQUEST: {
+    GET_BATCH: "request/batch",
+    GET_SINGLE: "request/id/",
+    UPDATE: "request/id/",
+    APPROVE_REJECT: "request/id/{id}/approve-or-reject",
+    CANCEL: "request/id/{id}/cancel",
+  },
 };

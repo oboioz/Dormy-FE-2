@@ -9,17 +9,19 @@ import { userService } from "./userService";
 import { workplaceService } from "./workplaceService";
 import { healthInsuranceService } from "./healthInsuranceService";
 import { overnightAbsenceService } from "./overnightAbsenceService";
+import { requestService } from "./requestService";
 
 export const httpClient = {
-    authService: authService,
-    roomServiceService: roomServiceService,
-    roomTypeService: roomTypeService,
-    userService: userService,
-    guardianService: guardianService,
-    workplaceService: workplaceService,
-    buildingService: buildingService,
-    roomService: roomService,
-    registrationService: registrationService,
-    healthInsuranceService: healthInsuranceService,
+  authService: authService,
+  roomServiceService: roomServiceService,
+  roomTypeService: roomTypeService,
+  userService: userService,
+  guardianService: guardianService,
+  workplaceService: workplaceService,
+  buildingService: buildingService,
+  roomService: roomService,
+  registrationService: registrationService,
+  healthInsuranceService: healthInsuranceService,
     overnightAbsenceService: overnightAbsenceService,
+  requestService: requestService,
 };
