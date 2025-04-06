@@ -28,6 +28,8 @@
     "highlight.js": "^11.11.1",
     "i18next": "^24.2.2",
     "i18next-browser-languagedetector": "^8.0.4",
+    "moment": "^2.29.4",
+    "dayjs": "^1.11.7",
     "lodash": "^4.17.21",
     "notistack": "^3.0.2",
     "nprogress": "^0.2.0",
