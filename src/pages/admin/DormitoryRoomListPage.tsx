@@ -66,7 +66,7 @@ export default function DormitoryRoomListPage() {
     onSort,
     onChangePage,
     onChangeRowsPerPage,
-  } = useTable();
+  } = useTable({ defaultRowsPerPage: 10 });
 
   const { themeStretch } = useSettingsContext();
 
