@@ -1,18 +1,32 @@
-import { useFormContext, Controller } from "react-hook-form";
 import { TextField, TextFieldProps } from "@mui/material";
+import { useFormContext, Controller } from "react-hook-form";
 
 type Props = TextFieldProps & {
   name: string;
+  label: string;
+  multiline?: boolean;
+  rows?: number;
+  rules?: object;
 };
 
-export default function RHFTextField({ name, helperText, ...other }: Props) {
-  const { control } = useFormContext();
+export default function RHFTextField({
+  name,
+  label,
+  multiline,
+  rows,
+  rules,
+}: Props) {
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext();
 
   return (
     <Controller
       name={name}
       control={control}
-      render={({ field, fieldState: { error } }) => (
+      rules={rules}
+      render={({ field }) => (
         <TextField
           {...field}
           fullWidth
@@ -21,9 +35,11 @@ export default function RHFTextField({ name, helperText, ...other }: Props) {
               ? ""
               : field.value
           }
-          error={!!error}
-          helperText={error ? error?.message : helperText}
-          {...other}
+          label={label}
+          multiline={multiline}
+          rows={rows}
+          error={!!errors[name]}
+          helperText={errors[name]?.message?.toString() || ""} // Ensure helperText is a string
         />
       )}
     />

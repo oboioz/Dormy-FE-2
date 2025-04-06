@@ -7,15 +7,17 @@ type RHFDatePickerProps = TextFieldProps & {
   label?: string;
   minDate?: Date;
   maxDate?: Date;
+  rules?: object;
 };
 
-export function RHFDatePicker({ name, label, minDate, maxDate, helperText, ...other }: RHFDatePickerProps) {
+export function RHFDatePicker({ name, label, minDate, maxDate, rules, helperText, ...other }: RHFDatePickerProps) {
   const { control } = useFormContext();
 
   return (
     <Controller
       name={name}
       control={control}
+      rules={rules}
       render={({ field, fieldState: { error } }) => (
         <DatePicker
           {...field}
