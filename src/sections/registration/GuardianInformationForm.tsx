@@ -178,7 +178,6 @@ export default function GuardianInformationForm({
                     <RHFTextField
                       name={`guardians[${index}].name`}
                       label="Name"
-                      size="medium"
                     />
                     {formErrors[`guardians.${index}.name`] && (
                       <Typography color="error">

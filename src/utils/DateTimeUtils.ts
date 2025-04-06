@@ -152,6 +152,33 @@ export class DateTimeUtils {
             });
         }
     }
+
+    public static formatToYYYYMMDD = (date: any): string => {
+        if (!date) {
+            return ""; // Return an empty string if the input is null or undefined
+        }
+    
+        const parsedDate = date instanceof Date ? date : new Date(date);
+    
+        if (isNaN(parsedDate.getTime())) {
+            return ""; // Return an empty string if the input is an invalid date
+        }
+    
+        const year = parsedDate.getFullYear();
+        const month = String(parsedDate.getMonth() + 1).padStart(2, "0"); // Ensure 2-digit month
+        const day = String(parsedDate.getDate()).padStart(2, "0"); // Ensure 2-digit day
+    
+        return `${year}-${month}-${day}`;
+    };
+
+    public static formatToMMDDYYYY = (dateString: string): string => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString("en-US", {
+          month: "2-digit",
+          day: "2-digit",
+          year: "numeric",
+        });
+    };
  
     public static toUTCStringFormat(date: Date, format: string): string {
         switch (format) {

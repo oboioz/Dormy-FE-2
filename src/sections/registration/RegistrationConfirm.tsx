@@ -17,6 +17,7 @@ import { httpClient } from "../../services";
 import { IRegistrationInformationCreationModel } from "../../models/responses/RegistrationModels";
 import { HttpStatusCode } from "axios";
 import { toast } from "react-toastify";
+import { DateTimeUtils } from "../../utils/DateTimeUtils";
 
 type Props = {
   generalInformation: IRegistrationFormState;
@@ -72,17 +73,24 @@ export default function RegistrationConfirm({
         email: userState.email,
         gender: userState.gender,
         nationalIdNumber: userState.nationalIdNumber,
-        dateOfBirth: userState.dateOfBirth?.toISOString() || "",
+        dateOfBirth: userState.dateOfBirth
+          ? DateTimeUtils.formatToYYYYMMDD(userState.dateOfBirth)
+          : "",
         phoneNumber: userState.phoneNumber,
       },
       workplaceId: workplaceId,
       roomId: roomState.roomId,
-      startDate: startDate?.toISOString() || "",
-      endDate: endDate?.toISOString() || "",
+      startDate: startDate
+          ? DateTimeUtils.formatToYYYYMMDD(startDate)
+          : "",
+      endDate: endDate
+          ? DateTimeUtils.formatToYYYYMMDD(endDate)
+          : "",
       healthInsurance: {
         insuranceCardNumber: healthInsuranceState.insuranceCardNumber,
-        expirationDate:
-          healthInsuranceState.expirationDate?.toISOString() || "",
+        expirationDate: healthInsuranceState.expirationDate
+          ? DateTimeUtils.formatToYYYYMMDD(healthInsuranceState.expirationDate)
+          : "",
         registeredHospital: healthInsuranceState.registeredHospital,
       },
       guardians: guardianState,
