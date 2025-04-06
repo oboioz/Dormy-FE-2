@@ -47,4 +47,7 @@ export const API_URL = {
     GET_INITIAL_DATA: "registration/register-initial-data",
     SEARCH_BUILDING_AND_ROOM: "registration/search-buildings-and-rooms",
   },
+  HEALTH_INSURANCE: {
+    GET_BATCH: "health-insurance/batch",
+  },
 };
