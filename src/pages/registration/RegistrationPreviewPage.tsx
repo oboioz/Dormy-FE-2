@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from '../../redux/store';
 import { useSettingsContext } from '../../components/settings';
 import GeneralInformationForm from '../../sections/registration/GeneralInformationForm';
 import GuardianInformationForm from '../../sections/registration/GuardianInformationForm';
-import MedicalInformationForm from '../../sections/registration/MedicalInformationForm';
+import MedicalInformationForm from '../../sections/registration/RoomPickingForm';
 
 // ----------------------------------------------------------------------
 
