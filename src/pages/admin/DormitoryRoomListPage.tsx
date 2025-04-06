@@ -138,9 +138,10 @@ export default function DormitoryRoomListPage() {
           heading="Room List"
           links={[
             { name: "Dashboard", href: PATH_ADMIN.root },
-            { name: "User", href: PATH_ADMIN.profile },
+            { name: "Admin", href: PATH_ADMIN.profile },
             { name: "Building", href: PATH_ADMIN.dormitory.buildings },
-            { name: "Building Room List" },
+            { name: building?.name || "--" },
+            { name: "Room List" },
           ]}
           action={
             <Button
