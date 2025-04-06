@@ -112,7 +112,7 @@ export default function VehicleRegistrationListPage() {
           heading="Vehicle Registration List"
           links={[
             { name: "Dashboard", href: PATH_ADMIN.root },
-            { name: "User", href: PATH_ADMIN.profile },
+            { name: "Admin", href: PATH_ADMIN.profile },
             { name: "Vehicle Registration List" },
           ]}
           // action={
