@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Box, Card, CardHeader, Stack } from "@mui/material";
+import { Box, Card, CardHeader, Stack, Typography } from "@mui/material";
 import FormProvider, {
   RHFTextField,
 } from "../../../../../components/hook-form";
@@ -11,25 +11,29 @@ import { WorkplaceModel } from "../../../../../models/responses/WorkplaceModels"
 import { GuardianModel } from "../../../../../models/responses/GuardianModels";
 import { httpClient } from "../../../../../services";
 
+type Guardian = {
+  name: string;
+  address: string;
+  phoneNumber: string;
+  email: string;
+  relationship: string;
+};
+
 type FormValuesProps = {
   firstName: string;
   lastName: string;
   gender: string;
-  dayOfBirth: Date;
+  dateOfBirth: string;
   address: string;
   NIC: string;
   email: string;
   phoneNumber: string;
-  priority: string | null;
+  // priority: string | null;
 
   workplaceName: string;
   workplaceAddress: string;
 
-  guardianName: string;
-  guardianAddress: string;
-  guardianPhoneNumber: string;
-  guardianEmail: string;
-  guardianRelationship: string;
+  guardians: Guardian[]; // Define a list of guardians
 };
 
 export default function ProfileInformation() {
@@ -37,37 +41,47 @@ export default function ProfileInformation() {
 
   const [profile, setProfile] = useState<Profile>();
   const [workplace, setWorkplace] = useState<WorkplaceModel>();
-  const [guardian, setGuardian] = useState<GuardianModel>();
+  const [guardians, setGuardians] = useState<GuardianModel[]>();
 
   const setUserData = (
     profile: Profile | undefined,
     workplace: WorkplaceModel | undefined,
-    guardian: GuardianModel | undefined
+    guardians: GuardianModel[]
   ) => {
     setValue("firstName", profile?.firstName || "--");
     setValue("lastName", profile?.lastName || "--");
     setValue("gender", profile?.gender.toLocaleUpperCase() || "N/A");
     setValue(
-      "dayOfBirth",
-      profile?.dateOfBirth ? new Date(profile.dateOfBirth) : new Date()
+      "dateOfBirth",
+      profile?.dateOfBirth
+        ? new Date(profile.dateOfBirth).toLocaleDateString("en-us", {
+            month: "2-digit",
+            day: "2-digit",
+            year: "numeric",
+          })
+        : "N/A"
     );
     setValue("address", "--");
     setValue("NIC", profile?.nationalIdNumber || "--");
     setValue("email", profile?.email || "--");
     setValue("phoneNumber", profile?.phoneNumber || "--");
-    setValue("priority", "");
+    // setValue("priority", "");
     setValue("workplaceName", workplace?.name || "--");
     setValue("workplaceAddress", workplace?.address || "--");
-    setValue("guardianName", guardian?.name || "--");
-    setValue("guardianAddress", guardian?.address || "--");
-    setValue("guardianPhoneNumber", guardian?.phoneNumber || "--");
-    setValue("guardianEmail", guardian?.email || "--");
-    setValue("guardianRelationship", guardian?.relationshipToUser || "--");
+    setValue(
+      "guardians",
+      guardians?.map((guardian) => ({
+        name: guardian.name || "--",
+        address: guardian.address || "--",
+        phoneNumber: guardian.phoneNumber || "--",
+        email: guardian.email || "--",
+        relationship: guardian.relationshipToUser || "--",
+      })));
   };
 
   useEffect(() => {
-    setUserData(profile, workplace, guardian);
-  }, [profile, workplace, guardian]);
+    setUserData(profile, workplace, guardians || []);
+  }, [profile, workplace, guardians]);
 
   const fetchProfile = async () => {
     if (user) {
@@ -91,7 +105,8 @@ export default function ProfileInformation() {
     if (user) {
       var response = await httpClient.guardianService.getUserGuardian();
       if (response) {
-        setGuardian(response);
+        console.log("GUARDIAN", response);
+        setGuardians(response);
       }
     }
   };
@@ -106,22 +121,24 @@ export default function ProfileInformation() {
     firstName: "--",
     lastName: "--",
     gender: "--",
-    dayOfBirth: new Date(), // October 26, 1999 (Months are 0-based)
-
+    dateOfBirth: '--',
     address: "--",
     NIC: "--",
     email: "--",
     phoneNumber: "--",
-    priority: "",
 
-    workplaceName: "ABC Corporation",
-    workplaceAddress: "456 Business Road, District 1, HCMC",
+    workplaceName: "--",
+    workplaceAddress: "--",
 
-    guardianName: "Nguyen Van A",
-    guardianAddress: "789 Family Street, Ho Chi Minh City",
-    guardianPhoneNumber: "0971234567",
-    guardianEmail: "guardian@example.com",
-    guardianRelationship: "Father",
+    guardians: [
+      {
+        name: "--",
+        address: "--",
+        phoneNumber: "--",
+        email: "--",
+        relationship: "--",
+      },
+    ],
   };
 
   const methods = useForm<FormValuesProps>({
@@ -173,9 +190,9 @@ export default function ProfileInformation() {
               InputProps={{ readOnly: true }}
             />
             <RHFTextField
-              name="dayOfBirth"
+              name="dateOfBirth"
               label="Date of Birth"
-              type="date"
+              // type="date"
               InputLabelProps={{ shrink: true }}
               InputProps={{ readOnly: true }}
             />
@@ -200,7 +217,7 @@ export default function ProfileInformation() {
               InputProps={{ readOnly: true }}
             />
           </Box>
-          <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
+          {/* <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
             <RHFTextField
               name="priority"
               multiline
@@ -208,72 +225,79 @@ export default function ProfileInformation() {
               label="Priority"
               InputProps={{ readOnly: true }}
             />
-          </Stack>
+          </Stack> */}
         </Card>
 
         <Card sx={{ p: 3 }}>
           <CardHeader title="Workplace" />
-          <Box
-            rowGap={3}
-            columnGap={2}
-            display="grid"
-            gridTemplateColumns={{
-              xs: "repeat(1, 1fr)",
-              sm: "repeat(2, 1fr)",
-            }}
-          >
+          <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
             <RHFTextField
               name="workplaceName"
               label="Workplace Name"
               InputProps={{ readOnly: true }}
             />
+          </Stack>
+          <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
             <RHFTextField
               name="workplaceAddress"
               label="Workplace Address"
               InputProps={{ readOnly: true }}
             />
-          </Box>
+          </Stack>
         </Card>
 
         <Card sx={{ p: 3 }}>
           <CardHeader title="Guardian Information" />
-          <Box
-            rowGap={3}
-            columnGap={2}
-            display="grid"
-            gridTemplateColumns={{
-              xs: "repeat(1, 1fr)",
-              sm: "repeat(2, 1fr)",
-            }}
-          >
-            <RHFTextField
-              name="guardianName"
-              label="Guardian Name"
-              InputProps={{ readOnly: true }}
-            />
-            <RHFTextField
-              name="guardianAddress"
-              label="Guardian Address"
-              InputProps={{ readOnly: true }}
-            />
-            <RHFTextField
-              name="guardianPhoneNumber"
-              label="Guardian Phone Number"
-              InputProps={{ readOnly: true }}
-            />
-            <RHFTextField
-              name="guardianEmail"
-              label="Guardian Email"
-              InputProps={{ readOnly: true }}
-            />
-          </Box>
-          <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
-            <RHFTextField
-              name="guardianRelationship"
-              label="Guardian Relationship"
-              InputProps={{ readOnly: true }}
-            />
-          </Stack>
+          {methods.watch("guardians").map((guardian, index) => (
+            <Box
+              key={index}
+              sx={{
+                border: "1px solid #ddd",
+                borderRadius: 2,
+                p: 2,
+                mb: 2,
+              }}
+            >
+              <Typography variant="h6" sx={{ mb: 2 }}>
+                Guardian {index + 1}
+              </Typography>
+              <Box
+                rowGap={3}
+                columnGap={2}
+                display="grid"
+                gridTemplateColumns={{
+                  xs: "repeat(1, 1fr)",
+                  sm: "repeat(2, 1fr)",
+                }}
+              >
+                <RHFTextField
+                  name={`guardians[${index}].name`}
+                  label="Name"
+                  InputProps={{ readOnly: true }}
+                />
+                <RHFTextField
+                  name={`guardians[${index}].address`}
+                  label="Address"
+                  InputProps={{ readOnly: true }}
+                />
+                <RHFTextField
+                  name={`guardians[${index}].phoneNumber`}
+                  label="Phone Number"
+                  InputProps={{ readOnly: true }}
+                />
+                <RHFTextField
+                  name={`guardians[${index}].email`}
+                  label="Email"
+                  InputProps={{ readOnly: true }}
+                />
+                <RHFTextField
+                  name={`guardians[${index}].relationship`}
+                  label="Relationship"
+                  InputProps={{ readOnly: true }}
+                />
+              </Box>
+            </Box>
+          ))}
         </Card>
       </Stack>
     </FormProvider>

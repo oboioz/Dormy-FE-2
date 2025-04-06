@@ -8,7 +8,7 @@ const getUserGuardian = async () => {
   try {
     var response = await privateAxios.get(API_URL.GUARDIAN.GET);
     if (response.status === HttpStatusCode.Ok) {
-      return response.data.result[0] as GuardianModel;
+      return response.data.result as GuardianModel[];
     }
     return undefined;
   } catch (err) {
