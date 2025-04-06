@@ -1,18 +1,36 @@
 // @mui
-import { Button, Divider, IconButton, Link, Stack, Typography } from '@mui/material';
+import {
+  Button,
+  Divider,
+  IconButton,
+  Link,
+  Stack,
+  Typography,
+} from "@mui/material";
 // components
 
 // assets
-import { useNavigate } from 'react-router-dom';
-import { UploadIllustration } from '../../assets/illustrations';
-import { DialogAnimate } from '../../components/animate';
-import Iconify from '../../components/iconify';
-import { PATH_AUTH } from '../../routes/paths';
+import { useNavigate } from "react-router-dom";
+import { UploadIllustration } from "../../assets/illustrations";
+import { DialogAnimate } from "../../components/animate";
+import Iconify from "../../components/iconify";
+import { PATH_AUTH } from "../../routes/paths";
 
 // ----------------------------------------------------------------------
 
-export default function RegistrationComplete({ open, onClose }) {
+type RegistrationCompleteProps = {
+  phoneNumber: string; // User's phone number
+  dateOfBirth: Date | null; // User's date of birth
+  open: boolean; // Dialog visibility
+  onClose: () => void; // Function to close the dialog
+};
 
+export default function RegistrationComplete({
+  phoneNumber,
+  dateOfBirth,
+  open,
+  onClose,
+}: RegistrationCompleteProps) {
   const navigate = useNavigate();
 
   return (
@@ -21,30 +39,29 @@ export default function RegistrationComplete({ open, onClose }) {
       open={open}
       PaperProps={{
         sx: {
-          maxWidth: { md: 'calc(100% - 48px)' },
-          maxHeight: { md: 'calc(100% - 48px)' },
+          maxWidth: { md: "calc(100% - 48px)" },
+          maxHeight: { md: "calc(100% - 48px)" },
         },
       }}
     >
       <IconButton
         onClick={onClose}
         sx={{
-          position: 'absolute',
+          position: "absolute",
           top: 16,
           right: 16,
-          color: 'grey.500',
+          color: "grey.500",
         }}
       >
         <Iconify icon="eva:close-fill" />
       </IconButton>
 
-
       <Stack
         spacing={5}
         sx={{
-          m: 'auto',
-          maxWidth: 480,
-          textAlign: 'center',
+          m: "auto",
+          maxWidth: 560,
+          textAlign: "center",
           px: { xs: 2, sm: 0 },
         }}
       >
@@ -53,29 +70,41 @@ export default function RegistrationComplete({ open, onClose }) {
         <UploadIllustration sx={{ height: 260 }} />
 
         <Typography>
-          Your registration sent successfully.
+          Your registration was sent successfully.
           <br />
           <br />
-          <Link>01dc1370-3df6-11eb-b378-0242ac130002</Link>
+          <strong>Username:</strong> {phoneNumber || "N/A"}
+          <br />
+          <strong>Password:</strong>{" "}
+          {dateOfBirth
+            ? (() => {
+                const date = new Date(dateOfBirth);
+                const day = String(date.getDate()).padStart(2, "0");
+                const month = date.toLocaleString("en-US", { month: "short" });
+                const year = date.getFullYear();
+                return `${day}${month}${year}`;
+              })()
+            : "N/A"}
           <br />
           <br />
-          We will send you a notification within 5 days when the registration process completed.
-          <br /> If you have any question or queries then fell to get in contact us. <br /> <br />
+          We will send you a notification within 5 days when the registration
+          process is completed.
+          <br />
+          If you have any questions or queries, feel free to get in contact with
+          us.
+          <br />
+          <br />
           All the best,
         </Typography>
 
-        <Divider sx={{ borderStyle: 'dashed' }} />
+        <Divider sx={{ borderStyle: "dashed" }} />
 
         <Stack
           spacing={2}
           justifyContent="space-between"
-          direction={{ xs: 'column-reverse', sm: 'row' }}
+          direction={{ xs: "column-reverse", sm: "row" }}
         >
-          <Button
-            variant="outlined"
-            onClick={onClose} // Change this based on your path
-            size='large'
-          >
+          <Button variant="outlined" onClick={onClose} size="large">
             Close
           </Button>
           <Button
