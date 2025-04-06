@@ -13,7 +13,7 @@ import {
   FormControl,
   FormHelperText,
 } from "@mui/material";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { PATH_ADMIN } from "../../../../routes/paths";
 import { httpClient } from "../../../../services";
 import { IRoomType } from "../../../../models/responses/RoomTypeModels";
@@ -492,16 +492,27 @@ export default function BuildingStructureForm() {
         </Button>
       </Stack>
 
-      {/* Submit Button */}
-      <LoadingButton
-        loading={isSubmitting}
-        size="large"
-        variant="contained"
-        onClick={() => onSubmit(building)}
-        sx={{ alignSelf: "flex-end" }}
-      >
-        Submit
-      </LoadingButton>
+      <Stack direction={"row"} spacing={2} justifyContent="space-between">
+        {/* Back Button */}
+        <Button
+          variant="outlined"
+          size="large"
+          component={Link} // Use RouterLink for navigation
+          to={PATH_ADMIN.dormitory.buildings}
+        >
+          Back
+        </Button>
+        {/* Submit Button */}
+        <LoadingButton
+          loading={isSubmitting}
+          size="large"
+          variant="contained"
+          onClick={() => onSubmit(building)}
+          sx={{ alignSelf: "flex-end" }}
+        >
+          Submit
+        </LoadingButton>
+      </Stack>
     </Stack>
   );
 }
