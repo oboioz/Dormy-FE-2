@@ -31,11 +31,12 @@ export const API_URL = {
     BASE: "room-type",
     SOFT_DELETE: "room-type/id/{id}/soft-delete",
   },
-  ROOM:{
+  ROOM: {
     GET_SINGLE: "room/id/",
   },
   BUILDING: {
     CREATE: "building",
+    EDIT: "building",
     GET_BATCH: "building/batch",
     GET_SINGLE: "building/id/",
     SOFT_DELETE: "building/id/{id}/soft-delete",

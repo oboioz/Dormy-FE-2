@@ -2,6 +2,7 @@ import { HttpStatusCode } from "axios";
 import { privateAxios } from "../libs/axios";
 import {
   BuildingCreateModel,
+  BuildingEditModel,
   BuildingModel,
 } from "../models/responses/BuildingModels";
 import { API_URL } from "../consts/APIConstants";
@@ -62,9 +63,23 @@ const softDeleteBuilding = async (id: string) => {
   }
 };
 
+const updateBuilding = async (payload: BuildingEditModel) => {
+  try {
+    var response = await privateAxios.put(API_URL.BUILDING.EDIT, payload);
+    if (response.status === HttpStatusCode.Accepted) {
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
+
 export const buildingService = {
   getBuildingBatch: getBuildingBatch,
   getBuildingById: getBuildingById,
   createBuilding: createBuilding,
   softDeleteBuilding: softDeleteBuilding,
+  updateBuilding: updateBuilding,
 };

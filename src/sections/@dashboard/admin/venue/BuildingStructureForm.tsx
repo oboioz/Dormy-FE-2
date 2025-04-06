@@ -13,14 +13,19 @@ import {
   FormControl,
   FormHelperText,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { PATH_ADMIN } from "../../../../routes/paths";
 import { httpClient } from "../../../../services";
 import { IRoomType } from "../../../../models/responses/RoomTypeModels";
 import { toast } from "react-toastify";
-import { BuildingCreateModel } from "../../../../models/responses/BuildingModels";
+import {
+  BuildingCreateModel,
+  BuildingEditModel,
+  BuildingModel,
+} from "../../../../models/responses/BuildingModels";
 import { LoadingButton } from "@mui/lab";
 import Iconify from "../../../../components/iconify";
+import { set } from "lodash";
 
 type FormRoomTypeCreate = {
   roomTypeId: string;
@@ -41,8 +46,11 @@ type FormValuesProps = {
 
 export default function BuildingStructureForm() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
   const [roomTypes, setRoomTypes] = useState<IRoomType[]>([]);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const isEditMode = Boolean(id);
 
   const defaultBuilding: FormValuesProps = {
     genderRestriction: "MALE",
@@ -72,6 +80,21 @@ export default function BuildingStructureForm() {
     );
     if (isCreatedSuccess) {
       toast.success("Building created successfully!");
+      navigate(PATH_ADMIN.dormitory.buildings);
+      setIsSubmitting(false);
+    } else {
+      toast.error("An error occurred. Please try again.");
+      setIsSubmitting(false);
+    }
+  };
+
+  const editBuilding = async (payload: BuildingEditModel) => {
+    setIsSubmitting(true);
+    const isEditedSuccess = await httpClient.buildingService.updateBuilding(
+      payload
+    );
+    if (isEditedSuccess) {
+      toast.success("Building updated successfully!");
       navigate(PATH_ADMIN.dormitory.buildings);
       setIsSubmitting(false);
     } else {
@@ -132,20 +155,31 @@ export default function BuildingStructureForm() {
       return;
     }
 
-    const payload: BuildingCreateModel = {
-      name: data.name,
-      totalFloors: data.floors.length,
-      genderRestriction: data.genderRestriction,
-      rooms: data.floors.flatMap((floor) =>
-        floor.roomTypes.map((roomType) => ({
-          roomTypeId: roomType.roomTypeId,
-          floorNumber: floor.floorNumber,
-          totalRoomsWantToCreate: roomType.totalRoomsWantToCreate,
-        }))
-      ),
-    };
+    if (isEditMode) {
+      if (id) {
+        await editBuilding({
+          id: id,
+          name: data.name,
+          totalFloors: data.floors.length,
+          genderRestriction: data.genderRestriction,
+        });
+      }
+    } else {
+      const payload: BuildingCreateModel = {
+        name: data.name,
+        totalFloors: data.floors.length,
+        genderRestriction: data.genderRestriction,
+        rooms: data.floors.flatMap((floor) =>
+          floor.roomTypes.map((roomType) => ({
+            roomTypeId: roomType.roomTypeId,
+            floorNumber: floor.floorNumber,
+            totalRoomsWantToCreate: roomType.totalRoomsWantToCreate,
+          }))
+        ),
+      };
 
-    await createBuilding(payload);
+      await createBuilding(payload);
+    }
   };
 
   const handleChangeGenderRestriction = (event: SelectChangeEvent<string>) => {
@@ -240,10 +274,55 @@ export default function BuildingStructureForm() {
     });
   };
 
+  const fetchBuildingById = async (id: string) => {
+    var response = await httpClient.buildingService.getBuildingById(id);
+    if (response) {
+      setBuilding(mapBuildingModelToFormValues(response));
+    }
+  };
+
+  const mapBuildingModelToFormValues = (
+    buildingModel: BuildingModel
+  ): FormValuesProps => {
+    const floorsMap: Record<number, FormFloorCreate> = {};
+
+    // Group rooms by floorNumber and map them to FormFloorCreate
+    buildingModel.rooms.forEach((room) => {
+      if (!floorsMap[room.floorNumber]) {
+        floorsMap[room.floorNumber] = {
+          floorNumber: room.floorNumber,
+          roomTypes: [],
+        };
+      }
+
+      // Add roomType to the corresponding floor
+      floorsMap[room.floorNumber].roomTypes.push({
+        roomTypeId: room.roomTypeId,
+        totalRoomsWantToCreate: room.totalAvailableBed + room.totalUsedBed, // Assuming total rooms = available + used beds
+      });
+    });
+
+    // Convert floorsMap to an array of FormFloorCreate
+    const floors = Object.values(floorsMap);
+
+    return {
+      genderRestriction: buildingModel.genderRestriction,
+      name: buildingModel.name,
+      totalFloor: buildingModel.totalFloors,
+      floors,
+    };
+  };
+
+  useEffect(() => {
+    if (isEditMode && id) {
+      fetchBuildingById(id);
+    }
+  }, [id]);
+
   return (
     <Stack spacing={4} sx={{ padding: 4 }}>
       <Typography variant="h4" sx={{ fontWeight: "bold" }}>
-        Create Building
+        {isEditMode ? "Edit Building" : "Create New Building"}
       </Typography>
 
       {/* Building Information */}
@@ -258,6 +337,7 @@ export default function BuildingStructureForm() {
               id="genderRestriction"
               labelId="genderRestriction-label"
               value={building.genderRestriction}
+              disabled={isEditMode}
               label="Gender Restriction"
               onChange={handleChangeGenderRestriction}
               fullWidth
@@ -306,6 +386,7 @@ export default function BuildingStructureForm() {
                           color="error"
                           startIcon={<Iconify icon="eva:trash-2-outline" />}
                           onClick={() => handleRemoveFloor(floorIndex)}
+                          disabled={isEditMode}
                         >
                           Remove Floor
                         </Button>
@@ -318,6 +399,7 @@ export default function BuildingStructureForm() {
                       <Grid container spacing={2}>
                         <Grid item xs={6}>
                           <FormControl
+                            disabled={isEditMode}
                             required
                             error={
                               !!formErrors[
@@ -376,6 +458,7 @@ export default function BuildingStructureForm() {
                           <Grid item xs={12} sx={{ textAlign: "right" }}>
                             <Button
                               variant="outlined"
+                              disabled={isEditMode}
                               color="error"
                               onClick={() =>
                                 handleRemoveRoomType(floorIndex, roomTypeIndex)
@@ -390,6 +473,7 @@ export default function BuildingStructureForm() {
                   ))}
                   <Button
                     variant="outlined"
+                    disabled={isEditMode}
                     onClick={() => handleAddRoomType(floorIndex)}
                   >
                     Add Room Type
@@ -399,7 +483,11 @@ export default function BuildingStructureForm() {
             </Grid>
           ))}
         </Grid>
-        <Button variant="outlined" onClick={() => handleAddFloor()}>
+        <Button
+          variant="outlined"
+          disabled={isEditMode}
+          onClick={() => handleAddFloor()}
+        >
           Add Floor
         </Button>
       </Stack>

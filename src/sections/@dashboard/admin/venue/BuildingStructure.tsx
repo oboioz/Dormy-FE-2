@@ -101,7 +101,7 @@ function BuildingCard({ building }: BuildingCardProps) {
 
   const handleEdit = () => {
     handleClosePopover();
-    console.log("EDIT", name);
+    navigate(PATH_ADMIN.dormitory.buildingForm + `?id=${building.id}`);
   };
 
   const handleDelete = async () => {

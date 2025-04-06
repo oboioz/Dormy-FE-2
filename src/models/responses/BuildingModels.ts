@@ -42,6 +42,13 @@ export interface BuildingCreateModel {
   rooms: RoomCreateModel[];
 }
 
+export interface BuildingEditModel {
+  id: string;
+  name: string;
+  totalFloors: number;
+  genderRestriction: string;
+}
+
 export interface RoomCreateModel {
   roomTypeId: string;
   floorNumber: number;
