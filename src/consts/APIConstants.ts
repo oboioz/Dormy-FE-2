@@ -53,4 +53,9 @@ export const API_URL = {
   HEALTH_INSURANCE: {
     GET_BATCH: "health-insurance/batch",
   },
+  OVERNIGHT_ABSENCE: {
+    GET_BATCH: "overnight-absence/batch",
+    CREATE: "overnight-absence",
+    UPDATE: "overnight-absence",
+  },
 };

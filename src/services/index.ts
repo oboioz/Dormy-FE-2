@@ -8,6 +8,7 @@ import { roomTypeService } from "./roomTypeService";
 import { userService } from "./userService";
 import { workplaceService } from "./workplaceService";
 import { healthInsuranceService } from "./healthInsuranceService";
+import { overnightAbsenceService } from "./overnightAbsenceService";
 
 export const httpClient = {
     authService: authService,
@@ -20,4 +21,5 @@ export const httpClient = {
     roomService: roomService,
     registrationService: registrationService,
     healthInsuranceService: healthInsuranceService,
+    overnightAbsenceService: overnightAbsenceService,
 };
