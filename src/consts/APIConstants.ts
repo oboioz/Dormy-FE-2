@@ -12,7 +12,10 @@ export const API_URL = {
   },
   WORKPLACE: {
     GET: "workplace/all",
+    GET_SINGLE: "workplace/id/",
     CREATE: "workplace",
+    UPDATE: "workplace",
+    SOFT_DELETE: "workplace/id/{id}/soft-delete",
   },
   GUARDIAN: {
     GET: "guardian/all",

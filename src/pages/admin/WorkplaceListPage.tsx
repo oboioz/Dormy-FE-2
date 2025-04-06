@@ -34,6 +34,7 @@ import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
 import { WorkplaceModel } from "../../models/responses/WorkplaceModels";
 import { httpClient } from "../../services";
+import { toast } from "react-toastify";
 // sections
 
 // ----------------------------------------------------------------------
@@ -88,18 +89,16 @@ export default function WorkplaceListPage() {
   };
 
   const handleEditRow = (id: string) => {
-    // navigate(PATH_DASHBOARD.user.edit(paramCase(id)));
+    navigate(PATH_ADMIN.workplace.form + `?id=${id}`);
   };
 
-  const handleDeleteRow = (id: string) => {
-    const deleteRow = _workplaceList.filter((row) => row.id.toString() !== id);
-    setSelected([]);
-    setWorkplaces(deleteRow);
-
-    if (page > 0) {
-      if (dataInPage.length < 2) {
-        setPage(page - 1);
-      }
+  const handleDeleteRow = async (id: string) => {
+    var response = await httpClient.workplaceService.softDeleteWorkplace(id);
+    if (response) {
+      toast.success("Delete successfully!");
+      window.location.reload();
+    } else {
+      toast.error("Delete failed!");
     }
   };
 
@@ -173,13 +172,13 @@ export default function WorkplaceListPage() {
                   _workplaceList.map((row) => row.id.toString())
                 )
               }
-              action={
-                <Tooltip title="Delete">
-                  <IconButton color="primary" onClick={handleOpenConfirm}>
-                    <Iconify icon="eva:trash-2-outline" />
-                  </IconButton>
-                </Tooltip>
-              }
+              // action={
+              //   <Tooltip title="Delete">
+              //     <IconButton color="primary" onClick={handleOpenConfirm}>
+              //       <Iconify icon="eva:trash-2-outline" />
+              //     </IconButton>
+              //   </Tooltip>
+              // }
             />
 
             <Scrollbar>

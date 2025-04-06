@@ -18,6 +18,10 @@ export interface WorkplaceCreateModel {
   abbrevation: string;
 }
 
+export interface WorkplaceUpdateModel extends WorkplaceCreateModel {
+  id: string;
+}
+
 export interface WorkplaceOptionModel {
   id: string;
   name: string;

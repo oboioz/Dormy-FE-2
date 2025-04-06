@@ -3,6 +3,7 @@ import { API_URL } from "../consts/APIConstants";
 import {
   WorkplaceCreateModel,
   WorkplaceModel,
+  WorkplaceUpdateModel,
 } from "../models/responses/WorkplaceModels";
 import { privateAxios } from "../libs/axios";
 
@@ -32,6 +33,19 @@ const getAllWorkplace = async () => {
   }
 };
 
+const getWorkplaceById = async (id: string) => {
+  try {
+    var response = await privateAxios.get(API_URL.WORKPLACE.GET_SINGLE + id);
+    if (response.status === HttpStatusCode.Ok) {
+      return response.data.result as WorkplaceModel;
+    }
+    return undefined;
+  } catch (err) {
+    console.log(err);
+    return undefined;
+  }
+};
+
 const createWorkplace = async (payload: WorkplaceCreateModel) => {
   try {
     var response = await privateAxios.post(API_URL.WORKPLACE.CREATE, payload);
@@ -45,8 +59,39 @@ const createWorkplace = async (payload: WorkplaceCreateModel) => {
   }
 };
 
+const updateWorkplace = async (payload: WorkplaceUpdateModel) => {
+  try {
+    var response = await privateAxios.put(API_URL.WORKPLACE.UPDATE, payload);
+    if (response.status === HttpStatusCode.Accepted) {
+      return true;
+    } else {
+      return response.data.errorMessage as string;
+    }
+  } catch (err: any) {
+    return err.response.data.errorMessage as string;
+  }
+};
+
+const softDeleteWorkplace = async (id: string) => {
+  try {
+    var response = await privateAxios.delete(
+      API_URL.WORKPLACE.SOFT_DELETE.replace("{id}", id)
+    );
+    if (response.status >= 200 && response.status < 300) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (err: any) {
+    return false;
+  }
+};
+
 export const workplaceService = {
   getUserWorkplace: getUserWorkplace,
   getAllWorkplace: getAllWorkplace,
   createWorkplace: createWorkplace,
+  getWorkplaceById: getWorkplaceById,
+  updateWorkplace: updateWorkplace,
+  softDeleteWorkplace: softDeleteWorkplace,
 };

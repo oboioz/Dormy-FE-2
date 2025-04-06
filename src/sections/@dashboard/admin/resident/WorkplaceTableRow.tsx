@@ -42,6 +42,7 @@ export default function WorkplaceTableRow({
     createdDateUtc,
     abbrevation,
     createdByCreator,
+    isDeleted,
   } = row;
 
   // const amount = 8000;
@@ -68,13 +69,21 @@ export default function WorkplaceTableRow({
 
   return (
     <>
-      <TableRow hover selected={selected}>
+      <TableRow hover selected={selected} sx={{ opacity: isDeleted ? 0.5 : 1 }}>
         <TableCell padding="checkbox">
-          <Checkbox checked={selected} onClick={onSelectRow} />
+          <Checkbox
+            checked={selected}
+            onClick={onSelectRow}
+            disabled={isDeleted} // Disable checkbox if isDeleted is true
+          />
         </TableCell>
 
         <TableCell>
-          <Typography variant="subtitle2" noWrap>
+          <Typography
+            variant="subtitle2"
+            noWrap
+            sx={{ textDecoration: isDeleted ? "line-through" : "none" }} // Add strikethrough if isDeleted
+          >
             {name}
           </Typography>
         </TableCell>
@@ -91,6 +100,7 @@ export default function WorkplaceTableRow({
           <IconButton
             color={openPopover ? "inherit" : "default"}
             onClick={handleOpenPopover}
+            disabled={isDeleted} // Disable action button if isDeleted is true
           >
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
@@ -104,17 +114,7 @@ export default function WorkplaceTableRow({
         sx={{ width: 140 }}
       >
         <MenuItem
-          onClick={() => {
-            handleOpenConfirm();
-            handleClosePopover();
-          }}
-          sx={{ color: "error.main" }}
-        >
-          <Iconify icon="eva:trash-2-outline" />
-          Delete
-        </MenuItem>
-
-        <MenuItem
+          disabled={isDeleted}
           onClick={() => {
             onEditRow();
             handleClosePopover();
@@ -122,6 +122,16 @@ export default function WorkplaceTableRow({
         >
           <Iconify icon="eva:edit-fill" />
           Edit
+        </MenuItem>
+        <MenuItem
+          disabled={isDeleted}
+          onClick={() => {
+            handleOpenConfirm();
+          }}
+          sx={{ color: "error.main" }}
+        >
+          <Iconify icon="eva:trash-2-outline" />
+          Delete
         </MenuItem>
       </MenuPopover>
 
@@ -131,7 +141,7 @@ export default function WorkplaceTableRow({
         title="Delete"
         content="Are you sure want to delete?"
         action={
-          <Button variant="contained" color="error" onClick={handleOpenConfirm}>
+          <Button variant="contained" color="error" onClick={onDeleteRow}>
             Delete
           </Button>
         }
