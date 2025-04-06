@@ -179,7 +179,7 @@ function BuildingCard({ building }: BuildingCardProps) {
               variant="body2"
               sx={{ color: "text.secondary", mb: 1, mt: 0.5 }}
             >
-              Floor Number: {totalFloors}
+              Floors: <b>{totalFloors}</b>
             </Typography>
           </Stack>
 
@@ -193,11 +193,10 @@ function BuildingCard({ building }: BuildingCardProps) {
               variant="body2"
               sx={{ color: "text.secondary", mb: 1, mt: 0.5 }}
             >
-              Empty Bed: 200
+              Rooms: <b>{totalRooms}</b>
             </Typography>
           </Stack>
         </Stack>
-        {/* </Stack> */}
 
         <IconButton
           color={openPopover ? "inherit" : "default"}
@@ -222,6 +221,11 @@ function BuildingCard({ building }: BuildingCardProps) {
           Detail
         </MenuItem>
 
+        <MenuItem onClick={handleEdit} disabled={building.isDeleted}>
+          <Iconify icon="eva:edit-fill" />
+          Edit
+        </MenuItem>
+
         <MenuItem
           onClick={handleOpenConfirmDialog}
           disabled={building.isDeleted}
@@ -229,11 +233,6 @@ function BuildingCard({ building }: BuildingCardProps) {
         >
           <Iconify icon="eva:trash-2-outline" />
           Delete
-        </MenuItem>
-
-        <MenuItem onClick={handleEdit} disabled={building.isDeleted}>
-          <Iconify icon="eva:edit-fill" />
-          Edit
         </MenuItem>
       </MenuPopover>
       <Dialog
