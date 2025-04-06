@@ -95,7 +95,6 @@ export const ViolationFormPage = Loadable(lazy(() => import('../pages/admin/Viol
 // REGISTER
 export const RegistrationPolicyPage = Loadable(lazy(() => import('../pages/registration/RegistrationPolicyPage')));
 export const EnterEmailPage = Loadable(lazy(() => import('../pages/registration/EnterEmailPage')));
-export const RoomPickingPage = Loadable(lazy(() => import('../pages/registration/RoomPickingPage')));
 export const RegistrationFormPage = Loadable(lazy(() => import('../pages/registration/RegistrationFormPage')));
 export const RegistrationPreviewPage = Loadable(lazy(() => import('../pages/registration/RegistrationPreviewPage')));
 export const RegistrationSuccessPage = Loadable(lazy(() => import('../pages/registration/RegistrationSuccessPage')));

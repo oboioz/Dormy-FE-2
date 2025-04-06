@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IRegistrationForm } from '../../@types/user';
 // utils
 
@@ -11,42 +11,42 @@ const initialState : IRegistrationForm = {
 
   registrationInformation: {
     generalInformation: {
-      userID: 0,
-      password: "",
-      firstName: "",
-      lastName: "",
-      email: "",
-      phoneNumber: "",
-      gender: "",
-      dateOfBirth: null,
-      nationalIDNumber: "",
-      status: "",
-      contractID: 0,
-      priorities: [], // Default empty array for multiple selections
-
-      guardian: {
-        guardianID: 0,
-        name: "",
+      userState: {
+        firstName: "",
+        lastName: "",
         email: "",
         phoneNumber: "",
-        address: "",
-        relationshipToUser: "",
+        gender: "",
+        dateOfBirth: null,
+        nationalIdNumber: "",
       },
 
-      workplace: {
-        workplaceID: 0,
-        name: "",
-        address: "",
-        createdAt: null,
-        createdBy: "",
-        abbreviation: "",
-      },
-
-      healthInsurance: {
+      healthInsuranceState: {
         insuranceCardNumber: "",
         expirationDate: null,
         registeredHospital: "",
       },
+
+      roomState: {
+        roomId: "",
+        buildingId: "",
+        roomTypeId: "",
+        gender: "",
+      },
+
+      guardianState: [
+        {
+          name: "",
+          email: "",
+          phoneNumber: "",
+          address: "",
+          relationshipToUser: "",
+        }
+      ],
+
+      workplaceId: "",
+      startDate: null,
+      endDate: null,      
     },
     
     documents: {
@@ -68,6 +68,11 @@ const slice = createSlice({
       state.isLoading = true;
     },
 
+    // END LOADING
+    endLoading(state) {
+      state.isLoading = false;
+    },
+
     // HAS ERROR
     hasError(state, action) {
       state.isLoading = false;
@@ -80,6 +85,16 @@ const slice = createSlice({
 
     nextStep(state) {
       state.activeStep += 1;
+    },
+
+    updateGeneralInformation(
+      state,
+      action: PayloadAction<IRegistrationForm['registrationInformation']['generalInformation']>
+    ) {
+      state.registrationInformation.generalInformation = {
+        ...state.registrationInformation.generalInformation,
+        ...action.payload,
+      };
     },
 
     resetForm(state) {
@@ -99,7 +114,10 @@ export default slice.reducer;
 export const {
   backStep,
   nextStep,
+  updateGeneralInformation,
   resetForm,
+  // startLoading,
+  // endLoading,
 } = slice.actions;
 
 // ----------------------------------------------------------------------

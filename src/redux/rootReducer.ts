@@ -21,16 +21,16 @@ export const registrationPersistConfig = {
   whitelist: [],
 };
 
-export const vehicleRegistrationPersistConfig = {
-  key: "vehicleRegistration",
-  storage,
-  keyPrefix: "redux-",
-  whitelist: [],
-};
+// export const vehicleRegistrationPersistConfig = {
+//   key: "vehicleRegistration",
+//   storage,
+//   keyPrefix: "redux-",
+//   whitelist: [],
+// };
 
 const rootReducer = combineReducers({
   registration: persistReducer(registrationPersistConfig, registrationReducer),
-  vehicleRegistration: persistReducer(vehicleRegistrationPersistConfig, vehicleRegistrationReducer), // Fix here
+  // vehicleRegistration: persistReducer(vehicleRegistrationPersistConfig, vehicleRegistrationReducer), // Fix here
 });
 
 export default rootReducer;

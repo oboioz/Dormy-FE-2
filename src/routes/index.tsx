@@ -39,7 +39,6 @@ import {
   ResetPasswordPage,
   ResidentListPage,
   RoomDetailsPage,
-  RoomPickingPage,
   RoomTypeFormPage,
   RoomTypePage,
   RoomServicePage,
@@ -203,7 +202,6 @@ export default function Router() {
       element: <SimpleLayout />,
       children: [
         { path: "policy", element: <RegistrationPolicyPage /> },
-        { path: "bed", element: <RoomPickingPage /> },
         { path: "form", element: <RegistrationFormPage /> },
         { path: "preview", element: <RegistrationPreviewPage /> },
         { path: "success", element: <RegistrationSuccessPage /> },
