@@ -29,6 +29,13 @@ import { PATH_USER } from "../../routes/paths";
 import { fDate, fDateTime } from "../../utils/formatTime";
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
+import { OvernightAbsenceResponseModel } from "../../models/responses/OvernightAbsenceResponseModels";
+import { useEffect, useState } from "react";
+import { httpClient } from "../../services";
+import CreateOvernightAbsenceModal from "../../sections/@dashboard/user/request/CreateOvernightAbsenceForm";
+import { toast } from "react-toastify";
+import EditOvernightAbsenceModal from "../../sections/@dashboard/user/request/EditOvernightAbsenceModal";
+import { DateTimeUtils } from "../../utils/DateTimeUtils";
 
 // ----------------------------------------------------------------------
 
@@ -41,43 +48,12 @@ const StyledIcon = styled(Iconify)(({ theme }) => ({
 }));
 
 const TABLE_HEAD = [
-  { id: "absenceDate", label: "Absence Date", align: "left" },
-  { id: "sendAt", label: "Send At", align: "left" },
-  { id: "reason", label: "Reason", align: "center" },
+  { id: "startDateTime", label: "Start date", align: "left" },
+  { id: "endDateTime", label: "End date", align: "left" },
+  { id: "reason", label: "Reason", align: "left" },
   { id: "status", label: "Status", align: "left" },
-];
-
-const mockAbsences = [
-  {
-    absenceDate: new Date("2024-10-01"),
-    sendAt: new Date("2024-09-30T14:00:00"),
-    reason: "Medical Leave",
-    status: "Approved",
-  },
-  {
-    absenceDate: new Date("2024-10-05"),
-    sendAt: new Date("2024-10-04T09:30:00"),
-    reason: "Family Emergency",
-    status: "Pending",
-  },
-  {
-    absenceDate: new Date("2024-10-10"),
-    sendAt: new Date("2024-10-09T16:45:00"),
-    reason: "Personal Leave",
-    status: "Rejected",
-  },
-  {
-    absenceDate: new Date("2024-10-15"),
-    sendAt: new Date("2024-10-14T08:15:00"),
-    reason: "Vacation",
-    status: "Approved",
-  },
-  {
-    absenceDate: new Date("2024-10-20"),
-    sendAt: new Date("2024-10-19T12:00:00"),
-    reason: "Work from Home",
-    status: "Pending",
-  },
+  { id: "approver", label: "Approver", align: "left" },
+  { id: "action", label: "", align: "left" },
 ];
 
 // ----------------------------------------------------------------------
@@ -87,6 +63,78 @@ export default function OvernightAbsencePage() {
   const { page, rowsPerPage, onChangePage, onChangeRowsPerPage } = useTable();
 
   const { themeStretch } = useSettingsContext();
+  const [overnightAbsences, setOvernightAbsences] = useState<
+    OvernightAbsenceResponseModel[]
+  >([]);
+  const [openModal, setOpenModal] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [editData, setEditData] =
+    useState<OvernightAbsenceResponseModel | null>(null);
+
+  const fetchOvernightAbsences = async () => {
+    const response =
+      await httpClient.overnightAbsenceService.getAllUserOvernightAbsences();
+    setOvernightAbsences(response || []);
+  };
+  useEffect(() => {
+    fetchOvernightAbsences();
+  }, []);
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+  const handleSubmit = async (formData: {
+    startDateTime: string;
+    endDateTime: string;
+    reason: string;
+  }) => {
+    try {
+      const payoad = {
+        ...formData,
+        startDateTime: DateTimeUtils.formatToYYYYMMDD(formData.startDateTime),
+        endDateTime: DateTimeUtils.formatToYYYYMMDD(formData.endDateTime),
+      }
+      await httpClient.overnightAbsenceService.createOvernightAbsence(payoad);
+      fetchOvernightAbsences(); // Refresh the table data
+      handleCloseModal(); // Close the modal
+    } catch (error) {
+      toast.error("Failed to create overnight absence:" + error);
+    }
+  };
+
+  const handleOpenEditModal = () => {
+    setOpenEditModal(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setEditData(null); // Clear the edit data
+    setOpenModal(false);
+  };
+
+  const handleEdit = (absence: OvernightAbsenceResponseModel) => {
+    setEditData(absence);
+    handleOpenEditModal();
+  };
+
+  const handleEditSubmit = async (formData: {
+    id: string;
+    startDateTime: string;
+    endDateTime: string;
+    reason: string;
+  }) => {
+    try {
+      await httpClient.overnightAbsenceService.updateOvernightAbsence(formData);
+      fetchOvernightAbsences(); // Refresh the table data
+      handleCloseEditModal(); // Close the modal
+    } catch (error) {
+      toast.error("Failed to update overnight absence:" + error);
+    }
+  };
 
   return (
     <>
@@ -104,12 +152,11 @@ export default function OvernightAbsencePage() {
           ]}
           action={
             <Button
-              component={RouterLink}
-              to={PATH_USER.overnightRequest}
               variant="contained"
               startIcon={<Iconify icon="eva:plus-fill" />}
+              onClick={handleOpenModal} // Open the modal on click
             >
-              New Request
+              New overnight absence
             </Button>
           }
         />
@@ -155,15 +202,14 @@ export default function OvernightAbsencePage() {
                   headLabel={TABLE_HEAD}
                   // rowCount={tableData.length}
                 />
-
                 <TableBody>
-                  {mockAbsences.map((row, index) => (
-                    <TableRow key={index}>
+                  {overnightAbsences.map((row) => (
+                    <TableRow key={row.id}>
                       <TableCell align="left">
-                        {fDate(row.absenceDate)}
+                        {fDate(row.startDateTime)}
                       </TableCell>
                       <TableCell align="left">
-                        {fDateTime(row.sendAt)}
+                        {fDate(row.endDateTime)}
                       </TableCell>
                       <TableCell align="left">{row.reason}</TableCell>
                       <TableCell align="left">
@@ -177,6 +223,16 @@ export default function OvernightAbsencePage() {
                           {row.status}
                         </Label>
                       </TableCell>
+                      <TableCell align="left">{row.reason}</TableCell>
+                      <TableCell align="center">
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          onClick={() => handleEdit(row)}
+                        >
+                          Edit
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -185,7 +241,7 @@ export default function OvernightAbsencePage() {
           </TableContainer>
 
           <TablePaginationCustom
-            count={mockAbsences.length}
+            count={overnightAbsences.length}
             page={page}
             rowsPerPage={rowsPerPage}
             onPageChange={onChangePage}
@@ -193,8 +249,23 @@ export default function OvernightAbsencePage() {
           />
         </Card>
       </Container>
+
+      {/* Modal for New Overnight Absence */}
+      <CreateOvernightAbsenceModal
+        open={openModal}
+        onClose={handleCloseModal}
+        onSubmit={handleSubmit}
+      />
+
+      {/* Edit Modal */}
+      {editData && (
+        <EditOvernightAbsenceModal
+          open={openEditModal}
+          onClose={handleCloseEditModal}
+          onSubmit={handleEditSubmit}
+          initialData={editData}
+        />
+      )}
     </>
   );
 }
-
-// ----------------------------------------------------------------------
