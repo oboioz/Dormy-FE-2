@@ -1,3 +1,5 @@
+import { REGISTER } from "redux-persist";
+
 export const API_URL = {
   BASE_URL: import.meta.env.VITE_BASE_API_URL,
   ADMIN: {
@@ -37,5 +39,11 @@ export const API_URL = {
     GET_BATCH: "building/batch",
     GET_SINGLE: "building/id/",
     SOFT_DELETE: "building/id/{id}/soft-delete",
+  },
+  REGISTRATION: {
+    BASE: "registration",
+    REGISTER_ACCOMMODATION: "registration",
+    GET_INITIAL_DATA: "registration/register-initial-data",
+    SEARCH_BUILDING_AND_ROOM: "registration/search-buildings-and-rooms",
   },
 };

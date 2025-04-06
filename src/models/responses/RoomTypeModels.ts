@@ -27,3 +27,10 @@ export interface IRoomTypeCreate {
 export interface IRoomTypeUpdate extends IRoomTypeCreate {
   id: string;
 }
+
+export interface RoomTypeOptionModel {
+  id: string;
+  roomTypeName: string;
+  capacity: number;
+  price: number;
+}

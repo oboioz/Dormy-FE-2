@@ -128,7 +128,7 @@ export type IRegistrationForm = {
   activeStep: number;
 
   registrationInformation: {
-    generalInformation: IUser,
+    generalInformation: IRegistrationFormState,
     documents: IDocuments,
   }
 };
@@ -139,3 +139,44 @@ export type IDocuments = {
   nationalIDPhotosFront: File | null;
   nationalIDPhotosBack: File | null;
 };
+
+export type IRegistrationFormState = {
+  userState: IUserRegistrationState;
+  healthInsuranceState: IHealthInsuranceRegistration;
+  guardianState: IGuardianRegistration[];
+  roomState: IRoomRegistrationState
+  workplaceId: string;
+  startDate: Date | null;
+  endDate: Date | null;
+}
+
+export type IUserRegistrationState = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  gender: string;
+  dateOfBirth: Date | null;
+  nationalIdNumber: string;
+}
+
+export type IHealthInsuranceRegistration = {
+  insuranceCardNumber: string;
+  expirationDate: Date | null;
+  registeredHospital: string;
+}
+
+export type IGuardianRegistration = {
+  name: string;
+  email: string;
+  phoneNumber: string;
+  address: string;
+  relationshipToUser: string;
+}
+
+export type IRoomRegistrationState = {
+  roomId: string;
+  buildingId: string;
+  roomTypeId: string;
+  gender: string;
+}

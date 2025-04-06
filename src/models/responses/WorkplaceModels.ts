@@ -17,3 +17,9 @@ export interface WorkplaceCreateModel {
   address: string;
   abbrevation: string;
 }
+
+export interface WorkplaceOptionModel {
+  id: string;
+  name: string;
+  abbrevation: string;
+}

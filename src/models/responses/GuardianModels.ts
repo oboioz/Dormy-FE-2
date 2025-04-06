@@ -13,3 +13,11 @@ export interface GuardianModel {
   lastUpdatedBy: string;
   isDeleted: boolean;
 }
+
+export interface IGuardianCreationModel {
+  name: string;
+  email?: string;
+  phoneNumber: string;
+  address: string;
+  relationshipToUser: string;
+}
