@@ -1,23 +1,17 @@
-import { useState } from 'react';
-// @mui
+import { useState } from "react";
 import {
   Button,
   IconButton,
   MenuItem,
   TableCell,
   TableRow,
-  Typography
-} from '@mui/material';
-// @types
-// components
-import { IVehicle } from '../../../../@types/vehicle';
-import { phoneNumber } from '../../../../_mock/assets';
-import ConfirmDialog from '../../../../components/confirm-dialog';
-import Iconify from '../../../../components/iconify';
-import Label from '../../../../components/label';
-import MenuPopover from '../../../../components/menu-popover';
-
-// ----------------------------------------------------------------------
+  Typography,
+} from "@mui/material";
+import ConfirmDialog from "../../../../components/confirm-dialog";
+import Iconify from "../../../../components/iconify";
+import Label from "../../../../components/label";
+import MenuPopover from "../../../../components/menu-popover";
+import { IVehicle } from "../../../../models/responses/VehicleModels";
 
 type Props = {
   row: IVehicle;
@@ -34,8 +28,14 @@ export default function VehicleListRow({
   onSelectRow,
   onDeleteRow,
 }: Props) {
-
-  const { vehicleID, licensePlate, type, registrationDate, parkingSpot, userID, status } = row;
+  const {
+    id,
+    licensePlate,
+    vehicleType,
+    parkingSpotName,
+    userFullname,
+    isDeleted,
+  } = row;
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
@@ -57,42 +57,45 @@ export default function VehicleListRow({
     setOpenPopover(null);
   };
 
-
-
   return (
     <>
       <TableRow hover selected={selected}>
-
         <TableCell>
-          <Typography variant="subtitle2" noWrap>
-            {type}
+          <Typography
+            variant="subtitle2"
+            noWrap
+            sx={{ display: "flex", alignItems: "center", gap: 1 }}
+          >
+            <Iconify icon="mdi:car" width={20} height={20} />{" "}
+            {/* Vehicle Icon */}
+            {vehicleType}
           </Typography>
         </TableCell>
 
         <TableCell align="left">{licensePlate}</TableCell>
 
-        <TableCell align="left">{vehicleID}</TableCell>
+        <TableCell align="left">{parkingSpotName || "N/A"}</TableCell>
 
-        <TableCell align="left">{userID.firstName}</TableCell>
+        <TableCell align="left">{userFullname}</TableCell>
 
-        <TableCell align="left">{phoneNumber}</TableCell>
-
-
-        <TableCell align="right">
+        <TableCell align="left">
           <Label
             variant="soft"
-            color={(status === 'banned' && 'error') || 'success'}
-            sx={{ textTransform: 'capitalize' }}
+            color={(!isDeleted && "success") || "error"}
+            sx={{ textTransform: "capitalize" }}
           >
-            {status}
+            Active
           </Label>
         </TableCell>
 
-        <TableCell align="right">
-          <IconButton color={openPopover ? 'inherit' : 'default'} onClick={handleOpenPopover}>
+        {/* <TableCell align="left">
+          <IconButton
+            color={openPopover ? "inherit" : "default"}
+            onClick={handleOpenPopover}
+          >
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
-        </TableCell>
+        </TableCell> */}
       </TableRow>
 
       <MenuPopover
@@ -106,7 +109,7 @@ export default function VehicleListRow({
             handleOpenConfirm();
             handleClosePopover();
           }}
-          sx={{ color: 'error.main' }}
+          sx={{ color: "error.main" }}
         >
           <Iconify icon="eva:trash-2-outline" />
           Delete

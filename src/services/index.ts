@@ -12,6 +12,7 @@ import { overnightAbsenceService } from "./overnightAbsenceService";
 import { requestService } from "./requestService";
 import { contractService } from "./contractService";
 import { parkingRequestService } from "./parkingRequestService";
+import { vehicleService } from "./vehicleService";
 
 export const httpClient = {
   authService: authService,
@@ -28,4 +29,5 @@ export const httpClient = {
   requestService: requestService,
   contractService: contractService,
   parkingRequestService: parkingRequestService,
+  vehicleService: vehicleService,
 };

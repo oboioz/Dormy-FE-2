@@ -80,4 +80,7 @@ export const API_URL = {
     SOFT_DELETE: "parking-request/id/{id}/soft-delete",
     GET_SINGLE: "parking-request/id/",
   },
+  VEHICLE: {
+    GET_BATCH: "vehicle/batch",
+  }
 };

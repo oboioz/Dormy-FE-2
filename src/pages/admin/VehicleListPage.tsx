@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-// @mui
 import {
   Button,
   Card,
@@ -10,8 +9,7 @@ import {
   TableContainer,
   Tooltip,
 } from "@mui/material";
-// components
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { mockVehicles } from "../../_mock/assets/vehicle";
 import ConfirmDialog from "../../components/confirm-dialog";
@@ -31,23 +29,19 @@ import { PATH_ADMIN } from "../../routes/paths";
 import VehicleListRow from "../../sections/@dashboard/admin/garage/VehicleListRow";
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
-// sections
-
-// ----------------------------------------------------------------------
+import { IVehicle } from "../../models/responses/VehicleModels";
+import { httpClient } from "../../services";
 
 const TABLE_HEAD = [
-  { id: "type", label: "Type", align: "left" },
-  { id: "licenseplate", label: "License Plate", align: "left" },
-  { id: "id", label: "ID", align: "left" },
-  { id: "owner", label: "Owner", align: "left" },
-  { id: "phoneNumber", label: "Phone Number", align: "center" },
-  { id: "status", label: "Status", align: "center" },
-  { id: "" },
+  { id: "vehicleType", label: "Vehicle Type", align: "left" },
+  { id: "licensePlate", label: "License Plate", align: "left" },
+  { id: "parkingSpotName", label: "Parking Spot", align: "left" },
+  { id: "userFullname", label: "Owner", align: "left" },
+  { id: "isDeleted", label: "Status", align: "left" },
+  // { id: "" },
 ];
 
 const _vehicleList = mockVehicles;
-
-// ----------------------------------------------------------------------
 
 export default function RoomTypePage() {
   useAuthGuard(UserRole.ADMIN);
@@ -71,11 +65,11 @@ export default function RoomTypePage() {
 
   const navigate = useNavigate();
 
-  const [tableData, setTableData] = useState(_vehicleList);
+  const [tableData, setTableData] = useState<IVehicle[]>([]);
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
-  const isNotFound = !_vehicleList.length;
+  const isNotFound = !tableData.length;
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -90,9 +84,7 @@ export default function RoomTypePage() {
   };
 
   const handleDeleteRow = (id: string) => {
-    const deleteRow = tableData.filter(
-      (row) => row.vehicleID.toString() !== id
-    );
+    const deleteRow = tableData.filter((row) => row.id.toString() !== id);
     setSelected([]);
     setTableData(deleteRow);
 
@@ -105,7 +97,7 @@ export default function RoomTypePage() {
 
   const handleDeleteRows = (selectedRows: string[]) => {
     const deleteRows = tableData.filter(
-      (row) => !selectedRows.includes(row.vehicleID.toString())
+      (row) => !selectedRows.includes(row.id.toString())
     );
     setSelected([]);
     setTableData(deleteRows);
@@ -123,6 +115,21 @@ export default function RoomTypePage() {
     }
   };
 
+  const fetchVehicles = async () => {
+    var request = await httpClient.vehicleService.getVehicleBatch({ ids: [] });
+    request.sort(
+      (a, b) =>
+        new Date(b.createdDateUtc).getTime() -
+        new Date(a.createdDateUtc).getTime()
+    );
+    console.log(request);
+    setTableData(request);
+  };
+
+  useEffect(() => {
+    fetchVehicles();
+  }, []);
+
   return (
     <>
       <Helmet>
@@ -131,10 +138,10 @@ export default function RoomTypePage() {
 
       <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
-          heading="Contract List"
+          heading="Vehicle List"
           links={[
             { name: "Dashboard", href: PATH_ADMIN.root },
-            { name: "User", href: PATH_ADMIN.profile },
+            { name: "Admin", href: PATH_ADMIN.profile },
             { name: "Vehicle List" },
           ]}
           // action={
@@ -157,7 +164,7 @@ export default function RoomTypePage() {
               onSelectAllRows={(checked) =>
                 onSelectAllRows(
                   checked,
-                  tableData.map((row) => row.vehicleID.toString())
+                  tableData.map((row) => row.id.toString())
                 )
               }
               action={
@@ -186,22 +193,16 @@ export default function RoomTypePage() {
                 />
 
                 <TableBody>
-                  {_vehicleList
+                  {tableData
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => (
                       <VehicleListRow
-                        key={row.vehicleID}
+                        key={row.id}
                         row={row}
-                        selected={selected.includes(row.vehicleID.toString())}
-                        onSelectRow={() =>
-                          onSelectRow(row.vehicleID.toString())
-                        }
-                        onEditRow={() =>
-                          handleEditRow(row.vehicleID.toString())
-                        }
-                        onDeleteRow={() =>
-                          handleDeleteRow(row.vehicleID.toString())
-                        }
+                        selected={selected.includes(row.id.toString())}
+                        onSelectRow={() => onSelectRow(row.id.toString())}
+                        onEditRow={() => handleEditRow(row.id.toString())}
+                        onDeleteRow={() => handleDeleteRow(row.id.toString())}
                       />
                     ))}
 
@@ -243,5 +244,3 @@ export default function RoomTypePage() {
     </>
   );
 }
-
-// ----------------------------------------------------------------------
