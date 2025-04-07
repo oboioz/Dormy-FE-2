@@ -17,9 +17,10 @@ const getAllUserOvernightAbsences = async () => {
     if (response.status === HttpStatusCode.Ok) {
       return response.data.result as OvernightAbsenceResponseModel[];
     }
-    return undefined;
+    return [];
   } catch (err) {
     console.log(err);
+    return [];
   }
 };
 
@@ -59,8 +60,28 @@ const updateOvernightAbsence = async (
   }
 };
 
+const approveReject = async (id: string, isApproved: boolean) => {
+  try {
+    var response = await privateAxios.put(
+      API_URL.OVERNIGHT_ABSENCE.APPROVE_REJECt.replace("{id}", id),
+      {
+        id: id,
+        isApproved: isApproved,
+      }
+    );
+    if (response.status === HttpStatusCode.Accepted) {
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
+
 export const overnightAbsenceService = {
-  getAllUserOvernightAbsences: getAllUserOvernightAbsences,
-  createOvernightAbsence: createOvernightAbsence,
-  updateOvernightAbsence: updateOvernightAbsence,
+  getAllUserOvernightAbsences,
+  createOvernightAbsence,
+  updateOvernightAbsence,
+  approveReject,
 };

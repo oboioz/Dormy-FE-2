@@ -1,5 +1,4 @@
-import { useState } from 'react';
-// @mui
+import { useState } from "react";
 import {
   Button,
   Checkbox,
@@ -7,24 +6,19 @@ import {
   MenuItem,
   TableCell,
   TableRow,
-  Typography
-} from '@mui/material';
-// @types
-// components
-import { IOvernightAbsence } from '../../../../@types/request';
-import { phoneNumber } from '../../../../_mock/assets';
-import ConfirmDialog from '../../../../components/confirm-dialog';
-import Iconify from '../../../../components/iconify';
-import Label from '../../../../components/label';
-import MenuPopover from '../../../../components/menu-popover';
-import { fDate, fDateTime } from '../../../../utils/formatTime';
-
-// ----------------------------------------------------------------------
+  Typography,
+} from "@mui/material";
+import ConfirmDialog from "../../../../components/confirm-dialog";
+import Iconify from "../../../../components/iconify";
+import Label from "../../../../components/label";
+import MenuPopover from "../../../../components/menu-popover";
+import { fDateTime } from "../../../../utils/formatTime";
+import { OvernightAbsenceResponseModel } from "../../../../models/responses/OvernightAbsenceResponseModels";
 
 type Props = {
-  row: IOvernightAbsence;
+  row: OvernightAbsenceResponseModel;
   selected: boolean;
-  onEditRow: VoidFunction;
+  onApproveReject: (id: string, isApprove: boolean) => void;
   onSelectRow: VoidFunction;
   onDeleteRow: VoidFunction;
 };
@@ -32,12 +26,21 @@ type Props = {
 export default function OvernightRequestRow({
   row,
   selected,
-  onEditRow,
+  onApproveReject,
   onSelectRow,
   onDeleteRow,
 }: Props) {
-
-  const { startDateTime, endDateTime, absenceID, adminID, reason, status, userID, submitAt } = row;
+  const {
+    id,
+    startDateTime,
+    endDateTime,
+    reason,
+    status,
+    phoneNumber,
+    email,
+    fullName,
+    createdDateUtc,
+  } = row;
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
@@ -59,7 +62,6 @@ export default function OvernightRequestRow({
     setOpenPopover(null);
   };
 
-
   return (
     <>
       <TableRow hover selected={selected}>
@@ -69,38 +71,41 @@ export default function OvernightRequestRow({
 
         <TableCell>
           <Typography variant="subtitle2" noWrap>
-            {fDate(startDateTime)} + {"-"} + {fDate(endDateTime)}
+            {fDateTime(startDateTime)} {"-"} {fDateTime(endDateTime)}
           </Typography>
         </TableCell>
 
-        <TableCell align="left">{fDateTime(submitAt)}</TableCell>
+        <TableCell align="left">{fDateTime(createdDateUtc)}</TableCell>
 
-        <TableCell align="left">{userID.firstName}</TableCell>
+        <TableCell align="left">{fullName}</TableCell>
 
         <TableCell align="left">{phoneNumber}</TableCell>
 
-        <TableCell align="left">{userID.contract.roomID.building.name}{userID.contract.roomID.floorNumber}{userID.contract.roomID.roomNumber}</TableCell>
-
         <TableCell align="left">{reason}</TableCell>
 
-
-        <TableCell align="right">
+        <TableCell align="left">
           <Label
             variant="soft"
-            color={(status === 'banned' && 'error') || 'success'}
-            sx={{ textTransform: 'capitalize' }}
+            color={
+              (status === "SUBMITTED" && "warning") ||
+              (status === "APPROVED" && "success") ||
+              (status === "REJECTED" && "error") ||
+              (status === "CANCELLED" && "default") ||
+              "default"
+            }
           >
             {status}
           </Label>
         </TableCell>
 
         <TableCell align="right">
-          <IconButton color={openPopover ? 'inherit' : 'default'} onClick={handleOpenPopover}>
+          <IconButton
+            color={openPopover ? "inherit" : "default"}
+            onClick={handleOpenPopover}
+          >
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
         </TableCell>
-
-
       </TableRow>
 
       <MenuPopover
@@ -110,25 +115,38 @@ export default function OvernightRequestRow({
         sx={{ width: 140 }}
       >
         <MenuItem
+          disabled={status !== "SUBMITTED"}
+          sx={{ color: "success.main" }}
+          onClick={() => {
+            onApproveReject(id, true);
+            handleClosePopover();
+          }}
+        >
+          <Iconify icon="eva:checkmark-circle-2-outline" /> {/* Approve Icon */}
+          Approve
+        </MenuItem>
+        <MenuItem
+          disabled={status !== "SUBMITTED"}
+          onClick={() => {
+            onApproveReject(id, false);
+            handleClosePopover();
+          }}
+          sx={{ color: "error.main" }}
+        >
+          <Iconify icon="eva:close-circle-outline" /> {/* Reject Icon */}
+          Reject
+        </MenuItem>
+        {/* <MenuItem
+          disabled={status !== "SUBMITTED"}
           onClick={() => {
             handleOpenConfirm();
             handleClosePopover();
           }}
-          sx={{ color: 'error.main' }}
+          sx={{ color: "error.main" }}
         >
           <Iconify icon="eva:trash-2-outline" />
           Delete
-        </MenuItem>
-
-        <MenuItem
-          onClick={() => {
-            onEditRow();
-            handleClosePopover();
-          }}
-        >
-          <Iconify icon="eva:edit-fill" />
-          Edit
-        </MenuItem>
+        </MenuItem> */}
       </MenuPopover>
 
       <ConfirmDialog

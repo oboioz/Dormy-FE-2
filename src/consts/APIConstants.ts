@@ -56,6 +56,7 @@ export const API_URL = {
     GET_BATCH: "overnight-absence/batch",
     CREATE: "overnight-absence",
     UPDATE: "overnight-absence",
+    APPROVE_REJECt: "overnight-absence/id/{id}/approve-or-reject",
   },
   REQUEST: {
     GET_BATCH: "request/batch",

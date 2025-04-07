@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-// @mui
 import {
   Button,
   Card,
@@ -7,10 +6,9 @@ import {
   Table,
   TableBody,
   TableContainer,
+  TablePagination,
 } from "@mui/material";
-
-// components
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { mockOvernightAbsences } from "../../_mock/assets/overnight";
 import ConfirmDialog from "../../components/confirm-dialog";
@@ -28,35 +26,32 @@ import { PATH_ADMIN } from "../../routes/paths";
 import OvernightRequestRow from "../../sections/@dashboard/admin/request/OvernightRequestRow";
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
-// sections
-
-// ----------------------------------------------------------------------
+import { OvernightAbsenceResponseModel } from "../../models/responses/OvernightAbsenceResponseModels";
+import { httpClient } from "../../services";
+import { toast, ToastContainer } from "react-toastify";
 
 const TABLE_HEAD = [
   { id: "absenceTime", label: "Absence Time", align: "left" },
-  { id: "submitTime", label: "Submit Time", align: "left" },
-  { id: "requester", label: "Requester", align: "left" },
+  { id: "createdDateUtc", label: "Submit Time", align: "left" },
+  { id: "fullName", label: "Requester", align: "left" },
   { id: "phoneNumber", label: "Phone Number", align: "left" },
-  { id: "room", label: "Room", align: "center" },
-  { id: "reason", label: "Reason", align: "center" },
-  { id: "status", label: "Status", align: "center" },
+  { id: "reason", label: "Reason", align: "left" },
+  { id: "status", label: "Status", align: "left" },
   { id: "" },
 ];
 
 const _mockData = mockOvernightAbsences;
 
-// ----------------------------------------------------------------------
-
 export default function OvernightrequestPage() {
   useAuthGuard(UserRole.ADMIN);
   const {
     page,
+    selected,
     rowsPerPage,
     setPage,
-    //
-    selected,
     setSelected,
     onSelectRow,
+    setRowsPerPage,
     onSelectAllRows,
   } = useTable();
 
@@ -69,11 +64,13 @@ export default function OvernightrequestPage() {
 
   const navigate = useNavigate();
 
-  const [tableData, setTableData] = useState(_mockData);
+  const [tableData, setTableData] = useState<OvernightAbsenceResponseModel[]>(
+    []
+  );
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
-  const isNotFound = !_mockData.length;
+  const isNotFound = !tableData.length;
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -83,14 +80,12 @@ export default function OvernightrequestPage() {
     setOpenConfirm(false);
   };
 
-  const handleEditRow = (id: string) => {
-    // navigate(PATH_DASHBOARD.user.edit(paramCase(id)));
+  const handleApproveReject = (id: string, isApprove: boolean) => {
+    approveReject(id, isApprove);
   };
 
   const handleDeleteRow = (id: string) => {
-    const deleteRow = tableData.filter(
-      (row) => row.absenceID.toString() !== id
-    );
+    const deleteRow = tableData.filter((row) => row.id.toString() !== id);
     setSelected([]);
     setTableData(deleteRow);
 
@@ -100,6 +95,51 @@ export default function OvernightrequestPage() {
       }
     }
   };
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const approveReject = async (id: string, isApprove: boolean) => {
+    var response = await httpClient.overnightAbsenceService.approveReject(
+      id,
+      isApprove
+    );
+
+    if (response) {
+      toast.success("Success");
+      window.location.reload();
+    } else {
+      toast.error("Failed");
+    }
+  };
+
+  const fetchOvernightAbsents = async () => {
+    var response =
+      await httpClient.overnightAbsenceService.getAllUserOvernightAbsences();
+
+    response.sort((a, b) => {
+      if (a.status === b.status) {
+        return (
+          new Date(b.createdDateUtc).getTime() -
+          new Date(a.createdDateUtc).getTime()
+        );
+      }
+      return a.status === "SUBMITTED" ? -1 : b.status === "SUBMITTED" ? 1 : 0;
+    });
+    setTableData(response);
+  };
+
+  useEffect(() => {
+    fetchOvernightAbsents();
+  }, []);
 
   return (
     <>
@@ -112,7 +152,7 @@ export default function OvernightrequestPage() {
           heading="Overnight Request List"
           links={[
             { name: "Dashboard", href: PATH_ADMIN.root },
-            { name: "User", href: PATH_ADMIN.profile },
+            { name: "Admin", href: PATH_ADMIN.profile },
             { name: "Overnight Request" },
           ]}
           // action={
@@ -138,30 +178,22 @@ export default function OvernightrequestPage() {
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
                       checked,
-                      tableData.map((row) => row.absenceID.toString())
+                      tableData.map((row) => row.id.toString())
                     )
                   }
-
-                  // rowCount={tableData.length}
                 />
 
                 <TableBody>
-                  {_mockData
+                  {tableData
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => (
                       <OvernightRequestRow
-                        key={row.absenceID}
+                        key={row.id}
                         row={row}
-                        selected={selected.includes(row.absenceID.toString())}
-                        onSelectRow={() =>
-                          onSelectRow(row.absenceID.toString())
-                        }
-                        onEditRow={() =>
-                          handleEditRow(row.absenceID.toString())
-                        }
-                        onDeleteRow={() =>
-                          handleDeleteRow(row.absenceID.toString())
-                        }
+                        selected={selected.includes(row.id.toString())}
+                        onSelectRow={() => onSelectRow(row.id.toString())}
+                        onApproveReject={handleApproveReject}
+                        onDeleteRow={() => handleDeleteRow(row.id.toString())}
                       />
                     ))}
 
@@ -174,6 +206,15 @@ export default function OvernightrequestPage() {
               </Table>
             </Scrollbar>
           </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={tableData.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
         </Card>
       </Container>
 
@@ -203,5 +244,3 @@ export default function OvernightrequestPage() {
     </>
   );
 }
-
-// ----------------------------------------------------------------------
