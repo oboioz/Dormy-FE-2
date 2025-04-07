@@ -1,33 +1,33 @@
-import { useState } from 'react';
-// @mui
-import {
-  Button,
-  Stack,
-  TableCell,
-  TableRow,
-  Typography
-} from '@mui/material';
-// @types
-// components
-import { IParkingRequest } from '../../../../@types/vehicle';
-import ConfirmDialog from '../../../../components/confirm-dialog';
-import { fDateTime } from '../../../../utils/formatTime';
-
-// ----------------------------------------------------------------------
+import { useState } from "react";
+import { Button, Stack, TableCell, TableRow, Typography } from "@mui/material";
+import ConfirmDialog from "../../../../components/confirm-dialog";
+import { fDateTime } from "../../../../utils/formatTime";
+import { IParkingRequest } from "../../../../models/responses/ParkingRequestModels";
+import Label from "../../../../components/label";
 
 type Props = {
   row: IParkingRequest;
-  onVerifyRow: VoidFunction;
-  onDenyRow: VoidFunction;
+  onApproveRow: VoidFunction;
+  onRejectRow: VoidFunction;
 };
 
 export default function VehicleRegistrationRow({
   row,
-  onVerifyRow,
-  onDenyRow,
+  onApproveRow,
+  onRejectRow,
 }: Props) {
-
-  const { parkingRequestID, timestamp, userID, vehicleID, status } = row;
+  const {
+    id,
+    approverUserFullName,
+    createdDateUtc,
+    description,
+    licensePlate,
+    parkingSpotName,
+    parkingSpotStatus,
+    vehicleType,
+    userFullName,
+    status,
+  } = row;
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
@@ -37,29 +37,81 @@ export default function VehicleRegistrationRow({
 
   const handleCloseConfirm = () => {
     setOpenConfirm(false);
+    onRejectRow();
   };
-
 
   return (
     <>
       <TableRow hover>
         <TableCell>
           <Typography variant="subtitle2" noWrap>
-            {parkingRequestID}
+            {parkingSpotName}
           </Typography>
         </TableCell>
+        <TableCell align="left">
+          <Label
+            variant="soft"
+            color={
+              parkingSpotStatus === "UNDER_MAINTENANCE"
+                ? "warning"
+                : parkingSpotStatus === "FULL"
+                ? "error"
+                : parkingSpotStatus === "AVAILABLE"
+                ? "success"
+                : undefined
+            }
+            sx={{ textTransform: "capitalize" }}
+          >
+            {parkingSpotStatus}
+          </Label>
+        </TableCell>
 
-        <TableCell align="left">{fDateTime(timestamp)}</TableCell>
-        <TableCell align="left">{userID.firstName}{userID.lastName}</TableCell>
-        <TableCell align="left">{userID.phoneNumber}</TableCell>
-        <TableCell align="left">{vehicleID.type}</TableCell>
-        <TableCell align="left">{vehicleID.licensePlate} </TableCell>
+        <TableCell align="left">{fDateTime(createdDateUtc)}</TableCell>
+        <TableCell align="left">{userFullName}</TableCell>
+        <TableCell align="left">{licensePlate} </TableCell>
+        <TableCell align="left">{vehicleType}</TableCell>
+        <TableCell align="left">{description}</TableCell>
+        <TableCell align="left">
+          <Label
+            variant="soft"
+            color={
+              status === "SUBMITTED"
+                ? "warning"
+                : status === "REJECTED"
+                ? "error"
+                : status === "APPROVED"
+                ? "success"
+                : status === "CANCELED"
+                ? "default"
+                : undefined
+            }
+            sx={{ textTransform: "capitalize" }}
+          >
+            {status}
+          </Label>
+        </TableCell>
 
-
-        <TableCell align="right">
-          <Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={1}>
-            <Button variant="outlined" >Deny</Button>
-            <Button variant="contained">Verify</Button>
+        <TableCell align="left">
+          <Stack
+            direction="row"
+            justifyContent="flex-end"
+            alignItems="left"
+            spacing={1}
+          >
+            <Button
+              variant="contained"
+              onClick={onApproveRow}
+              disabled={status !== "SUBMITTED"}
+            >
+              Approve
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={handleOpenConfirm}
+              disabled={status !== "SUBMITTED"}
+            >
+              Reject
+            </Button>
           </Stack>
         </TableCell>
       </TableRow>
@@ -67,11 +119,15 @@ export default function VehicleRegistrationRow({
       <ConfirmDialog
         open={openConfirm}
         onClose={handleCloseConfirm}
-        title="Delete"
-        content="Are you sure want to delete?"
+        title="Reject"
+        content="Are you sure want to reject?"
         action={
-          <Button variant="contained" color="error" onClick={handleOpenConfirm}>
-            Delete
+          <Button
+            variant="contained"
+            color="error"
+            onClick={handleCloseConfirm}
+          >
+            Reject
           </Button>
         }
       />

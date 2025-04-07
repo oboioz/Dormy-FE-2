@@ -1,5 +1,3 @@
-import { REGISTER } from "redux-persist";
-
 export const API_URL = {
   BASE_URL: import.meta.env.VITE_BASE_API_URL,
   ADMIN: {
@@ -64,5 +62,12 @@ export const API_URL = {
     UPDATE: "request/id/",
     APPROVE_REJECT: "request/id/{id}/approve-or-reject",
     CANCEL: "request/id/{id}/cancel",
+  },
+  PARKING_REQUEST: {
+    GET_BATCH: "parking-request/batch",
+    APPROVE_REJECT: "parking-request/id/{id}/approve-or-reject",
+    CANCEL: "parking-request/id/{id}/cancel",
+    SOFT_DELETE: "parking-request/id/{id}/soft-delete",
+    GET_SINGLE: "parking-request/id/",
   },
 };

@@ -1,17 +1,19 @@
 import { useNavigate } from "react-router-dom";
-// @mui
 import {
   Button,
   Card,
   Container,
+  MenuItem,
+  Select,
+  Stack,
   Table,
   TableBody,
   TableContainer,
+  TablePagination,
+  TextField,
 } from "@mui/material";
-// components
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { mockParkingRequests } from "../../_mock/assets/vehicleRegistration";
 import ConfirmDialog from "../../components/confirm-dialog";
 import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
 import Scrollbar from "../../components/scrollbar";
@@ -27,23 +29,21 @@ import { PATH_ADMIN } from "../../routes/paths";
 import VehicleRegistrationRow from "../../sections/@dashboard/admin/garage/VehicleRegistrationRow";
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
-// sections
-
-// ----------------------------------------------------------------------
+import { httpClient } from "../../services";
+import { IParkingRequest } from "../../models/responses/ParkingRequestModels";
+import { toast } from "react-toastify";
 
 const TABLE_HEAD = [
-  { id: "registrationID", label: "ID", align: "left" },
-  { id: "timestamp", label: "Timestamp", align: "left" },
-  { id: "name", label: "Name", align: "left" },
-  { id: "phoneNumber", label: "Phone Number", align: "left" },
-  { id: "vehicleType", label: "Vehicle Type", align: "center" },
-  { id: "license", label: "License", align: "center" },
+  { id: "parkingSpotName", label: "Spot", align: "left" },
+  { id: "parkingSpotStatus", label: "Spot Status", align: "left" },
+  { id: "createdDateUtc", label: "Timestamp", align: "left" },
+  { id: "userFullName", label: "Requester", align: "left" },
+  { id: "license", label: "License", align: "left" },
+  { id: "vehicleType", label: "Vehicle Type", align: "left" },
+  { id: "description", label: "Note", align: "left" },
+  { id: "status", label: "Status", align: "left" },
   { id: "" },
 ];
-
-const _mockData = mockParkingRequests;
-
-// ----------------------------------------------------------------------
 
 export default function VehicleRegistrationListPage() {
   useAuthGuard(UserRole.ADMIN);
@@ -51,27 +51,35 @@ export default function VehicleRegistrationListPage() {
     page,
     rowsPerPage,
     setPage,
-    //
+    setRowsPerPage,
     selected,
     setSelected,
     onSelectRow,
     onSelectAllRows,
   } = useTable();
 
-  const dataInPage = _mockData.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
-  );
-
   const { themeStretch } = useSettingsContext();
 
   const navigate = useNavigate();
 
-  const [tableData, setTableData] = useState(_mockData);
-
+  const [tableData, setTableData] = useState<IParkingRequest[]>([]);
+  const [selectedStatus, setSelectedStatus] = useState<string>("ALL");
+  const [searchQuery, setSearchQuery] = useState<string>(""); // Search query
   const [openConfirm, setOpenConfirm] = useState(false);
 
-  const isNotFound = !_mockData.length;
+  const isNotFound = !tableData.length;
+
+  const filteredData = tableData.filter((row) => {
+    const matchesStatus =
+      selectedStatus === "ALL" || row.status === selectedStatus;
+
+    const matchesSearchQuery =
+      row.parkingSpotName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      row.vehicleType.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      row.userFullName.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return matchesStatus && matchesSearchQuery;
+  });
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -81,25 +89,64 @@ export default function VehicleRegistrationListPage() {
     setOpenConfirm(false);
   };
 
-  const handleEditRow = (id: string) => {
-    // navigate(PATH_DASHBOARD.user.edit(paramCase(id)));
+  const handleApprove = (id: string) => {
+    approveRejectRequest(id, true);
   };
 
-  const handleDeleteRow = (id: string) => {
-    const deleteRow = tableData.filter(
-      (row) =>
-        row.registrationInformation.generalInformation.contract.contractID.toString() !==
-        id
-    );
-    setSelected([]);
-    setTableData(deleteRow);
+  const handleReject = (id: string) => {
+    approveRejectRequest(id, false);
+  };
 
-    if (page > 0) {
-      if (dataInPage.length < 2) {
-        setPage(page - 1);
-      }
+  const fetchRequests = async () => {
+    var request = await httpClient.parkingRequestService.getRequests({
+      ids: [],
+    });
+    request.sort(
+      (a, b) =>
+        new Date(b.createdDateUtc).getTime() -
+        new Date(a.createdDateUtc).getTime()
+    );
+    console.log(request);
+    setTableData(request);
+  };
+
+  const approveRejectRequest = async (id: string, isApprove: boolean) => {
+    var response = await httpClient.parkingRequestService.approveRejectRequest(
+      id,
+      isApprove
+    );
+    if (response) {
+      toast.success(isApprove ? "Approved" : "Rejected");
+      window.location.reload();
+    } else {
+      toast.error("An error has occurred, please try again later");
     }
   };
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  useEffect(() => {
+    fetchRequests();
+  }, []);
+
+  useEffect(() => {
+    setPage(0);
+  }, [selectedStatus, searchQuery]);
+
+  useEffect(() => {
+    if (page > 0 && page >= Math.ceil(filteredData.length / rowsPerPage)) {
+      setPage(0); // Reset to the first page if the current page is out of range
+    }
+  }, [filteredData.length, page, rowsPerPage]);
 
   return (
     <>
@@ -126,7 +173,29 @@ export default function VehicleRegistrationListPage() {
           //   </Button>
           // }
         />
+        <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
+          {/* Status Filter */}
+          <Select
+            value={selectedStatus}
+            onChange={(e) => setSelectedStatus(e.target.value)}
+            displayEmpty
+            sx={{ width: 200 }}
+          >
+            <MenuItem value="ALL">All Statuses</MenuItem>
+            <MenuItem value="SUBMITTED">Submitted</MenuItem>
+            <MenuItem value="APPROVED">Approved</MenuItem>
+            <MenuItem value="REJECTED">Rejected</MenuItem>
+            <MenuItem value="CANCELED">Canceled</MenuItem>
+          </Select>
 
+          {/* Search Input */}
+          <TextField
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by Parking Spot Name, Vehicle Type or Username"
+            fullWidth
+          />
+        </Stack>
         <Card>
           <TableContainer sx={{ position: "relative", overflow: "unset" }}>
             <Scrollbar>
@@ -146,14 +215,14 @@ export default function VehicleRegistrationListPage() {
                 />
 
                 <TableBody>
-                  {_mockData
+                  {filteredData
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => (
                       <VehicleRegistrationRow
-                        key={row}
+                        key={row.id}
                         row={row}
-                        onDenyRow={handleOpenConfirm}
-                        onVerifyRow={handleOpenConfirm}
+                        onRejectRow={() => handleReject(row.id)}
+                        onApproveRow={() => handleApprove(row.id)}
                       />
                     ))}
 
@@ -166,6 +235,15 @@ export default function VehicleRegistrationListPage() {
               </Table>
             </Scrollbar>
           </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={tableData.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
         </Card>
       </Container>
 
@@ -195,5 +273,3 @@ export default function VehicleRegistrationListPage() {
     </>
   );
 }
-
-// ----------------------------------------------------------------------
