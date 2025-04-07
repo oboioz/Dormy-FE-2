@@ -266,7 +266,7 @@ export default function GarageListRow({
                 <TableRow>
                   <TableCell>Vehicle Type</TableCell>
                   <TableCell>License Plate</TableCell>
-                  <TableCell>User Full Name</TableCell>
+                  <TableCell>User Name</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
