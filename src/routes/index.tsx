@@ -143,7 +143,7 @@ export default function Router() {
         { path: "invoice", element: <InvoiceListPage /> },
         { path: "invoicecreate", element: <InvoiceCreatePage /> },
 
-        { path: "garage", element: <VehicleGaragePage /> },
+        { path: "parkingspot", element: <VehicleGaragePage /> },
         { path: "vehiclelist", element: <VehicleListPage /> },
         {
           path: "vehicleregisterlist",
@@ -193,7 +193,7 @@ export default function Router() {
           element: <DormitoryRoomCreatePage />,
         },
         { path: "roomtypeedit", element: <RoomTypeFormPage /> },
-        { path: "garageform", element: <VehicleGarageCreatePage /> },
+        { path: "parkingspotform", element: <VehicleGarageCreatePage /> },
       ],
     },
 

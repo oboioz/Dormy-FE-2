@@ -13,6 +13,7 @@ import { requestService } from "./requestService";
 import { contractService } from "./contractService";
 import { parkingRequestService } from "./parkingRequestService";
 import { vehicleService } from "./vehicleService";
+import { parkingSpotService } from "./parkingSpotService";
 
 export const httpClient = {
   authService: authService,
@@ -30,4 +31,5 @@ export const httpClient = {
   contractService: contractService,
   parkingRequestService: parkingRequestService,
   vehicleService: vehicleService,
+  parkingSpotService: parkingSpotService,
 };

@@ -134,11 +134,11 @@ const adminNavConfig = [
 
       {
         title: "Garage",
-        path: PATH_ADMIN.garage.list,
+        path: PATH_ADMIN.garage.parkingSpot,
         icon: ICONS.garage,
         // roles: ['admin'],
         children: [
-          { title: "Garage List", path: PATH_ADMIN.garage.list },
+          { title: "Parking Spot List", path: PATH_ADMIN.garage.parkingSpot },
           { title: "Vehicle List", path: PATH_ADMIN.garage.vehiclelist },
           { title: "Worker List", path: PATH_ADMIN.garage.worker },
           {

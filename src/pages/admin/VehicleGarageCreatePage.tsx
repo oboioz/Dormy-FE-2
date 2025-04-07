@@ -1,20 +1,11 @@
 import { useNavigate } from "react-router-dom";
-// @mui
 import { Container } from "@mui/material";
-// routes
-// redux
 import { useDispatch } from "../../redux/store";
-// sections
 import { useSettingsContext } from "../../components/settings";
-
 import { Helmet } from "react-helmet-async";
 import GarageCreateForm from "../../sections/@dashboard/admin/garage/GarageCreateForm";
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
-
-// ----------------------------------------------------------------------
-
-// ----------------------------------------------------------------------
 
 export default function VehicleGarageCreatePage() {
   useAuthGuard(UserRole.ADMIN);
@@ -27,7 +18,7 @@ export default function VehicleGarageCreatePage() {
   return (
     <>
       <Helmet>
-        <title> Form | Garage</title>
+        <title> Form | Parking Spot</title>
       </Helmet>
 
       <Container

@@ -103,8 +103,8 @@ export const PATH_ADMIN = {
   },
 
   garage: {
-    list: path(ROOTS_ADMIN, "/garage"),
-    form: path(ROOTS_ADMIN, "/garageform"),
+    parkingSpot: path(ROOTS_ADMIN, "/parkingspot"),
+    parkingSpotForm: path(ROOTS_ADMIN, "/parkingspotform"),
     vehiclelist: path(ROOTS_ADMIN, "/vehiclelist"),
     registrationlist: path(ROOTS_ADMIN, "/vehicleregisterlist"),
     worker: path(ROOTS_ADMIN, "/garageworker"),

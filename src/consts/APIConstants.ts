@@ -82,5 +82,13 @@ export const API_URL = {
   },
   VEHICLE: {
     GET_BATCH: "vehicle/batch",
-  }
+  },
+  PARKING_SPOT: {
+    GET_BATCH: "parking-spot/batch",
+    CREATE: "parking-spot",
+    UPDATE: "parking-spot",
+    UPDATE_STATUS: "parking-spot/update/status",
+    GET_SINGLE: "parking-spot/id/",
+    SOFT_DELETE: "parking-spot/id/{id}/soft-delete",
+  },
 };
