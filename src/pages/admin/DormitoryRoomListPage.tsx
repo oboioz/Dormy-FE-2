@@ -156,12 +156,12 @@ export default function DormitoryRoomListPage() {
         />
 
         <Card>
-          <RoomTableToolbar
+          {/* <RoomTableToolbar
             isFiltered={false}
             filterName={""}
             onFilterName={handleFilterName}
             onResetFilter={handleResetFilter}
-          />
+          /> */}
 
           <TableContainer sx={{ position: "relative", overflow: "unset" }}>
             <TableSelectedAction
