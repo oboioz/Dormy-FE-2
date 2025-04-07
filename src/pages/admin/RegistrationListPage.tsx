@@ -11,9 +11,8 @@ import {
 // routes
 
 // components
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import mockRegistrationForm from "../../_mock/assets/form";
 import ConfirmDialog from "../../components/confirm-dialog";
 import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
 import Scrollbar from "../../components/scrollbar";
@@ -26,25 +25,28 @@ import {
   useTable,
 } from "../../components/table";
 import { PATH_ADMIN } from "../../routes/paths";
-import RoomTypeRow from "../../sections/@dashboard/admin/venue/RoomTypeRow";
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
+import { ContractResponseModel } from "../../models/responses/ContractResponseModels";
+import { httpClient } from "../../services";
+import { GetBatchContractRequestModel } from "../../models/requests/ContractRequestModels";
+import { toast } from "react-toastify";
+import ContractRow from "../../sections/@dashboard/admin/venue/ContractRow";
 // sections
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: "contractID", label: "ID", align: "left" },
-  { id: "timestamp", label: "Timestamp", align: "left" },
-  { id: "email", label: "Email", align: "left" },
-  { id: "phoneNumber", label: "Phone Number", align: "left" },
-  { id: "gender", label: "Gender", align: "center" },
-  { id: "room", label: "Room", align: "center" },
-  { id: "roomType", label: "Room Type", align: "center" },
-  { id: "" },
+  { id: "startDate", label: "Start date", align: "left" },
+  { id: "endDate", label: "End date", align: "left" },
+  { id: "userFullname", label: "Tenant", align: "left" },
+  { id: "roomNumber", label: "Room", align: "left" },
+  { id: "buildingName", label: "Building", align: "left" },
+  { id: "roomTypeName", label: "Room Type", align: "left" },
+  { id: "approverFullName", label: "Approver", align: "left" },
+  { id: "status", label: "Status", align: "left" },
+  { id: "action", label: "", align: "left" },
 ];
-
-const _mockData = mockRegistrationForm;
 
 // ----------------------------------------------------------------------
 
@@ -61,20 +63,41 @@ export default function RegistrationListPage() {
     onSelectAllRows,
   } = useTable();
 
-  const dataInPage = _mockData.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
-  );
-
   const { themeStretch } = useSettingsContext();
 
   const navigate = useNavigate();
 
-  const [tableData, setTableData] = useState(_mockData);
+  const [tableData, setTableData] = useState<ContractResponseModel[]>([]);
+
+  const dataInPage = tableData.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
-  const isNotFound = !_mockData.length;
+  const isNotFound = !tableData.length;
+
+  const fetchContractsData = async () => {
+    const payload: GetBatchContractRequestModel = {
+      ids: [],
+    };
+    const response = await httpClient.contractService.getBatchContracts(
+      payload
+    );
+
+    if (response) {
+      console.log("response", response);
+      setTableData(response);
+    } else {
+      setTableData([]);
+      toast.error("Failed to fetch data");
+    }
+  };
+
+  useEffect(() => {
+    fetchContractsData();
+  }, []);
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -89,11 +112,7 @@ export default function RegistrationListPage() {
   };
 
   const handleDeleteRow = (id: string) => {
-    const deleteRow = tableData.filter(
-      (row) =>
-        row.registrationInformation.generalInformation.contract.contractID.toString() !==
-        id
-    );
+    const deleteRow = tableData.filter((row) => row.id !== id);
     setSelected([]);
     setTableData(deleteRow);
 
@@ -141,9 +160,7 @@ export default function RegistrationListPage() {
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
                       checked,
-                      tableData.map((row) =>
-                        row.registrationInformation.generalInformation.contract.contractID.toString()
-                      )
+                      tableData.map((row) => row.id)
                     )
                   }
 
@@ -151,33 +168,17 @@ export default function RegistrationListPage() {
                 />
 
                 <TableBody>
-                  {_mockData
+                  {tableData
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => (
-                      <RoomTypeRow
-                        key={
-                          row.registrationInformation.generalInformation
-                            .contract.contractID
-                        }
+                      <ContractRow
+                        key={row.id}
                         row={row}
-                        selected={selected.includes(
-                          row.registrationInformation.generalInformation.contract.contractID.toString()
-                        )}
-                        onSelectRow={() =>
-                          onSelectRow(
-                            row.registrationInformation.generalInformation.contract.contractID.toString()
-                          )
-                        }
-                        onEditRow={() =>
-                          handleEditRow(
-                            row.registrationInformation.generalInformation.contract.contractID.toString()
-                          )
-                        }
-                        onDeleteRow={() =>
-                          handleDeleteRow(
-                            row.registrationInformation.generalInformation.contract.contractID.toString()
-                          )
-                        }
+                        setContracts={setTableData}
+                        selected={selected.includes(row.id)}
+                        onSelectRow={() => onSelectRow(row.id)}
+                        // onEditRow={() => handleEditRow(row.id)}
+                        // onDeleteRow={() => handleDeleteRow(row.id)}
                       />
                     ))}
 
