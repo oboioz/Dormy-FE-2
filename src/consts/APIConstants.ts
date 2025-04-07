@@ -63,6 +63,16 @@ export const API_URL = {
     APPROVE_REJECT: "request/id/{id}/approve-or-reject",
     CANCEL: "request/id/{id}/cancel",
   },
+  CONTRACT: {
+    GET_BATCH: "contract/batch",
+    GET_SINGLE: "contract/id/",
+    CREATE: "contract",
+    UPDATE: "contract",
+    ACCEPT_OR_REJECT: "contract/id/{{id}}/approve-or-reject",
+    ACTIVE: "contract/id/{id}/active",
+    TERMINATE: "contract/id/{id}/terminate",
+    EXPIRED: "contract/id/{id}/expired",
+  },
   PARKING_REQUEST: {
     GET_BATCH: "parking-request/batch",
     APPROVE_REJECT: "parking-request/id/{id}/approve-or-reject",
