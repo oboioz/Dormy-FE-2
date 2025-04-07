@@ -7,6 +7,7 @@ export const API_URL = {
     SIGN_IN: "user/sign-in",
     SIGN_UP: "user/sign-up",
     GET_PROFILE: "/user/id/",
+    GET_BATCH: "user/batch",
   },
   WORKPLACE: {
     GET: "workplace/all",
@@ -90,5 +91,11 @@ export const API_URL = {
     UPDATE_STATUS: "parking-spot/update/status",
     GET_SINGLE: "parking-spot/id/",
     SOFT_DELETE: "parking-spot/id/{id}/soft-delete",
+  },
+  VIOLATION: {
+    GET_BATCH: "violation/batch",
+    CREATE: "violation",
+    UPDATE: "violation",
+    SOFT_DELETE: "violation/id/{id}/soft-delete",
   },
 };

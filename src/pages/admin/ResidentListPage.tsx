@@ -102,23 +102,19 @@ const _userList = [...Array(24)].map((_, index) => ({
     : null,
 }));
 
-// ----------------------------------------------------------------------
-
 export default function ResidentListPage() {
   useAuthGuard(UserRole.ADMIN);
   const {
     page,
     order,
     orderBy,
-    rowsPerPage,
-    setPage,
-    //
     selected,
-    onSelectRow,
-    onSelectAllRows,
-    //
+    rowsPerPage,
     onSort,
+    setPage,
+    onSelectRow,
     onChangePage,
+    onSelectAllRows,
     onChangeRowsPerPage,
   } = useTable();
 

@@ -3,9 +3,11 @@ import { SignInModel } from "../models/requests/SignInModel";
 import { API_URL } from "../consts/APIConstants";
 import {
   AdminSignInResponse,
+  Profile,
   UserSignInResponse,
 } from "../models/responses/UserModel";
-import { publicAxios } from "../libs/axios";
+import { privateAxios, publicAxios } from "../libs/axios";
+import { GetBatchRequestModel } from "../models/requests/CommonModels";
 
 const adminSignIn = async (
   payload: SignInModel
@@ -33,7 +35,21 @@ const userSignIn = async (payload: SignInModel) => {
   }
 };
 
+const getUsers = async (payload: GetBatchRequestModel) => {
+  try {
+    var response = await privateAxios.post(API_URL.USER.GET_BATCH, payload);
+    if (response.status === HttpStatusCode.Ok) {
+      return response.data.result as Profile[];
+    }
+    return [];
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+};
+
 export const authService = {
-  adminSignIn: adminSignIn,
-  userSignIn: userSignIn,
+  adminSignIn,
+  userSignIn,
+  getUsers,
 };
