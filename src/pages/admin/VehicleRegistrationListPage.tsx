@@ -56,7 +56,7 @@ export default function VehicleRegistrationListPage() {
     setSelected,
     onSelectRow,
     onSelectAllRows,
-  } = useTable();
+  } = useTable({ defaultRowsPerPage: 10 });
 
   const { themeStretch } = useSettingsContext();
 
