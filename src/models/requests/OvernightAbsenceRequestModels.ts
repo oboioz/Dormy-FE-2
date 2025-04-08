@@ -10,3 +10,11 @@ export interface UpdateOvernightAbsenceRequestModel {
     endDateTime: string,
     reason: string
 }
+
+export interface GetBatchOvernightAbsenceRequestModel {
+    ids: string[];
+}
+
+export interface ApproveOrRejectOvernightAbsenceRequestModel {
+    isApproved: boolean;
+}

@@ -3,7 +3,9 @@ import { API_URL } from "../consts/APIConstants";
 import { privateAxios } from "../libs/axios";
 import { OvernightAbsenceResponseModel } from "../models/responses/OvernightAbsenceResponseModels";
 import {
+  ApproveOrRejectOvernightAbsenceRequestModel,
   CreateOvernightAbsenceRequestModel,
+  GetBatchOvernightAbsenceRequestModel,
   UpdateOvernightAbsenceRequestModel,
 } from "../models/requests/OvernightAbsenceRequestModels";
 
@@ -13,6 +15,22 @@ const getAllUserOvernightAbsences = async () => {
     var response = await privateAxios.post(
       API_URL.OVERNIGHT_ABSENCE.GET_BATCH,
       {}
+    );
+    if (response.status === HttpStatusCode.Ok) {
+      return response.data.result as OvernightAbsenceResponseModel[];
+    }
+    return [];
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+};
+
+const getBatchOvernightAbsences = async (payload: GetBatchOvernightAbsenceRequestModel) => {
+  try {
+    var response = await privateAxios.post(
+      API_URL.OVERNIGHT_ABSENCE.GET_BATCH,
+      payload
     );
     if (response.status === HttpStatusCode.Ok) {
       return response.data.result as OvernightAbsenceResponseModel[];
@@ -60,15 +78,13 @@ const updateOvernightAbsence = async (
   }
 };
 
-const approveReject = async (id: string, isApproved: boolean) => {
+const approveOrRejectOvernightAbsence = async (
+  id: string,
+  payload: ApproveOrRejectOvernightAbsenceRequestModel
+) => {
   try {
-    var response = await privateAxios.put(
-      API_URL.OVERNIGHT_ABSENCE.APPROVE_REJECt.replace("{id}", id),
-      {
-        id: id,
-        isApproved: isApproved,
-      }
-    );
+    const url = API_URL.OVERNIGHT_ABSENCE.APPROVE_REJECT.replace("{id}", id);
+    const response = await privateAxios.put(url, payload);
     if (response.status === HttpStatusCode.Accepted) {
       return true;
     }
@@ -80,8 +96,9 @@ const approveReject = async (id: string, isApproved: boolean) => {
 };
 
 export const overnightAbsenceService = {
-  getAllUserOvernightAbsences,
-  createOvernightAbsence,
-  updateOvernightAbsence,
-  approveReject,
+  getAllUserOvernightAbsences: getAllUserOvernightAbsences,
+  createOvernightAbsence: createOvernightAbsence,
+  updateOvernightAbsence: updateOvernightAbsence,
+  getBatchOvernightAbsences: getBatchOvernightAbsences,
+  approveOrRejectOvernightAbsence: approveOrRejectOvernightAbsence,
 };

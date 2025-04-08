@@ -8,6 +8,8 @@ export interface OvernightAbsenceResponseModel {
   fullName: string;
   email: string;
   phoneNumber: string;
+  approverId: string;
+  approverFullName: string;
   createdByCreator: string;
   lastUpdatedByUpdater: string;
   createdDateUtc: string;
