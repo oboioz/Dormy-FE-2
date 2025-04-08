@@ -10,7 +10,6 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { mockOvernightAbsences } from "../../_mock/assets/overnight";
 import ConfirmDialog from "../../components/confirm-dialog";
 import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
 import Scrollbar from "../../components/scrollbar";
@@ -23,24 +22,28 @@ import {
   useTable,
 } from "../../components/table";
 import { PATH_ADMIN } from "../../routes/paths";
-import OvernightRequestRow from "../../sections/@dashboard/admin/request/OvernightRequestRow";
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
 import { OvernightAbsenceResponseModel } from "../../models/responses/OvernightAbsenceResponseModels";
 import { httpClient } from "../../services";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
+import { GetBatchOvernightAbsenceRequestModel } from "../../models/requests/OvernightAbsenceRequestModels";
+import OvernightAbsenceRow from "../../sections/@dashboard/admin/request/OvernightAbsenceRow";
+
+// ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: "absenceTime", label: "Absence Time", align: "left" },
-  { id: "createdDateUtc", label: "Submit Time", align: "left" },
-  { id: "fullName", label: "Requester", align: "left" },
-  { id: "phoneNumber", label: "Phone Number", align: "left" },
+  { id: "startDate", label: "Start date", align: "left" },
+  { id: "endDate", label: "End date", align: "left" },
   { id: "reason", label: "Reason", align: "left" },
+  { id: "fullName", label: "Requester", align: "left" },
+  { id: "phoneNumber", label: "Phone number", align: "left" },
+  { id: "approverFullName", label: "Approver", align: "left" },
   { id: "status", label: "Status", align: "left" },
-  { id: "" },
+  { id: "action", label: "", align: "left" },
 ];
 
-const _mockData = mockOvernightAbsences;
+// ----------------------------------------------------------------------
 
 export default function OvernightrequestPage() {
   useAuthGuard(UserRole.ADMIN);
@@ -55,22 +58,40 @@ export default function OvernightrequestPage() {
     onSelectAllRows,
   } = useTable();
 
-  const dataInPage = _mockData.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
-  );
-
   const { themeStretch } = useSettingsContext();
 
   const navigate = useNavigate();
 
-  const [tableData, setTableData] = useState<OvernightAbsenceResponseModel[]>(
-    []
-  );
+  const [tableData, setTableData] = useState<OvernightAbsenceResponseModel[]>([]);
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
   const isNotFound = !tableData.length;
+  const dataInPage = tableData.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
+
+  const fetchOvernightAbsencesData = async () => {
+      const payload: GetBatchOvernightAbsenceRequestModel = {
+        ids: [],
+      };
+      const response = await httpClient.overnightAbsenceService.getBatchOvernightAbsences(
+        payload
+      );
+  
+      if (response) {
+        console.log("response", response);
+        setTableData(response);
+      } else {
+        setTableData([]);
+        toast.error("Failed to fetch data");
+      }
+    };
+  
+    useEffect(() => {
+      fetchOvernightAbsencesData();
+    }, []);
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -85,7 +106,9 @@ export default function OvernightrequestPage() {
   };
 
   const handleDeleteRow = (id: string) => {
-    const deleteRow = tableData.filter((row) => row.id.toString() !== id);
+    const deleteRow = tableData.filter(
+      (row) => row.id !== id
+    );
     setSelected([]);
     setTableData(deleteRow);
 
@@ -108,9 +131,9 @@ export default function OvernightrequestPage() {
   };
 
   const approveReject = async (id: string, isApprove: boolean) => {
-    var response = await httpClient.overnightAbsenceService.approveReject(
+    var response = await httpClient.overnightAbsenceService.approveOrRejectOvernightAbsence(
       id,
-      isApprove
+      { isApproved: isApprove }
     );
 
     if (response) {
@@ -178,7 +201,7 @@ export default function OvernightrequestPage() {
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
                       checked,
-                      tableData.map((row) => row.id.toString())
+                      tableData.map((row) => row.id)
                     )
                   }
                 />
@@ -187,13 +210,20 @@ export default function OvernightrequestPage() {
                   {tableData
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => (
-                      <OvernightRequestRow
+                      <OvernightAbsenceRow
                         key={row.id}
-                        row={row}
-                        selected={selected.includes(row.id.toString())}
-                        onSelectRow={() => onSelectRow(row.id.toString())}
-                        onApproveReject={handleApproveReject}
-                        onDeleteRow={() => handleDeleteRow(row.id.toString())}
+                        overnightAbsence={row}
+                        setOvernightAbsences={setTableData}
+                        selected={selected.includes(row.id)}
+                        onSelectRow={() =>
+                          onSelectRow(row.id)
+                        }
+                        // onEditRow={() =>
+                        //   handleEditRow(row.absenceID.toString())
+                        // }
+                        onDeleteRow={() =>
+                          handleDeleteRow(row.id)
+                        }
                       />
                     ))}
 
