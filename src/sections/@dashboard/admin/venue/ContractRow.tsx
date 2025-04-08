@@ -11,6 +11,7 @@ import { fDate } from "../../../../utils/formatTime";
 import ContractModal from "../contract/ContractModal";
 import { ContractResponseModel } from "../../../../models/responses/ContractResponseModels";
 import { useAuthContext } from "../../../../auth/JwtContext";
+import ContractStatusTag from "../../../tag/ContractStatusTag";
 
 type ContractRowProps = {
   row: ContractResponseModel;
@@ -39,7 +40,7 @@ export default function ContractRow({ row, setContracts, selected, onSelectRow }
             contract.id === contractId ? { ...contract, status: newStatus, approverFullName: user?.name || "N/A" } : contract
         )
     );
-};
+  };
 
   const handleOpenDetails = () => {
     setOpenDetails(true);
@@ -56,20 +57,15 @@ export default function ContractRow({ row, setContracts, selected, onSelectRow }
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell>
 
-        <TableCell align="left">{fDate(startDate)}</TableCell>
-        <TableCell align="left">{fDate(endDate)}</TableCell>
+        <TableCell align="left">{fDate(startDate, "dd/MM/yyyy")}</TableCell>
+        <TableCell align="left">{fDate(endDate, "dd/MM/yyyy")}</TableCell>
         <TableCell align="left">{userFullname}</TableCell>
         <TableCell align="left">{roomNumber}</TableCell>
         <TableCell align="left">{buildingName}</TableCell>
         <TableCell align="left">{roomTypeName}</TableCell>
         <TableCell align="left">{approverFullName || "N/A"}</TableCell>
         <TableCell align="left">
-          <Typography
-            variant="body2"
-            color={status === "Active" ? "success.main" : "error.main"}
-          >
-            {status}
-          </Typography>
+          <ContractStatusTag status={status}/>
         </TableCell>
 
         <TableCell align="right">

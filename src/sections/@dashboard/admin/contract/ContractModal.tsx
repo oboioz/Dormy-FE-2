@@ -13,6 +13,8 @@ import { ContractResponseModel } from "../../../../models/responses/ContractResp
 import { httpClient } from "../../../../services";
 import ConfirmDialog from "../../../../components/confirm-dialog";
 import { toast } from "react-toastify";
+import ContractExtensionStatusTag from "../../../tag/ContractExtensionStatusTag";
+import ContractStatusTag from "../../../tag/ContractStatusTag";
 
 type ContractModalProps = {
     open: boolean;
@@ -77,13 +79,13 @@ export default function ContractModal({
                             <strong>Tenant:</strong> {contract.userFullname}
                         </Typography>
                         <Typography variant="body2">
-                            <strong>Submission Date:</strong> {fDate(contract.submissionDate)}
+                            <strong>Submission Date:</strong> {fDate(contract.submissionDate, "dd/MM/yyyy")}
                         </Typography>
                         <Typography variant="body2">
-                            <strong>Start Date:</strong> {fDate(contract.startDate)}
+                            <strong>Start Date:</strong> {fDate(contract.startDate, "dd/MM/yyyy")}
                         </Typography>
                         <Typography variant="body2">
-                            <strong>End Date:</strong> {fDate(contract.endDate)}
+                            <strong>End Date:</strong> {fDate(contract.endDate, "dd/MM/yyyy")}
                         </Typography>
 
                         <Typography variant="body2">
@@ -115,12 +117,7 @@ export default function ContractModal({
                         </Typography>
                         <Typography variant="body2">
                             <strong>Status:</strong>{" "}
-                            <Typography
-                                component="span"
-                                color={contract.status === "ACTIVE" ? "success.main" : "error.main"}
-                            >
-                                {contract.status}
-                            </Typography>
+                            <ContractStatusTag status={contract.status}/>
                         </Typography>
                     </Stack>
                 </DialogContent>
