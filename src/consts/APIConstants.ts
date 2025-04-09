@@ -84,6 +84,10 @@ export const API_URL = {
   },
   VEHICLE: {
     GET_BATCH: "vehicle/batch",
+    UPDATE: "vehicle",
+  },
+  VEHICLE_HISTORY: {
+    GET_BY_vEHICLE_ID: "vehicle-history/id/",
   },
   PARKING_SPOT: {
     GET_BATCH: "parking-spot/batch",
