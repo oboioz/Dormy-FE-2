@@ -2,7 +2,10 @@ import { HttpStatusCode } from "axios";
 import { API_URL } from "../consts/APIConstants";
 import { privateAxios } from "../libs/axios";
 import { GetBatchRequestModel } from "../models/requests/CommonModels";
-import { IParkingRequest } from "../models/responses/ParkingRequestModels";
+import {
+  ICreateParkingRequest,
+  IParkingRequest,
+} from "../models/responses/ParkingRequestModels";
 
 const getRequests = async (payload: GetBatchRequestModel) => {
   try {
@@ -55,8 +58,25 @@ const approveRejectRequest = async (id: string, isAccepted: boolean) => {
   }
 };
 
+const createParkingRequest = async (payload: ICreateParkingRequest) => {
+  try {
+    const response = await privateAxios.post(
+      API_URL.PARKING_REQUEST.CREATE,
+      payload
+    );
+    if (response.status === HttpStatusCode.Created) {
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
+
 export const parkingRequestService = {
   getRequests,
   getRequestById,
   approveRejectRequest,
+  createParkingRequest,
 };

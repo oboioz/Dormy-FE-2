@@ -48,7 +48,7 @@ export default function MyVehiclePage() {
     });
 
     if (request.length > 0) {
-      setTableData(request[0]);
+      setTableData(request.filter((v) => !v.isDeleted)[0]);
       fetchVehicleHistories(request[0].id);
     }
   };

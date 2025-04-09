@@ -37,6 +37,22 @@ const updateVehicle = async (payload: IUpdateVehicle) => {
   }
 };
 
+const addVehicle = async (payload: IUpdateVehicle, userId: string) => {
+  try {
+    const response = await privateAxios.post(API_URL.VEHICLE.ADD, {
+      ...payload,
+      userId: userId,
+    });
+    if (response.status === HttpStatusCode.Created) {
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
+
 const getVehicleHistoriesByVehicleId = async (vehicleId: string) => {
   try {
     const response = await privateAxios.get(
@@ -56,4 +72,5 @@ export const vehicleService = {
   getVehicleBatch,
   getVehicleHistoriesByVehicleId,
   updateVehicle,
+  addVehicle,
 };

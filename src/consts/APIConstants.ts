@@ -81,10 +81,12 @@ export const API_URL = {
     CANCEL: "parking-request/id/{id}/cancel",
     SOFT_DELETE: "parking-request/id/{id}/soft-delete",
     GET_SINGLE: "parking-request/id/",
+    CREATE: "parking-request",
   },
   VEHICLE: {
     GET_BATCH: "vehicle/batch",
     UPDATE: "vehicle",
+    ADD: "vehicle",
   },
   VEHICLE_HISTORY: {
     GET_BY_vEHICLE_ID: "vehicle-history/id/",

@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Button,
   Card,
   Dialog,
@@ -16,13 +17,26 @@ import { useEffect, useState } from "react";
 import { httpClient } from "../../services";
 import { toast } from "react-toastify";
 import Iconify from "../../components/iconify";
+import { useAuthContext } from "../../auth/JwtContext";
+import { ICreateParkingRequest } from "../../models/responses/ParkingRequestModels";
+import { IParkingSpot } from "../../models/responses/ParkingSpotModels";
 
 type Props = {
   vehicle: IVehicle;
 };
 
 export default function VehicleDetails({ vehicle }: Props) {
+  const { user } = useAuthContext();
   const [isOpenForm, setIsOpenForm] = useState<boolean>(false);
+  const [isOpenPRForm, setIsOpenPRForm] = useState<boolean>(false);
+  const [parkingSpots, setParkingSpots] = useState<IParkingSpot[]>([]);
+  const [parkingSpot, setParkingSpot] = useState<IParkingSpot>();
+  const [parkingRequest, setParkingRequest] = useState<ICreateParkingRequest>({
+    description: "",
+    parkingSpotId: "",
+    vehicleId: vehicle.id,
+  });
+
   const [vehicleInfo, setVehicleInfo] = useState<IUpdateVehicle>({
     id: vehicle.id,
     vehicleType: vehicle.vehicleType,
@@ -39,12 +53,52 @@ export default function VehicleDetails({ vehicle }: Props) {
     }
   };
 
+  const addVehicleInfo = async (payload: IUpdateVehicle) => {
+    var isSuccess = await httpClient.vehicleService.addVehicle(
+      payload,
+      user?.id || ""
+    );
+    if (isSuccess) {
+      toast.success("Success");
+      window.location.reload();
+    } else {
+      toast.error("Failed, please try again later");
+    }
+  };
+
+  const getParkingSpots = async () => {
+    var response = await httpClient.parkingSpotService.getParkingSpotBatch({
+      ids: [],
+    });
+    setParkingSpots(response);
+  };
+
+  const createParkingRequest = async (payload: ICreateParkingRequest) => {
+    var isSuccess = await httpClient.parkingRequestService.createParkingRequest(
+      { ...payload, vehicleId: vehicle.id }
+    );
+    if (isSuccess) {
+      toast.success("Success");
+      window.location.reload();
+    } else {
+      toast.error("Failed, please try again later");
+    }
+  };
+
   const handleSetLicensePlate = (value: string) => {
     setVehicleInfo({ ...vehicleInfo, licensePlate: value });
   };
 
   const handleSetVehicleType = (value: string) => {
     setVehicleInfo({ ...vehicleInfo, vehicleType: value });
+  };
+
+  const handleSetPQDescription = (value: string) => {
+    setParkingRequest({ ...parkingRequest, description: value });
+  };
+
+  const handleSetPQSpotId = (value: string) => {
+    setParkingRequest({ ...parkingRequest, parkingSpotId: value });
   };
 
   const handleOpenForm = () => {
@@ -60,8 +114,29 @@ export default function VehicleDetails({ vehicle }: Props) {
     });
   };
 
+  const handleOpenPRForm = () => {
+    setIsOpenPRForm(true);
+  };
+
+  const handleClosePRForm = () => {
+    setIsOpenPRForm(false);
+    setParkingRequest({
+      description: "",
+      parkingSpotId: "",
+      vehicleId: vehicle.id,
+    });
+  };
+
+  const handleSubmitParkingRequest = () => {
+    createParkingRequest(parkingRequest);
+  };
+
   const handleSubmit = () => {
-    updateVehicleInfo(vehicleInfo);
+    if (vehicle.id) {
+      updateVehicleInfo(vehicleInfo);
+    } else {
+      addVehicleInfo(vehicleInfo);
+    }
     handleCloseForm();
   };
 
@@ -72,6 +147,10 @@ export default function VehicleDetails({ vehicle }: Props) {
       vehicleType: vehicle.vehicleType,
     });
   }, [vehicle]);
+
+  useEffect(() => {
+    getParkingSpots();
+  }, []);
 
   return (
     <Card sx={{ p: 3 }}>
@@ -90,7 +169,7 @@ export default function VehicleDetails({ vehicle }: Props) {
             variant="outlined"
             onClick={() => handleOpenForm()}
           >
-            Update Vehicle Info
+            {!vehicle.id ? "Add vehicle" : "Update Vehicle Info"}
           </Button>
         </Grid>
       </Grid>
@@ -107,7 +186,15 @@ export default function VehicleDetails({ vehicle }: Props) {
           <Typography variant="body2" sx={{ color: "text.secondary" }}>
             Garage
           </Typography>
-          <Typography variant="subtitle2">{vehicle.parkingSpotName}</Typography>
+          {vehicle.parkingSpotId ? (
+            <Typography variant="subtitle2">
+              {vehicle.parkingSpotName}
+            </Typography>
+          ) : (
+            <Button variant="outlined" onClick={() => handleOpenPRForm()}>
+              Create Parking Request
+            </Button>
+          )}
         </Stack>
 
         <Stack direction="row" justifyContent="space-between">
@@ -134,7 +221,9 @@ export default function VehicleDetails({ vehicle }: Props) {
         fullWidth
         maxWidth="sm"
       >
-        <DialogTitle>Update Vehicle Info</DialogTitle>
+        <DialogTitle>
+          {vehicle.id ? "Update Vehicle Info" : "Add Vehicle"}
+        </DialogTitle>
         <DialogContent>
           <Stack spacing={3} sx={{ mt: 2 }}>
             {/* Vehicle Type Field */}
@@ -160,6 +249,60 @@ export default function VehicleDetails({ vehicle }: Props) {
             disabled={!vehicleInfo.licensePlate || !vehicleInfo.vehicleType}
             variant="contained"
             onClick={() => handleSubmit()}
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={isOpenPRForm}
+        onClose={handleClosePRForm}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>Parking Request</DialogTitle>
+        <DialogContent>
+          <Stack spacing={3} sx={{ mt: 2 }}>
+            <TextField
+              label="Description"
+              value={parkingRequest.description}
+              onChange={(e) => handleSetPQDescription(e.target.value)}
+              fullWidth
+            />
+
+            <Autocomplete
+              options={parkingSpots}
+              getOptionLabel={(option) =>
+                option.parkingSpotName +
+                  " - " +
+                  `${option.currentQuantity}/${option.capacitySpots} Spots` ||
+                "--"
+              }
+              value={parkingSpot}
+              onChange={(event, newValue) => {
+                setParkingSpot(newValue || undefined);
+                handleSetPQSpotId(newValue?.id || "");
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  key={parkingSpot?.id}
+                  label="Select Parking Spot"
+                />
+              )}
+              fullWidth
+            />
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClosePRForm}>Cancel</Button>
+          <Button
+            disabled={
+              !parkingRequest.parkingSpotId || !parkingRequest.description
+            }
+            variant="contained"
+            onClick={() => handleSubmitParkingRequest()}
           >
             Save
           </Button>

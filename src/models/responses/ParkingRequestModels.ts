@@ -20,3 +20,9 @@ export interface IParkingRequest {
   lastUpdatedBy: string;
   isDeleted: boolean;
 }
+
+export interface ICreateParkingRequest {
+  description: string;
+  parkingSpotId: string;
+  vehicleId: string;
+}
