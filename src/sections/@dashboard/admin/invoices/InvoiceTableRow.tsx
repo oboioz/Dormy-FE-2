@@ -14,17 +14,20 @@ import {
 import { fCurrency } from '../../../../utils/formatNumber';
 import { fDate } from '../../../../utils/formatTime';
 // @types
-import { IInvoice } from '../../../../@types/invoice';
+// import { IInvoice } from '../../../../@types/invoice';
 // components
 import ConfirmDialog from '../../../../components/confirm-dialog';
 import Iconify from '../../../../components/iconify';
 import Label from '../../../../components/label';
 import MenuPopover from '../../../../components/menu-popover';
+import { InvoiceResponseModel } from '../../../../models/responses/InvoiceResponseModels';
+import InvoiceStatusTag from '../../../tag/InvoiceStatusTag';
+import { formatCurrency } from '../../../../utils/currencyUtils';
 
 // ----------------------------------------------------------------------
 
 type Props = {
-  row: IInvoice;
+  invoice: InvoiceResponseModel;
   selected: boolean;
   onSelectRow: VoidFunction;
   onViewRow: VoidFunction;
@@ -33,14 +36,14 @@ type Props = {
 };
 
 export default function InvoiceTableRow({
-  row,
+  invoice,
   selected,
   onSelectRow,
   onViewRow,
   onEditRow,
   onDeleteRow,
 }: Props) {
-  const { amountBeforePromotion, createdAt, dueDate, invoiceID, invoiceName, roomId, status, type, invoiceItems, description } = row;
+  // const { amountBeforePromotion, createdAt, dueDate, invoiceID, invoiceName, roomId, status, type, invoiceItems, description } = row;
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
@@ -71,36 +74,17 @@ export default function InvoiceTableRow({
 
         <TableCell>
           <Typography variant="subtitle2" noWrap>
-            {invoiceID}
+            {invoice.invoiceName}
           </Typography>
         </TableCell>
+        <TableCell align="left">{invoice.month + "/" + invoice.year}</TableCell>
+        <TableCell>{fDate(invoice.dueDate, "dd/MM/yyyy")}</TableCell>
 
-        <TableCell>
-          {invoiceName}
-        </TableCell>
-
-        <TableCell align="left">{fDate(createdAt)}</TableCell>
-
-        <TableCell align="left">{fDate(dueDate)}</TableCell>
-
-        <TableCell align="center">{fCurrency(amountBeforePromotion)}</TableCell>
-
-        <TableCell align="center">
-          {description}
-        </TableCell>
+        <TableCell align="left">{formatCurrency(invoice.amountAfterPromotion)}</TableCell>
+        <TableCell align="center">{invoice.roomName}</TableCell>
 
         <TableCell align="left">
-          <Label
-            variant="soft"
-            color={
-              (status === 'paid' && 'success') ||
-              (status === 'unpaid' && 'warning') ||
-              (status === 'overdue' && 'error') ||
-              'default'
-            }
-          >
-            {status}
-          </Label>
+          <InvoiceStatusTag status={invoice.status} />
         </TableCell>
 
         <TableCell align="right">

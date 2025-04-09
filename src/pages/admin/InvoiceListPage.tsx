@@ -1,5 +1,5 @@
 import sumBy from "lodash/sumBy";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 // @mui
@@ -21,7 +21,7 @@ import { useTheme } from "@mui/material/styles";
 // utils
 import { fTimestamp } from "../../utils/formatTime";
 // _mock_
-import { _invoices } from "../../_mock/arrays";
+// import { _invoices } from "../../_mock/arrays";
 
 // components
 import { IInvoice } from "../../@types/invoice";
@@ -47,6 +47,14 @@ import InvoiceTableRow from "../../sections/@dashboard/admin/invoices/InvoiceTab
 import InvoiceTableToolbar from "../../sections/@dashboard/admin/invoices/InvoiceTableToolbar";
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
+import { toast } from "react-toastify";
+import { httpClient } from "../../services";
+import { InvoiceResponseModel } from "../../models/responses/InvoiceResponseModels";
+import { GetBatchInvoiceRequestModel } from "../../models/requests/InvoiceRequestModels";
+import {
+  InvoiceStatusDescriptions,
+  InvoiceStatusEnum,
+} from "../../models/enums/InvoiceStatusEnum";
 // sections
 
 // ----------------------------------------------------------------------
@@ -61,14 +69,13 @@ const SERVICE_OPTIONS = [
 ];
 
 const TABLE_HEAD = [
-  { id: "invoiceID", label: "ID", align: "left" },
-  { id: "client", label: "Client", align: "left" },
-  { id: "createdAt", label: "Created At", align: "left" },
-  { id: "dueDate", label: "Due Date", align: "left" },
-  { id: "price", label: "Amount", align: "center", width: 140 },
-  { id: "description", label: "Description", align: "center", width: 140 },
+  { id: "invoiceName", label: "Invoice name", align: "left" },
+  { id: "month_year", label: "Month/Year", align: "left" },
+  { id: "dueDate", label: "Due date", align: "left" },
+  { id: "amountAfterPromotion", label: "Amount", align: "left" },
+  { id: "roomName", label: "Room name", align: "left" },
   { id: "status", label: "Status", align: "left" },
-  { id: "" },
+  { id: "action", label: "", align: "center" },
 ];
 
 // ----------------------------------------------------------------------
@@ -98,7 +105,7 @@ export default function InvoiceListPage() {
     onChangeRowsPerPage,
   } = useTable({ defaultOrderBy: "createDate" });
 
-  const [tableData, setTableData] = useState(_invoices);
+  const [tableData, setTableData] = useState<InvoiceResponseModel[]>([]);
 
   const [filterName, setFilterName] = useState("");
 
@@ -152,26 +159,59 @@ export default function InvoiceListPage() {
   const getPercentByStatus = (status: string) =>
     (getLengthByStatus(status) / tableData.length) * 100;
 
+  const fetchInvoicesData = async () => {
+    const payload: GetBatchInvoiceRequestModel = {
+      ids: [],
+      roomId: null,
+      invoiceType: "ROOM_SERVICE_MONTHLY",
+    };
+    const response = await httpClient.invoiceService.getBatchInvoices(payload);
+
+    if (response) {
+      console.log("response", response);
+      setTableData(response);
+    } else {
+      setTableData([]);
+      toast.error("Failed to fetch data");
+    }
+  };
+
+  useEffect(() => {
+    fetchInvoicesData();
+  }, []);
+
   const TABS = [
     { value: "all", label: "All", color: "info", count: tableData.length },
     {
-      value: "paid",
-      label: "Paid",
-      color: "success",
-      count: getLengthByStatus("paid"),
+      value: InvoiceStatusEnum.DRAFT.toString(),
+      label: InvoiceStatusDescriptions[InvoiceStatusEnum.DRAFT],
+      color: "default",
+      count: getLengthByStatus(InvoiceStatusEnum.DRAFT.toString()),
     },
     {
-      value: "unpaid",
-      label: "Unpaid",
+      value: InvoiceStatusEnum.UNPAID.toString(),
+      label: InvoiceStatusDescriptions[InvoiceStatusEnum.UNPAID],
       color: "warning",
-      count: getLengthByStatus("unpaid"),
+      count: getLengthByStatus(InvoiceStatusEnum.UNPAID.toString()),
     },
     {
-      value: "overdue",
-      label: "Overdue",
-      color: "error",
-      count: getLengthByStatus("overdue"),
+      value: InvoiceStatusEnum.PAID.toString(),
+      label: InvoiceStatusDescriptions[InvoiceStatusEnum.PAID],
+      color: "success",
+      count: getLengthByStatus(InvoiceStatusEnum.PAID.toString()),
     },
+    {
+      value: InvoiceStatusEnum.OVERDUE.toString(),
+      label: InvoiceStatusDescriptions[InvoiceStatusEnum.OVERDUE],
+      color: "secondary",
+      count: getLengthByStatus(InvoiceStatusEnum.OVERDUE.toString()),
+    },
+    // {
+    //   value: InvoiceStatusEnum.CANCELLED.toString(),
+    //   label: InvoiceStatusDescriptions[InvoiceStatusEnum.CANCELLED],
+    //   color: "error",
+    //   count: getLengthByStatus(InvoiceStatusEnum.CANCELLED.toString()),
+    // },
   ] as const;
 
   const handleOpenConfirm = () => {
@@ -201,9 +241,7 @@ export default function InvoiceListPage() {
   };
 
   const handleDeleteRow = (id: string) => {
-    const deleteRow = tableData.filter(
-      (row) => row.invoiceID.toString() !== id
-    );
+    const deleteRow = tableData.filter((row) => row.id !== id);
     setSelected([]);
     setTableData(deleteRow);
 
@@ -216,7 +254,7 @@ export default function InvoiceListPage() {
 
   const handleDeleteRows = (selectedRows: string[]) => {
     const deleteRows = tableData.filter(
-      (row) => !selectedRows.includes(row.invoiceID.toString())
+      (row) => !selectedRows.includes(row.id)
     );
     setSelected([]);
     setTableData(deleteRows);
@@ -284,7 +322,7 @@ export default function InvoiceListPage() {
           }
         />
 
-        <Card sx={{ mb: 5 }}>
+        <Card sx={{ mb: 2 }}>
           <Scrollbar>
             <Stack
               direction="row"
@@ -295,7 +333,7 @@ export default function InvoiceListPage() {
                   sx={{ borderStyle: "dashed" }}
                 />
               }
-              sx={{ py: 2 }}
+              // sx={{ py: 1 }}
             >
               <InvoiceAnalytic
                 title="Total"
@@ -307,31 +345,49 @@ export default function InvoiceListPage() {
               />
 
               <InvoiceAnalytic
-                title="Paid"
-                total={getLengthByStatus("paid")}
-                percent={getPercentByStatus("paid")}
-                price={getTotalPriceByStatus("paid")}
+                title={InvoiceStatusDescriptions[InvoiceStatusEnum.DRAFT]}
+                total={getLengthByStatus(InvoiceStatusEnum.DRAFT.toString())}
+                percent={getPercentByStatus(InvoiceStatusEnum.DRAFT.toString())}
+                price={getTotalPriceByStatus(InvoiceStatusEnum.DRAFT.toString())}
                 icon="eva:checkmark-circle-2-fill"
                 color={theme.palette.success.main}
               />
 
               <InvoiceAnalytic
-                title="Unpaid"
-                total={getLengthByStatus("unpaid")}
-                percent={getPercentByStatus("unpaid")}
-                price={getTotalPriceByStatus("unpaid")}
+                title={InvoiceStatusDescriptions[InvoiceStatusEnum.UNPAID]}
+                total={getLengthByStatus(InvoiceStatusEnum.UNPAID.toString())}
+                percent={getPercentByStatus(InvoiceStatusEnum.UNPAID.toString())}
+                price={getTotalPriceByStatus(InvoiceStatusEnum.UNPAID.toString())}
                 icon="eva:clock-fill"
                 color={theme.palette.warning.main}
               />
 
               <InvoiceAnalytic
-                title="Overdue"
+                title={InvoiceStatusDescriptions[InvoiceStatusEnum.PAID]}
+                total={getLengthByStatus(InvoiceStatusEnum.PAID.toString())}
+                percent={getPercentByStatus(InvoiceStatusEnum.PAID.toString())}
+                price={getTotalPriceByStatus(InvoiceStatusEnum.PAID.toString())}
+                icon="eva:checkmark-circle-2-fill"
+                color={theme.palette.success.main}
+              />
+
+              <InvoiceAnalytic
+                title={InvoiceStatusDescriptions[InvoiceStatusEnum.OVERDUE]}
+                total={getLengthByStatus(InvoiceStatusEnum.OVERDUE.toString())}
+                percent={getPercentByStatus(InvoiceStatusEnum.OVERDUE.toString())}
+                price={getTotalPriceByStatus(InvoiceStatusEnum.OVERDUE.toString())}
+                icon="eva:clock-fill"
+                color={theme.palette.warning.main}
+              />
+
+              {/* <InvoiceAnalytic
+                title={InvoiceStatusDescriptions[InvoiceStatusEnum.CANCELLED]}
                 total={getLengthByStatus("overdue")}
                 percent={getPercentByStatus("overdue")}
                 price={getTotalPriceByStatus("overdue")}
                 icon="eva:bell-fill"
                 color={theme.palette.error.main}
-              />
+              /> */}
             </Stack>
           </Scrollbar>
         </Card>
@@ -386,7 +442,7 @@ export default function InvoiceListPage() {
               onSelectAllRows={(checked) =>
                 onSelectAllRows(
                   checked,
-                  tableData.map((row) => row.invoiceID.toString())
+                  tableData.map((row) => row.id)
                 )
               }
               action={
@@ -430,7 +486,7 @@ export default function InvoiceListPage() {
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
                       checked,
-                      tableData.map((row) => row.invoiceID.toString())
+                      tableData.map((row) => row.id)
                     )
                   }
                 />
@@ -440,21 +496,13 @@ export default function InvoiceListPage() {
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => (
                       <InvoiceTableRow
-                        key={row.invoiceID}
-                        row={row}
-                        selected={selected.includes(row.invoiceID.toString())}
-                        onSelectRow={() =>
-                          onSelectRow(row.invoiceID.toString())
-                        }
-                        onViewRow={() =>
-                          handleViewRow(row.invoiceID.toString())
-                        }
-                        onEditRow={() =>
-                          handleEditRow(row.invoiceID.toString())
-                        }
-                        onDeleteRow={() =>
-                          handleDeleteRow(row.invoiceID.toString())
-                        }
+                        key={row.id}
+                        invoice={row}
+                        selected={selected.includes(row.id)}
+                        onSelectRow={() => onSelectRow(row.id)}
+                        onViewRow={() => handleViewRow(row.id)}
+                        onEditRow={() => handleEditRow(row.id)}
+                        onDeleteRow={() => handleDeleteRow(row.id)}
                       />
                     ))}
 
@@ -516,7 +564,7 @@ function applyFilter({
   filterStartDate,
   filterEndDate,
 }: {
-  inputData: IInvoice[];
+  inputData: InvoiceResponseModel[];
   comparator: (a: any, b: any) => number;
   filterName: string;
   filterStatus: string;
@@ -539,11 +587,11 @@ function applyFilter({
       (invoice) =>
         // invoice.invoiceNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
         // invoice.invoiceTo.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
-        invoice.invoiceID
+        invoice.id
           .toString()
           .toLowerCase()
           .indexOf(filterName.toLowerCase()) !== -1 ||
-        invoice.roomId.roomID
+        invoice.roomId
           .toString()
           .toLowerCase()
           .indexOf(filterName.toLowerCase()) !== -1
@@ -563,8 +611,8 @@ function applyFilter({
   if (filterStartDate && filterEndDate) {
     inputData = inputData.filter(
       (invoice) =>
-        fTimestamp(invoice.createdAt) >= fTimestamp(filterStartDate) &&
-        fTimestamp(invoice.createdAt) <= fTimestamp(filterEndDate)
+        fTimestamp(invoice.createdDateUtc) >= fTimestamp(filterStartDate) &&
+        fTimestamp(invoice.createdDateUtc) <= fTimestamp(filterEndDate)
     );
   }
 

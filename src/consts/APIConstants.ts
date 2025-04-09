@@ -99,4 +99,11 @@ export const API_URL = {
     UPDATE: "violation",
     SOFT_DELETE: "violation/id/{id}/soft-delete",
   },
+  INVOICE: {
+    CREATE: "invoice",
+    UPDATE: "invoice",
+    GET_BATCH: "invoice/batch",
+    GET_SINGLE: "invoice/id/",
+    GET_CREATE_INITIAL_DATA: "invoice/create-initial-data",
+  },
 };
