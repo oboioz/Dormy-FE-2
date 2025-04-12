@@ -1,188 +1,264 @@
-import sum from 'lodash/sum';
-import { useCallback, useEffect } from 'react';
-// form
-import { useFieldArray, useFormContext } from 'react-hook-form';
+import React, { useState, useEffect } from "react";
+import sum from "lodash/sum";
 // @mui
-import { Box, Divider, InputAdornment, MenuItem, Stack, Typography } from '@mui/material';
-import { IInvoiceItem } from '../../../../../@types/invoice';
-import { RHFTextField } from '../../../../../components/hook-form';
-import { RHFSelect } from '../../../../../components/hook-form/RHFSelect';
-import { fCurrency } from '../../../../../utils/formatNumber';
+import {
+  Box,
+  Divider,
+  Grid,
+  InputAdornment,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { fCurrency } from "../../../../../utils/formatNumber";
+import { GetInitialInvoiceItemCreationResponseModel } from "../../../../../models/responses/InvoiceResponseModels";
+import { toast } from "react-toastify";
+import { httpClient } from "../../../../../services";
+import { GetInitialInvoiceCreationRequestModel } from "../../../../../models/requests/InvoiceRequestModels";
+import { getMonth, getYear } from "date-fns";
+import { useFormContext } from "react-hook-form";
 
+export type InvoiceNewEditDetailsProps = {
+  items: GetInitialInvoiceItemCreationResponseModel[];
+  setItems: React.Dispatch<React.SetStateAction<GetInitialInvoiceItemCreationResponseModel[]>>;
+}
 
-// ----------------------------------------------------------------------
-
-const SERVICE_OPTIONS = [
-  { id: 1, name: 'full stack development', price: 90.99 },
-  { id: 2, name: 'backend development', price: 80.99 },
-  { id: 3, name: 'ui design', price: 70.99 },
-  { id: 4, name: 'ui/ux design', price: 60.99 },
-  { id: 5, name: 'front end development', price: 40.99 },
-];
-
-// ----------------------------------------------------------------------
-
-export default function InvoiceNewEditDetails() {
+export default function InvoiceNewEditDetails({items, setItems} : InvoiceNewEditDetailsProps) {
+  // const [items, setItems] = useState<
+  //   GetInitialInvoiceItemCreationResponseModel[]
+  // >([]);
+  const [discount, setDiscount] = useState(0);
+  const [taxes, setTaxes] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
   const { control, setValue, watch, resetField } = useFormContext();
-
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'items',
-  });
 
   const values = watch();
 
-  const totalOnRow = values.items.map((item: IInvoiceItem) => item.quantity * item.cost);
+  useEffect(() => {
+    const totalOnRow = items.map((item) => {
+      const quantity = item.quantity || 0; // Default to 0 if undefined
+      const cost = item.cost || 0; // Default to 0 if undefined
+      return quantity * cost;
+    });
 
-  const totalPrice = sum(totalOnRow) - values.discount + values.taxes;
+    console.log("totalOnRow:", totalOnRow);
+
+    const calculatedTotalPrice =
+      sum(totalOnRow) - (discount || 0) + (taxes || 0); // Default discount and taxes to 0
+    setTotalPrice(calculatedTotalPrice);
+  }, [items, discount, taxes]);
+
+  const fetchgetInitialInvoiceCreation = async () => {
+    const payload: GetInitialInvoiceCreationRequestModel = {
+      month: getMonth(values?.invoiceMonthYear) + 1,
+      year: getYear(values?.invoiceMonthYear),
+      roomId: values?.invoiceTo?.roomId, // Replace with actual roomId
+    };
+    const response = await httpClient.invoiceService.getInitialInvoiceCreation(
+      payload
+    );
+
+    if (response) {
+      setItems(response.roomServices);
+    } else {
+      toast.error("Failed to fetch data");
+    }
+  };
 
   useEffect(() => {
-    setValue('totalPrice', totalPrice);
-  }, [setValue, totalPrice]);
+    if (values?.invoiceTo?.roomId && values?.invoiceMonthYear) {
+      fetchgetInitialInvoiceCreation();
+    } else {
+      // resetField("items");
+    }
+  }, [values?.invoiceTo?.roomId, values?.invoiceMonthYear]);
 
+  const handleChange = <
+    K extends keyof GetInitialInvoiceItemCreationResponseModel
+  >(
+    index: number,
+    field: K,
+    value: GetInitialInvoiceItemCreationResponseModel[K]
+  ) => {
+    const updatedItems = [...items];
+    updatedItems[index][field] = value;
 
-  const handleClearService = useCallback(
-    (index: number) => {
-      resetField(`items[${index}].quantity`);
-      resetField(`items[${index}].price`);
-      resetField(`items[${index}].total`);
-    },
-    [resetField]
-  );
+    if (field === "oldIndicator" || field === "newIndicator") {
+      const oldIndicator = Number(updatedItems[index].oldIndicator) || 0;
+      const newIndicator = Number(updatedItems[index].newIndicator) || 0;
+      const quantity = newIndicator - oldIndicator;
+      if (quantity >= 0) {
+        updatedItems[index].quantity = newIndicator - oldIndicator;
+        updatedItems[index].total =
+          (newIndicator - oldIndicator) * updatedItems[index].cost;
+      }
+    }
 
-  const handleSelectService = useCallback(
-    (index: number, option: string) => {
-      setValue(
-        `items[${index}].price`,
-        SERVICE_OPTIONS.find((service) => service.name === option)?.price
-      );
-      setValue(
-        `items[${index}].total`,
-        values.items.map((item: IInvoiceItem) => item.quantity * item.cost)[index]
-      );
-    },
-    [setValue, values.items]
-  );
+    if (field === "quantity" || field === "cost") {
+      updatedItems[index].total =
+        updatedItems[index].quantity * updatedItems[index].cost;
+    }
 
-  const handleChangeQuantity = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number) => {
-      setValue(`items[${index}].quantity`, Number(event.target.value));
-      setValue(
-        `items[${index}].total`,
-        values.items.map((item: IInvoiceItem) => item.quantity * item.cost)[index]
-      );
-    },
-    [setValue, values.items]
-  );
-
-  const handleChangePrice = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number) => {
-      setValue(`items[${index}].price`, Number(event.target.value));
-      setValue(
-        `items[${index}].total`,
-        values.items.map((item: IInvoiceItem) => item.quantity * item.cost)[index]
-      );
-    },
-    [setValue, values.items]
-  );
+    setItems(updatedItems);
+  };
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h6" sx={{ color: 'text.disabled', mb: 3 }}>
+      <Typography variant="h6" sx={{ color: "text.disabled", mb: 3 }}>
         Details:
       </Typography>
 
-      <Stack divider={<Divider flexItem sx={{ borderStyle: 'dashed' }} />} spacing={3}>
-        {fields.map((item, index) => (
-          <Stack key={item.id} alignItems="flex-end" spacing={1.5}>
-            <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} sx={{ width: 1 }}>
+      <Stack
+        divider={<Divider flexItem sx={{ borderStyle: "dashed" }} />}
+        spacing={3}
+      >
+        {items.map((item, index) => (
+          <Stack key={index} spacing={1}>
+            {/* First Line: Service Name, Unit, Cost */}
+            <Grid container spacing={2} sx={{ width: 1, marginLeft: 0.1 }}>
+              {/* Service Name */}
+              <Grid item xs={12} md={6}>
+                <TextField
+                  size="small"
+                  name={`items[${index}].roomServiceName`}
+                  label="Service Name"
+                  InputLabelProps={{ shrink: true }}
+                  fullWidth
+                  value={item.roomServiceName || ""}
+                  onChange={(e) =>
+                    handleChange(index, "roomServiceName", e.target.value)
+                  }
+                />
+              </Grid>
 
-              <RHFTextField
-                size="small"
-                name={`items[${index}].description`}
-                label="Description"
-                InputLabelProps={{ shrink: true }}
-              />
+              {/* Unit + Cost */}
+              <Grid item xs={12} md={6}>
+                <Grid container spacing={2}>
+                  {/* Unit */}
+                  <Grid item xs={6}>
+                    <TextField
+                      size="small"
+                      name={`items[${index}].unit`}
+                      label="Unit"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      value={item.unit || ""}
+                      onChange={(e) =>
+                        handleChange(index, "unit", e.target.value)
+                      }
+                    />
+                  </Grid>
 
-              <RHFSelect
-                name={`items[${index}].service`}
-                size="small"
-                label="Service"
-                InputLabelProps={{ shrink: true }}
-                sx={{ maxWidth: { md: 160 } }}
-              >
-                <MenuItem
-                  value=""
-                  onClick={() => handleClearService(index)}
-                  sx={{ fontStyle: 'italic', color: 'text.secondary' }}
-                >
-                  None
-                </MenuItem>
+                  {/* Cost */}
+                  <Grid item xs={6}>
+                    <TextField
+                      size="small"
+                      type="number"
+                      name={`items[${index}].cost`}
+                      label="Cost"
+                      placeholder="0"
+                      InputLabelProps={{ shrink: true }}
+                      fullWidth
+                      value={item.cost || ""}
+                      onChange={(e) =>
+                        handleChange(index, "cost", Number(e.target.value))
+                      }
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
 
-                <Divider />
+            {/* Second Line: Old Indicator, New Indicator, Quantity, Total */}
+            <Grid container spacing={2} sx={{ width: 1 }}>
+              {item.isServiceIndicatorUsed && (
+                <Grid item xs={12} md={3}>
+                  <TextField
+                    size="small"
+                    type="number"
+                    name={`items[${index}].oldIndicator`}
+                    label="Old Indicator"
+                    placeholder="0"
+                    InputLabelProps={{ shrink: true }}
+                    fullWidth
+                    value={item.oldIndicator || ""}
+                    onChange={(e) =>
+                      handleChange(
+                        index,
+                        "oldIndicator",
+                        Number(e.target.value)
+                      )
+                    }
+                  />
+                </Grid>
+              )}
 
-                {SERVICE_OPTIONS.map((service) => (
-                  <MenuItem
-                    key={service.id}
-                    value={service.name}
-                    onClick={() => handleSelectService(index, service.name)}
-                  >
-                    {service.name}
-                  </MenuItem>
-                ))}
-              </RHFSelect>
+              {item.isServiceIndicatorUsed && (
+                <Grid item xs={12} md={3}>
+                  <TextField
+                    size="small"
+                    type="number"
+                    name={`items[${index}].newIndicator`}
+                    label="New Indicator"
+                    placeholder="0"
+                    InputLabelProps={{ shrink: true }}
+                    fullWidth
+                    value={item.newIndicator || ""}
+                    onChange={(e) =>
+                      handleChange(
+                        index,
+                        "newIndicator",
+                        Number(e.target.value)
+                      )
+                    }
+                  />
+                </Grid>
+              )}
 
-              <RHFTextField
-                size="small"
-                type="number"
-                name={`items[${index}].quantity`}
-                label="Quantity"
-                placeholder="0"
-                onChange={(event) => handleChangeQuantity(event, index)}
-                InputLabelProps={{ shrink: true }}
-                sx={{ maxWidth: { md: 96 } }}
-              />
+              {/* Quantity */}
+              <Grid item xs={12} md={item.isServiceIndicatorUsed ? 3 : 6}>
+                <TextField
+                  size="small"
+                  type="number"
+                  name={`items[${index}].quantity`}
+                  label="Quantity"
+                  placeholder="0"
+                  InputLabelProps={{ shrink: true }}
+                  fullWidth
+                  value={item.quantity || ""}
+                  disabled={item.isServiceIndicatorUsed}
+                  onChange={(e) =>
+                    handleChange(index, "quantity", Number(e.target.value))
+                  }
+                />
+              </Grid>
 
-              <RHFTextField
-                size="small"
-                type="number"
-                name={`items[${index}].price`}
-                label="Price"
-                placeholder="0"
-                onChange={(event) => handleChangePrice(event, index)}
-                InputProps={{
-                  startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                }}
-                sx={{ maxWidth: { md: 96 } }}
-              />
-
-              <RHFTextField
-                disabled
-                size="small"
-                name={`items[${index}].total`}
-                label="Total"
-                placeholder="0"
-                value={totalOnRow[index]}
-                InputProps={{
-                  startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                }}
-                sx={{ maxWidth: { md: 96 } }}
-              />
-            </Stack>
-
+              {/* Total */}
+              <Grid item xs={12} md={item.isServiceIndicatorUsed ? 3 : 6}>
+                <TextField
+                  size="small"
+                  type="number"
+                  name={`items[${index}].total`}
+                  label="Total"
+                  placeholder="0"
+                  InputLabelProps={{ shrink: true }}
+                  fullWidth
+                  value={item.total || ""}
+                  disabled
+                />
+              </Grid>
+            </Grid>
           </Stack>
         ))}
       </Stack>
 
-      <Divider sx={{ my: 3, borderStyle: 'dashed' }} />
-
-
+      <Divider sx={{ my: 3, borderStyle: "dashed" }} />
 
       <Stack spacing={2} sx={{ mt: 3 }}>
         <Stack direction="row" justifyContent="flex-end">
           <Typography variant="h6">Total price :</Typography>
-          <Typography variant="h6" sx={{ textAlign: 'right', width: 120 }}>
-            {fCurrency(totalPrice) || '-'}
+          <Typography variant="h6" sx={{ textAlign: "right", width: 120 }}>
+            {fCurrency(totalPrice) || "-"}
           </Typography>
         </Stack>
       </Stack>

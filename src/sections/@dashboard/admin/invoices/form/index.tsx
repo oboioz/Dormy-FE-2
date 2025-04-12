@@ -1,27 +1,30 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-// form
-import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-// @mui
 import { LoadingButton } from "@mui/lab";
 import { Card, Stack } from "@mui/material";
-
-//
-import { IInvoice, IInvoiceRecipient } from "../../../../../@types/invoice";
 import FormProvider from "../../../../../components/hook-form";
 import InvoiceNewEditAddress from "./InvoiceNewEditAddress";
 import InvoiceNewEditDetails from "./InvoiceNewEditDetails";
 import InvoiceNewEditStatusDate from "./InvoiceNewEditStatusDate";
+import { GetInitialInvoiceItemCreationResponseModel, RoomRecipients } from "../../../../../models/responses/InvoiceResponseModels";
+import { CreateInvoiceRequestModel } from "../../../../../models/requests/InvoiceRequestModels";
+import { getMonth, getYear } from "date-fns";
+import { httpClient } from "../../../../../services";
+import { toast } from "react-toastify";
 
 // ----------------------------------------------------------------------
 
-type IFormValuesProps = Omit<IInvoice, "dueDate" | "invoiceTo">;
+type IFormValuesProps = Omit<
+  CreateInvoiceRequestModel,
+  "dueDate" | "invoiceTo" | "invoiceMonthYear"
+>;
 
 interface FormValuesProps extends IFormValuesProps {
   dueDate: Date | null;
-  invoiceTo: IInvoiceRecipient | null;
+  invoiceTo: RoomRecipients | null;
+  invoiceMonthYear: Date | null;
 }
 
 type Props = {
@@ -36,6 +39,10 @@ export default function InvoiceNewEditForm({ isEdit, currentInvoice }: Props) {
 
   const [loadingSend, setLoadingSend] = useState(false);
 
+  const [items, setItems] = useState<
+    GetInitialInvoiceItemCreationResponseModel[]
+  >([]);
+
   const NewUserSchema = Yup.object().shape({
     createDate: Yup.string().nullable().required("Create date is required"),
     dueDate: Yup.string().nullable().required("Due date is required"),
@@ -44,19 +51,25 @@ export default function InvoiceNewEditForm({ isEdit, currentInvoice }: Props) {
 
   const defaultValues = useMemo(
     () => ({
-      invoiceNumber: currentInvoice?.invoiceID || "17099",
       dueDate: currentInvoice?.dueDate || null,
       invoiceTo: currentInvoice?.invoiceTo || null,
       items: currentInvoice?.invoiceItems || [
-        { serviceName: "", unit: "", quantity: 1, cost: 0, total: 0 },
+        {
+          roomServiceId: null,
+          roomServiceName: null,
+          unit: null,
+          quantity: 0,
+          cost: null,
+          oldIndicator: null,
+          newIndicator: null,
+        },
       ],
-      totalPrice: currentInvoice?.amountAfterPromotion || 0,
     }),
     [currentInvoice]
   );
 
   const methods = useForm<FormValuesProps>({
-    resolver: yupResolver(NewUserSchema) as any,
+    // resolver: yupResolver(NewUserSchema),
     defaultValues,
   });
 
@@ -65,6 +78,10 @@ export default function InvoiceNewEditForm({ isEdit, currentInvoice }: Props) {
     handleSubmit,
     formState: { isSubmitting },
   } = methods;
+
+  // const { control, watch } = useFormContext();
+
+  //   const values = watch();
 
   useEffect(() => {
     if (isEdit && currentInvoice) {
@@ -76,18 +93,47 @@ export default function InvoiceNewEditForm({ isEdit, currentInvoice }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEdit, currentInvoice]);
 
-  const handleCreateAndSend = async (data: FormValuesProps) => {
-    // setLoadingSend(true);
-    // try {
-    //   await new Promise((resolve) => setTimeout(resolve, 500));
-    //   reset();
-    //   setLoadingSend(false);
-    //   navigate(PATH_DASHBOARD.invoice.list);
-    //   console.log('DATA', JSON.stringify(data, null, 2));
-    // } catch (error) {
-    //   console.error(error);
-    //   setLoadingSend(false);
-    // }
+  const handleCreateInvoice = async (data: FormValuesProps) => {
+    setLoadingSend(true);
+    try {
+      // Build the payload
+      const payload: CreateInvoiceRequestModel = {
+        dueDate: data.dueDate,
+        month: data.invoiceMonthYear
+          ? getMonth(data.invoiceMonthYear) + 1
+          : null,
+        year: data.invoiceMonthYear ? getYear(data.invoiceMonthYear) : null,
+        type: "ROOM_SERVICE_MONTHLY", // Replace with the actual type if needed
+        roomId: data.invoiceTo?.roomId || "", // Ensure roomId is a string
+        invoiceItems: items.map((item) => ({
+          roomServiceId: item.roomServiceId,
+          roomServiceName: item.roomServiceId ? "" : item.roomServiceName,
+          cost: item.roomServiceId ? null : item.cost,
+          unit: item.roomServiceId ? "" : item.unit,
+          quantity: item.quantity,
+          oldIndicator: item.oldIndicator,
+          newIndicator: item.newIndicator,
+        })),
+      };
+
+      const response = await httpClient.invoiceService.createInvoice(payload);
+      if (response) {
+        toast.success("Invoice created successfully!");
+        reset();
+      }
+      else {
+        toast.error("Failed to create invoice.");
+      }
+  
+      // console.log("Payload:", JSON.stringify(payload, null, 2));
+      setLoadingSend(false);
+  
+      // Uncomment this to navigate after successful creation
+      // navigate(PATH_DASHBOARD.invoice.list);
+    } catch (error) {
+      toast.error("Failed to create invoice: " + error);
+      setLoadingSend(false);
+    }
   };
 
   return (
@@ -97,7 +143,10 @@ export default function InvoiceNewEditForm({ isEdit, currentInvoice }: Props) {
 
         <InvoiceNewEditStatusDate />
 
-        <InvoiceNewEditDetails />
+        <InvoiceNewEditDetails
+          items={items}
+          setItems={setItems}
+        />
       </Card>
 
       <Stack
@@ -110,9 +159,9 @@ export default function InvoiceNewEditForm({ isEdit, currentInvoice }: Props) {
           size="large"
           variant="contained"
           loading={loadingSend && isSubmitting}
-          onClick={handleSubmit(handleCreateAndSend)}
+          onClick={handleSubmit(handleCreateInvoice)}
         >
-          {isEdit ? "Update" : "Create"} & Send
+          {isEdit ? "Update" : "Create"}
         </LoadingButton>
       </Stack>
     </FormProvider>

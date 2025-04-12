@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 // @mui
 import {
   Dialog,
@@ -6,13 +6,13 @@ import {
   ListItemButton,
   Stack,
   TextField,
-  Typography
-} from '@mui/material';
+  Typography,
+} from "@mui/material";
 
-import { IInvoiceRecipient } from '../../../../../@types/invoice';
-import Iconify from '../../../../../components/iconify';
-import Scrollbar from '../../../../../components/scrollbar';
-import SearchNotFound from '../../../../../components/search-not-found';
+import Iconify from "../../../../../components/iconify";
+import Scrollbar from "../../../../../components/scrollbar";
+import SearchNotFound from "../../../../../components/search-not-found";
+import { RoomRecipients } from "../../../../../models/responses/InvoiceResponseModels";
 
 // ----------------------------------------------------------------------
 
@@ -20,8 +20,8 @@ type Props = {
   open: boolean;
   selected: (selectedId: string) => boolean;
   onClose: VoidFunction;
-  onSelect: (recipient: IInvoiceRecipient | null) => void;
-  recipientOptions: IInvoiceRecipient[];
+  onSelect: (recipient: RoomRecipients | null) => void;
+  recipientOptions: RoomRecipients[];
 };
 
 export default function InvoiceRecipientListDialog({
@@ -31,24 +31,26 @@ export default function InvoiceRecipientListDialog({
   onSelect,
   recipientOptions,
 }: Props) {
-  const [searchRecipient, setSearchRecipient] = useState('');
+  const [searchRecipient, setSearchRecipient] = useState("");
 
   const dataFiltered = applyFilter(recipientOptions, searchRecipient);
 
   const isNotFound = !dataFiltered.length && !!searchRecipient;
 
-  const handleSearchRecipient = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchRecipient = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setSearchRecipient(event.target.value);
   };
 
-  const handleSelectRecipient = (recipient: IInvoiceRecipient | null) => {
+  const handleSelectRecipient = (recipient: RoomRecipients | null) => {
     onSelect(recipient);
-    setSearchRecipient('');
+    setSearchRecipient("");
     onClose();
   };
 
   return (
-    <Dialog fullWidth maxWidth="xs" open={open} onClose={onClose}>
+    <Dialog fullWidth maxWidth="xs" open={open} onClose={onClose} sx={{ maxHeight: "90vh" }}>
       <Stack
         direction="row"
         alignItems="center"
@@ -66,7 +68,10 @@ export default function InvoiceRecipientListDialog({
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
+                <Iconify
+                  icon="eva:search-fill"
+                  sx={{ color: "text.disabled" }}
+                />
               </InputAdornment>
             ),
           }}
@@ -76,41 +81,27 @@ export default function InvoiceRecipientListDialog({
       {isNotFound ? (
         <SearchNotFound query={searchRecipient} sx={{ px: 3, pt: 5, pb: 10 }} />
       ) : (
-        <Scrollbar sx={{ p: 1.5, pt: 0, maxHeight: 80 * 8 }}>
+        <Scrollbar sx={{ maxHeight: 400, overflowY: "auto", p: 1.5, pt: 0 }}>
           {dataFiltered.map((recipient) => (
             <ListItemButton
-              key={recipient.id}
-              selected={selected(recipient.id)}
+              key={recipient.roomId}
+              selected={selected(recipient.roomId)}
               onClick={() => handleSelectRecipient(recipient)}
               sx={{
                 p: 1.5,
                 borderRadius: 1,
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                '&.Mui-selected': {
-                  bgcolor: 'action.selected',
-                  '&:hover': {
-                    bgcolor: 'action.selected',
+                flexDirection: "column",
+                alignItems: "flex-start",
+                "&.Mui-selected": {
+                  bgcolor: "action.selected",
+                  "&:hover": {
+                    bgcolor: "action.selected",
                   },
                 },
               }}
             >
-              <Typography variant="subtitle2">{recipient.name}</Typography>
-
-              <Typography
-                variant="caption"
-                component="div"
-                sx={{
-                  my: 0.5,
-                  color: 'info.main',
-                  fontWeight: 'fontWeightMedium',
-                }}
-              >
-                {recipient.email}
-              </Typography>
-
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {recipient.phone}
+              <Typography variant="subtitle2">
+                {`Room: ${recipient.roomNumber} - Floor: ${recipient.floorNumber} - Building: ${recipient.buildingName}`}
               </Typography>
             </ListItemButton>
           ))}
@@ -122,15 +113,22 @@ export default function InvoiceRecipientListDialog({
 
 // ----------------------------------------------------------------------
 
-function applyFilter(array: IInvoiceRecipient[], query: string) {
-  if (query) {
-    return array.filter(
-      (recipient) =>
-        recipient.name.toLowerCase().indexOf(query.toLowerCase()) !== -1 ||
-        recipient.email.toLowerCase().indexOf(query.toLowerCase()) !== -1 ||
-        recipient.phone.toLowerCase().indexOf(query.toLowerCase()) !== -1
-    );
+function applyFilter(array: RoomRecipients[], query: string) {
+  if (!query) {
+    return array;
   }
 
-  return array;
+  const lowerCaseQuery = query.toLowerCase();
+
+  return array.filter((recipient) => {
+    const roomNumber = recipient.roomNumber?.toString().toLowerCase() || "";
+    const floorNumber = recipient.floorNumber?.toString().toLowerCase() || "";
+    const buildingName = recipient.buildingName?.toLowerCase() || "";
+
+    return (
+      roomNumber.includes(lowerCaseQuery) ||
+      floorNumber.includes(lowerCaseQuery) ||
+      buildingName.includes(lowerCaseQuery)
+    );
+  });
 }
