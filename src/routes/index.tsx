@@ -220,7 +220,7 @@ export default function Router() {
     },
     {
       path: "*",
-      element: <Navigate to={"/"} replace />,
+      element: <LoginPage />,
     },
   ]);
 }
