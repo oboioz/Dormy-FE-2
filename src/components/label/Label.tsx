@@ -33,13 +33,13 @@ const Label = forwardRef<HTMLSpanElement, LabelProps>(
       <StyledLabel
         ref={ref}
         component="span"
-        // ownerState={{ color, variant }}
         sx={{
           ...(startIcon && { pl: 0.75 }),
           ...(endIcon && { pr: 0.75 }),
           ...sx,
         }}
         theme={theme}
+        ownerState={{color, variant}}
         {...other}
       >
         {startIcon && <Box sx={{ mr: 0.75, ...iconStyle }}> {startIcon} </Box>}
