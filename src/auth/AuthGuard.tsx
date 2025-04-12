@@ -10,7 +10,7 @@ export const useAuthGuard = (role: UserRole) => {
 
   useEffect(() => {
     if (!user) {
-      navigate("/auth/login");
+      navigate("/");
       return;
     }
 

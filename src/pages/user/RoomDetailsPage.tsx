@@ -1,83 +1,73 @@
-import { useParams } from 'react-router-dom';
-// @mui
-import { CardHeader, Container } from '@mui/material';
-
-// components
-import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
-// sections
-import { Helmet } from 'react-helmet-async';
-import { IRoom } from '../../@types/room';
-import { useSettingsContext } from '../../components/settings';
-import { PATH_USER } from '../../routes/paths';
-import RoomDetails from '../../sections/roomdetails/RoomDetails';
-import RoomateInformation from '../../sections/roomdetails/RoomateInformation';
-import { useAuthGuard } from '../../auth/AuthGuard';
-import { UserRole } from '../../models/enums/DormyEnums';
-
-// ----------------------------------------------------------------------
-
-
-const mockRoomData: IRoom = {
-  roomID: 101,
-  roomNumber: '12',
-  floorNumber: 3,
-  roomType: {
-    roomTypeID: 1,
-    roomTypeName: 'Deluxe',
-    description: 'Spacious room with premium amenities.',
-    capacity: 4,
-    price: 2000000, // Represented in VND (Vietnamese Dong)
-  },
-  totalUsedBed: 2,
-  totalAvailableBed: 4,
-  status: 'Available',
-  building: {
-    buildingID: 1,
-    name: 'Sunrise Tower',
-    floorNumber: 10,
-    genderRestriction: 'Female',
-    roomID: 101, // Matches the roomID for foreign key reference
-  },
-};
-
+import { CardHeader, Container } from "@mui/material";
+import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
+import { Helmet } from "react-helmet-async";
+import { useSettingsContext } from "../../components/settings";
+import { PATH_USER } from "../../routes/paths";
+import RoomDetails from "../../sections/roomdetails/RoomDetails";
+import RoomateInformation from "../../sections/roomdetails/RoomateInformation";
+import { useAuthGuard } from "../../auth/AuthGuard";
+import { UserRole } from "../../models/enums/DormyEnums";
+import { useAuthContext } from "../../auth/JwtContext";
+import { httpClient } from "../../services";
+import { useEffect, useState } from "react";
+import { IRoom } from "../../models/responses/RoomModel";
 
 export default function RoomDetailsPage() {
-  useAuthGuard(UserRole.CUSTOMER);
-  const { id } = useParams();
-  const { arr } = useParams();
-
-  const currentRoom = id;
-
-  const currentRoommates = arr;
-
+  const { user } = useAuthContext();
   const { themeStretch } = useSettingsContext();
+  useAuthGuard(UserRole.CUSTOMER);
+
+  const [room, setRoom] = useState<IRoom | undefined>(undefined);
+
+  var fetchRoomDetail = async (userId: string) => {
+    if (!userId) {
+      return;
+    }
+    var profile = await httpClient.userService.userGetProfile(userId);
+    if (profile?.roomId) {
+      var roomDetail = await httpClient.roomService.getRoomById(profile.roomId);
+      if (roomDetail) {
+        setRoom({
+          ...roomDetail,
+          users: roomDetail.users.filter((x) => x.userId !== userId),
+        });
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (user?.id) {
+      fetchRoomDetail(user?.id);
+    }
+  }, []);
 
   return (
     <>
       <Helmet>
-        <title> Room Details</title>
+        <title>User | Room Details</title>
       </Helmet>
 
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
           heading="Room Details"
           links={[
-            { name: 'Dashboard', href: PATH_USER.root },
+            { name: "Dashboard", href: PATH_USER.root },
             {
-              name: 'User',
+              name: "User",
               href: PATH_USER.profile,
             },
-            { name: `ROOM-${id}` },
+            { name: `Room-${room?.roomNumber}` },
           ]}
         />
 
-        <RoomDetails room={mockRoomData} />
+        {room && <RoomDetails room={room} />}
 
-        <CardHeader title={'Roomate Information'} sx={{ mb: 3 }} />
-
-
-        <RoomateInformation roommate={currentRoommates} />
-
+        {room && room.users && room.users.length > 0 && (
+          <>
+            <CardHeader title={"Roomate Information"} sx={{ mb: 3 }} />
+            <RoomateInformation users={room?.users || []} />
+          </>
+        )}
       </Container>
     </>
   );

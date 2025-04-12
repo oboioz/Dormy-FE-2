@@ -1,8 +1,6 @@
 import { HttpStatusCode } from "axios";
 import { API_URL } from "../consts/APIConstants";
-import {
-  Profile,
-} from "../models/responses/UserModel";
+import { Profile } from "../models/responses/UserModel";
 import { privateAxios } from "../libs/axios";
 
 const userGetProfile = async (id: string) => {
@@ -14,9 +12,10 @@ const userGetProfile = async (id: string) => {
     return undefined;
   } catch (err) {
     console.log(err);
+    return undefined;
   }
 };
 
 export const userService = {
-  userGetProfile: userGetProfile,
+  userGetProfile,
 };

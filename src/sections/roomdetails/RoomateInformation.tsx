@@ -1,131 +1,149 @@
-
-import { Link as RouterLink } from 'react-router-dom';
 // @mui
 import {
-  Button,
   Card,
   Container,
+  Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableRow,
-} from '@mui/material';
+  Typography,
+} from "@mui/material";
 // routes
-import { PATH_DASHBOARD } from '../../routes/paths';
 // components
-import Iconify from '../../components/iconify';
-import Label from '../../components/label';
-import Scrollbar from '../../components/scrollbar';
-import { useSettingsContext } from '../../components/settings';
-import {
-  TableHeadCustom,
-  useTable,
-} from '../../components/table';
-// sections
-
-// ----------------------------------------------------------------------
+import Scrollbar from "../../components/scrollbar";
+import { useSettingsContext } from "../../components/settings";
+import { TableHeadCustom } from "../../components/table";
+import { Profile } from "../../models/responses/UserModel";
+import Label from "../../components/label";
+import Iconify from "../../components/iconify";
 
 const TABLE_HEAD = [
-  { id: 'order', label: '#', align: 'middle' },
-  { id: 'fullName', label: 'Full Name', align: 'left' },
-  { id: 'bed', label: 'Bed', align: 'left' },
-  { id: 'dayOfBirth', label: 'Birth Year', align: 'center' },
-  { id: 'workplace', label: 'Workplace', align: 'left' },
-  { id: 'phoneNumber', label: 'Phone Number', align: 'left' },
+  { id: "fullName", label: "Full Name", align: "left" },
+  { id: "gender", label: "Gender", align: "left" },
+  { id: "phoneNumber", label: "Phone Number", align: "left" },
+  { id: "dateOfBirth", label: "Date of Birth", align: "left" },
+  { id: "status", label: "Status", align: "left" },
 ];
 
-const MOCK_DATA = [
-  {
-    order: 1,
-    fullName: 'John Doe',
-    bed: 'A1',
-    dayOfBirth: 1985,
-    workplace: 'TechCorp Inc.',
-    phoneNumber: '123-456-7890',
-  },
-  {
-    order: 2,
-    fullName: 'Jane Smith',
-    bed: 'B2',
-    dayOfBirth: 1990,
-    workplace: 'HealthCare Solutions',
-    phoneNumber: '987-654-3210',
-  },
-  {
-    order: 3,
-    fullName: 'Alice Johnson',
-    bed: 'C3',
-    dayOfBirth: 1992,
-    workplace: 'Global Finance Ltd.',
-    phoneNumber: '555-123-4567',
-  },
-  {
-    order: 4,
-    fullName: 'Robert Brown',
-    bed: 'D4',
-    dayOfBirth: 1980,
-    workplace: 'Innovatech',
-    phoneNumber: '444-789-1234',
-  },
-];
+export interface IUsersRoomProps {
+  users: Profile[];
+}
 
-
-// ----------------------------------------------------------------------
-
-export default function ContractListPage(arr) {
-
-  if (!arr) {
+export default function ContractListPage(props: IUsersRoomProps) {
+  if (!props) {
     return null;
   }
 
-  arr = MOCK_DATA
+  const { users } = props;
 
   const { themeStretch } = useSettingsContext();
 
-
-
   return (
     <>
-      {/* <Helmet>
-        <title>Contract List</title>
-      </Helmet> */}
-
-      <Container maxWidth={themeStretch ? false : 'lg'}>
-
+      <Container maxWidth={themeStretch ? false : "lg"}>
         <Card>
-
-          <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
-
+          <TableContainer sx={{ position: "relative", overflow: "unset" }}>
             <Scrollbar>
-              <Table size={'medium'} sx={{ minWidth: 800 }}>
+              <Table size={"medium"} sx={{ minWidth: 800 }}>
                 <TableHeadCustom
                   headLabel={TABLE_HEAD}
-                // rowCount={tableData.length}
+                  rowCount={users.length}
                 />
 
                 <TableBody>
-                  {MOCK_DATA.map((row, index) => (
-                    <TableRow hover key={row.order}>
-                      <TableCell align="center">{row.order}</TableCell>
-                      <TableCell align="left">{row.fullName}</TableCell>
-                      <TableCell align="left">{row.bed}</TableCell>
-                      <TableCell align="left">{row.dayOfBirth}</TableCell>
-                      <TableCell align="left">{row.workplace}</TableCell>
+                  {users.map((row) => (
+                    <TableRow hover key={row.userId}>
+                      {/* Full Name */}
+                      <TableCell align="left">
+                        {row.firstName + " " + row.lastName}
+                      </TableCell>
+
+                      {/* Gender */}
+                      <TableCell align="left">
+                        {row.gender === "MALE" ? (
+                          <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing={1}
+                          >
+                            <Iconify
+                              icon="eva:person-outline"
+                              color="info.main"
+                              width={20}
+                              height={20}
+                            />
+                            <Typography variant="body2">Male</Typography>
+                          </Stack>
+                        ) : row.gender === "FEMALE" ? (
+                          <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing={1}
+                          >
+                            <Iconify
+                              icon="eva:person-female-outline"
+                              color="error.main"
+                              width={20}
+                              height={20}
+                            />
+                            <Typography variant="body2">Female</Typography>
+                          </Stack>
+                        ) : (
+                          <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing={1}
+                          >
+                            <Iconify
+                              icon="eva:people-outline"
+                              color="warning.main"
+                              width={20}
+                              height={20}
+                            />
+                            <Typography variant="body2">Other</Typography>
+                          </Stack>
+                        )}
+                      </TableCell>
+
+                      {/* Phone Number */}
                       <TableCell align="left">{row.phoneNumber}</TableCell>
 
+                      {/* Date of Birth */}
+                      <TableCell align="left">
+                        {row.dateOfBirth
+                          ? new Intl.DateTimeFormat("en-US", {
+                              year: "numeric",
+                              month: "2-digit",
+                              day: "2-digit",
+                            }).format(new Date(row.dateOfBirth))
+                          : "--/--/--"}
+                      </TableCell>
+
+                      {/* Status */}
+                      <TableCell align="left">
+                        <Label
+                          variant="soft"
+                          color={
+                            row.status === "ACTIVE"
+                              ? "success"
+                              : row.status === "INACTIVE"
+                              ? "error"
+                              : "default"
+                          }
+                        >
+                          {row.status}
+                        </Label>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
             </Scrollbar>
           </TableContainer>
-
         </Card>
       </Container>
-
     </>
   );
 }
-
-// ----------------------------------------------------------------------

@@ -59,6 +59,7 @@ export const API_URL = {
     APPROVE_REJECT: "overnight-absence/id/{id}/approve-or-reject",
   },
   REQUEST: {
+    CREATE: "request",
     GET_BATCH: "request/batch",
     GET_SINGLE: "request/id/",
     UPDATE: "request/id/",

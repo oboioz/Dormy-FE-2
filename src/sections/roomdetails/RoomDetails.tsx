@@ -1,12 +1,10 @@
-import { Grid, TableRow, Typography } from "@mui/material";
+import { Card, CardContent, Divider, Grid, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { IRoom } from "../../models/responses/RoomModel";
 
-const StyledRowResult = styled(TableRow)(({ theme }) => ({
-  "& td": {
-    paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(1),
-  },
+const StyledCard = styled(Card)(({ theme }) => ({
+  marginBottom: theme.spacing(3),
+  boxShadow: theme.shadows[3],
 }));
 
 type Props = {
@@ -19,65 +17,82 @@ export default function RoomDetails({ room }: Props) {
   }
 
   const {
-    id,
-    roomTypeId,
-    roomTypeName,
-    roomNumber,
-    isDeleted,
-    floorNumber,
-    price,
     buildingName,
-    status,
-    totalAvailableBed,
+    floorNumber,
+    roomNumber,
     totalUsedBed,
-    buildingId,
+    totalAvailableBed,
+    price,
+    roomTypeName,
+    roomServices,
   } = room;
 
   return (
-    <>
-      <Grid container>
-        <Grid item xs={12} sm={6} sx={{ mb: 5 }}>
-          <Typography
-            paragraph
-            variant="overline"
-            sx={{ color: "text.disabled" }}
-          >
-            General
-          </Typography>
-
-          <Typography variant="body2">Block: {buildingName}</Typography>
-
-          <Typography variant="body2">Gender: MALE</Typography>
-
-          <Typography variant="body2">
-            Room: {floorNumber}.{roomNumber}
-          </Typography>
-          <Typography variant="body2">
-            Bed: {totalUsedBed}/{totalAvailableBed}
-          </Typography>
-          <Typography variant="body2">
-            Price: {price}VND/person/month
-          </Typography>
-        </Grid>
-
-        <Grid item xs={12} sm={6} sx={{ mb: 5 }}>
-          <Typography
-            paragraph
-            variant="overline"
-            sx={{ color: "text.disabled" }}
-          >
-            Equipment
-          </Typography>
-
-          <Typography variant="subtitle2">Room type: {roomTypeName}</Typography>
-
-          {/* <Typography variant="body2">{roomType.description}</Typography>
-
-          <Typography variant="body2">{roomType.description}</Typography>
-
-          <Typography variant="body2">{roomType.description}</Typography> */}
-        </Grid>
+    <Grid container spacing={3}>
+      {/* General Information */}
+      <Grid item xs={12} md={6}>
+        <StyledCard>
+          <CardContent>
+            <Typography
+              variant="overline"
+              sx={{ color: "text.disabled", mb: 2 }}
+            >
+              General Information
+            </Typography>
+            <Typography variant="body2">Block: {buildingName}</Typography>
+            <Typography variant="body2">
+              Room: {floorNumber}.{roomNumber}
+            </Typography>
+            <Typography variant="body2">
+              Bed: {totalUsedBed}/{totalAvailableBed}
+            </Typography>
+            <Typography variant="body2">
+              Price: {price} VND/person/month
+            </Typography>
+          </CardContent>
+        </StyledCard>
       </Grid>
-    </>
+
+      {/* Room Type and Equipment */}
+      <Grid item xs={12} md={6}>
+        <StyledCard>
+          <CardContent>
+            <Typography
+              variant="overline"
+              sx={{ color: "text.disabled", mb: 2 }}
+            >
+              Room Type and Equipment
+            </Typography>
+            <Typography variant="body2">Room Type: {roomTypeName}</Typography>
+          </CardContent>
+        </StyledCard>
+      </Grid>
+
+      {/* Room Services */}
+      <Grid item xs={12}>
+        <StyledCard>
+          <CardContent>
+            <Typography
+              variant="overline"
+              sx={{ color: "text.disabled", mb: 2 }}
+            >
+              Room Services
+            </Typography>
+            {roomServices && roomServices.length > 0 ? (
+              roomServices.map((service) => (
+                <Typography key={service.id} variant="body2">
+                  - {service.roomServiceName}: {service.cost} VND/
+                  <b>{service.unit}</b>
+                </Typography>
+              ))
+            ) : (
+              <Typography variant="body2" color="text.secondary">
+                No services available.
+              </Typography>
+            )}
+          </CardContent>
+        </StyledCard>
+      </Grid>
+    </Grid>
   );
 }

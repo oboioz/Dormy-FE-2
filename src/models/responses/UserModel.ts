@@ -60,5 +60,6 @@ export interface Profile {
   contractId?: string;
   contractStartDate?: Date;
   contractEndDate?: Date;
-  contractStatus?: string; 
+  contractStatus?: string;
+  roomId?: string;
 }

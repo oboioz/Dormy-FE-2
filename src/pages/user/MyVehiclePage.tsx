@@ -14,6 +14,7 @@ import {
   VehicleHistoryModel,
 } from "../../models/responses/VehicleModels";
 import { useAuthContext } from "../../auth/JwtContext";
+import MyParkingRequests from "../../sections/myVehicle/ParkingRequests";
 
 export default function MyVehiclePage() {
   useAuthGuard(UserRole.CUSTOMER);
@@ -95,6 +96,9 @@ export default function MyVehiclePage() {
 
           <Grid item xs={12} md={4}>
             <HistoryPartition histories={vehicleHistories} />
+          </Grid>
+          <Grid item xs={12} md={12}>
+            <MyParkingRequests />
           </Grid>
         </Grid>
       </Container>
