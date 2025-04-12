@@ -59,7 +59,8 @@ export const ResidentListPage = Loadable(lazy(() => import('../pages/admin/Resid
 export const OvernightRequestPage = Loadable(lazy(() => import('../pages/admin/OvernightRequestPage')));
 export const RequestListingPage = Loadable(lazy(() => import('../pages/admin/RequestListingPage')));
 
-export const InvoiceListPage = Loadable(lazy(() => import('../pages/admin/InvoiceListPage')));
+export const InvoiceMonthlyListPage = Loadable(lazy(() => import('../pages/admin/InvoiceMonthlyListPage')));
+export const InvoiceContractListPage = Loadable(lazy(() => import('../pages/admin/InvoiceContractListPage')));
 export const InvoiceCreatePage = Loadable(lazy(() => import('../pages/admin/InvoiceCreatePage')));
 
 export const VehicleGarageCreatePage = Loadable(lazy(() => import('../pages/admin/VehicleGarageCreatePage')));

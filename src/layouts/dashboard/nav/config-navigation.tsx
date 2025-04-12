@@ -55,13 +55,13 @@ const userNavConfig = [
         title: "invoice",
         path: PATH_USER.invoice.root,
         icon: ICONS.invoice, // Invoice represents billing
-        // children: [
-        //   { title: "rental fee", path: PATH_USER.invoice.rent },
-        //   { title: "water fee", path: PATH_USER.invoice.water }, // Banking is relevant for utilities
-        //   { title: "electric fee", path: PATH_USER.invoice.electric }, // Banking is relevant for utilities
-        //   { title: "parking fee", path: PATH_USER.invoice.parking }, // Banking is relevant for utilities
-        //   { title: "others", path: PATH_USER.invoice.others }, // Miscellaneous financial matters
-        // ],
+        children: [
+          { title: "rental fee", path: PATH_USER.invoice.rent },
+          { title: "water fee", path: PATH_USER.invoice.water }, // Banking is relevant for utilities
+          // { title: "electric fee", path: PATH_USER.invoice.electric }, // Banking is relevant for utilities
+          // { title: "parking fee", path: PATH_USER.invoice.parking }, // Banking is relevant for utilities
+          // { title: "others", path: PATH_USER.invoice.others }, // Miscellaneous financial matters
+        ],
       },
       { title: "request", path: PATH_USER.request, icon: ICONS.request }, // Booking represents requests
       { title: "violation", path: PATH_USER.violation, icon: ICONS.violation },
@@ -150,16 +150,13 @@ const adminNavConfig = [
 
       {
         title: "Invoice",
-        path: PATH_ADMIN.invoice.list,
+        path: PATH_ADMIN.invoice.monthly,
         icon: ICONS.invoice,
         // roles: ['admin'],
-        // children: [
-        //   { title: "Rent", path: PATH_ADMIN.invoice.list },
-        //   { title: "Water", path: PATH_ADMIN.invoice.list },
-        //   { title: "Electricity", path: PATH_ADMIN.invoice.list },
-        //   { title: "Parking", path: PATH_ADMIN.invoice.list },
-        //   { title: "Others", path: PATH_ADMIN.invoice.list },
-        // ],
+        children: [
+          { title: "Monthly invoice", path: PATH_ADMIN.invoice.monthly },
+          { title: "Contract invoice", path: PATH_ADMIN.invoice.contract },
+        ],
       },
 
       {

@@ -14,7 +14,6 @@ import {
   EnterEmailPage,
   InvoiceCreatePage,
   InvoiceElectricPage,
-  InvoiceListPage,
   InvoiceOthersPage,
   InvoiceParkingPage,
   InvoiceRentPage,
@@ -59,6 +58,8 @@ import {
   WorkplaceFormPage,
   WorkplaceListPage,
   RoomPage,
+  InvoiceMonthlyListPage,
+  InvoiceContractListPage,
 } from "./elements";
 
 export default function Router() {
@@ -140,7 +141,9 @@ export default function Router() {
         { path: "violation", element: <ViolationDetailsListPage /> },
         { path: "violationform", element: <ViolationFormPage /> },
 
-        { path: "invoice", element: <InvoiceListPage /> },
+        { path: "invoice/room-service-monthly", element: <InvoiceMonthlyListPage /> },
+        { path: "invoice/contract", element: <InvoiceContractListPage /> },
+
         { path: "invoicecreate", element: <InvoiceCreatePage /> },
 
         { path: "parkingspot", element: <VehicleGaragePage /> },

@@ -81,7 +81,8 @@ export const PATH_ADMIN = {
   register: path(ROOTS_ADMIN, "/registration"),
 
   invoice: {
-    list: path(ROOTS_ADMIN, "/invoice"),
+    monthly: path(ROOTS_ADMIN, "/invoice/room-service-monthly"),
+    contract: path(ROOTS_ADMIN, "/invoice/contract"),
     create: path(ROOTS_ADMIN, "/invoicecreate"),
   },
 

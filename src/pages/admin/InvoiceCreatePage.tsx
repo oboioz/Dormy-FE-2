@@ -37,7 +37,7 @@ export default function InvoiceCreatePage() {
             },
             {
               name: "Invoices",
-              href: PATH_ADMIN.invoice.list,
+              href: PATH_ADMIN.invoice.monthly,
             },
             {
               name: "New invoice",
