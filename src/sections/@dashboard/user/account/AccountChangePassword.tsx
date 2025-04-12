@@ -34,7 +34,7 @@ export default function AccountChangePassword() {
   };
 
   const methods = useForm({
-    resolver: yupResolver(ChangePassWordSchema),
+    resolver: yupResolver(ChangePassWordSchema) as any,
     defaultValues,
   });
 

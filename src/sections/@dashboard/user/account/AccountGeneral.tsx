@@ -1,26 +1,24 @@
-import * as Yup from 'yup';
-import { useCallback } from 'react';
+import * as Yup from "yup";
+import { useCallback } from "react";
 // form
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 // @mui
-import { Box, Grid, Card, Stack, Typography } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
+import { Box, Grid, Card, Stack, Typography } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 // auth
-import { useAuthContext } from '../../../../auth/useAuthContext';
+import { useAuthContext } from "../../../../auth/useAuthContext";
 // utils
-import { fData } from '../../../../utils/formatNumber';
+import { fData } from "../../../../utils/formatNumber";
 // assets
-import { countries } from '../../../../assets/data';
+import { countries } from "../../../../assets/data";
 // components
-import { CustomFile } from '../../../../components/upload';
-import { useSnackbar } from '../../../../components/snackbar';
-import FormProvider, {
-  RHFSwitch,
-  RHFSelect,
-  RHFTextField,
-  RHFUploadAvatar,
-} from '../../../../components/hook-form';
+import { CustomFile } from "../../../../components/upload";
+import { useSnackbar } from "../../../../components/snackbar";
+import FormProvider, { RHFTextField } from "../../../../components/hook-form";
+import { RHFSelect } from "../../../../components/hook-form/RHFSelect";
+import RHFSwitch from "../../../../components/hook-form/RHFSwitch";
+import { RHFUploadAvatar } from "../../../../components/hook-form/RHFUpload";
 
 // ----------------------------------------------------------------------
 
@@ -44,35 +42,37 @@ export default function AccountGeneral() {
   const { user } = useAuthContext();
 
   const UpdateUserSchema = Yup.object().shape({
-    displayName: Yup.string().required('Name is required'),
-    email: Yup.string().required('Email is required').email('Email must be a valid email address'),
-    photoURL: Yup.string().required('Avatar is required').nullable(true),
-    phoneNumber: Yup.string().required('Phone number is required'),
-    country: Yup.string().required('Country is required'),
-    address: Yup.string().required('Address is required'),
-    state: Yup.string().required('State is required'),
-    city: Yup.string().required('City is required'),
-    zipCode: Yup.string().required('Zip code is required'),
-    about: Yup.string().required('About is required'),
+    displayName: Yup.string().required("Name is required"),
+    email: Yup.string()
+      .required("Email is required")
+      .email("Email must be a valid email address"),
+    photoURL: Yup.string().required("Avatar is required").nullable(true),
+    phoneNumber: Yup.string().required("Phone number is required"),
+    country: Yup.string().required("Country is required"),
+    address: Yup.string().required("Address is required"),
+    state: Yup.string().required("State is required"),
+    city: Yup.string().required("City is required"),
+    zipCode: Yup.string().required("Zip code is required"),
+    about: Yup.string().required("About is required"),
   });
 
-  const defaultValues = {
-    displayName: user?.displayName || '',
-    email: user?.email || '',
-    photoURL: user?.photoURL || null,
-    phoneNumber: user?.phoneNumber || '',
-    country: user?.country || '',
-    address: user?.address || '',
-    state: user?.state || '',
-    city: user?.city || '',
-    zipCode: user?.zipCode || '',
-    about: user?.about || '',
-    isPublic: user?.isPublic || false,
-  };
+  // const defaultValues = {
+  //   displayName: user?.displayName || "",
+  //   email: user?.email || "",
+  //   photoURL: user?.photoURL || null,
+  //   phoneNumber: user?.phoneNumber || "",
+  //   country: user?.country || "",
+  //   address: user?.address || "",
+  //   state: user?.state || "",
+  //   city: user?.city || "",
+  //   zipCode: user?.zipCode || "",
+  //   about: user?.about || "",
+  //   isPublic: user?.isPublic || false,
+  // };
 
   const methods = useForm<FormValuesProps>({
-    resolver: yupResolver(UpdateUserSchema),
-    defaultValues,
+    resolver: yupResolver(UpdateUserSchema) as any,
+    // defaultValues,
   });
 
   const {
@@ -84,8 +84,8 @@ export default function AccountGeneral() {
   const onSubmit = async (data: FormValuesProps) => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
-      enqueueSnackbar('Update success!');
-      console.log('DATA', data);
+      enqueueSnackbar("Update success!");
+      console.log("DATA", data);
     } catch (error) {
       console.error(error);
     }
@@ -100,7 +100,7 @@ export default function AccountGeneral() {
       });
 
       if (file) {
-        setValue('photoURL', newFile, { shouldValidate: true });
+        setValue("photoURL", newFile, { shouldValidate: true });
       }
     },
     [setValue]
@@ -110,7 +110,7 @@ export default function AccountGeneral() {
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
-          <Card sx={{ py: 10, px: 3, textAlign: 'center' }}>
+          <Card sx={{ py: 10, px: 3, textAlign: "center" }}>
             <RHFUploadAvatar
               name="photoURL"
               maxSize={3145728}
@@ -120,10 +120,10 @@ export default function AccountGeneral() {
                   variant="caption"
                   sx={{
                     mt: 2,
-                    mx: 'auto',
-                    display: 'block',
-                    textAlign: 'center',
-                    color: 'text.secondary',
+                    mx: "auto",
+                    display: "block",
+                    textAlign: "center",
+                    color: "text.secondary",
                   }}
                 >
                   Allowed *.jpeg, *.jpg, *.png, *.gif
@@ -148,8 +148,8 @@ export default function AccountGeneral() {
               columnGap={2}
               display="grid"
               gridTemplateColumns={{
-                xs: 'repeat(1, 1fr)',
-                sm: 'repeat(2, 1fr)',
+                xs: "repeat(1, 1fr)",
+                sm: "repeat(2, 1fr)",
               }}
             >
               <RHFTextField name="displayName" label="Name" />
@@ -160,7 +160,12 @@ export default function AccountGeneral() {
 
               <RHFTextField name="address" label="Address" />
 
-              <RHFSelect native name="country" label="Country" placeholder="Country">
+              <RHFSelect
+                native
+                name="country"
+                label="Country"
+                placeholder="Country"
+              >
                 <option value="" />
                 {countries.map((country) => (
                   <option key={country.code} value={country.label}>
@@ -179,7 +184,11 @@ export default function AccountGeneral() {
             <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
               <RHFTextField name="about" multiline rows={4} label="About" />
 
-              <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
+              <LoadingButton
+                type="submit"
+                variant="contained"
+                loading={isSubmitting}
+              >
                 Save Changes
               </LoadingButton>
             </Stack>

@@ -1,25 +1,23 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import * as Yup from 'yup';
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import * as Yup from "yup";
 // form
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm } from 'react-hook-form';
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
 // @mui
-import { LoadingButton } from '@mui/lab';
-import { Card, Stack } from '@mui/material';
-
-
+import { LoadingButton } from "@mui/lab";
+import { Card, Stack } from "@mui/material";
 
 //
-import { IInvoice, IInvoiceRecipient } from '../../../../../@types/invoice';
-import FormProvider from '../../../../../components/hook-form';
-import InvoiceNewEditAddress from './InvoiceNewEditAddress';
-import InvoiceNewEditDetails from './InvoiceNewEditDetails';
-import InvoiceNewEditStatusDate from './InvoiceNewEditStatusDate';
+import { IInvoice, IInvoiceRecipient } from "../../../../../@types/invoice";
+import FormProvider from "../../../../../components/hook-form";
+import InvoiceNewEditAddress from "./InvoiceNewEditAddress";
+import InvoiceNewEditDetails from "./InvoiceNewEditDetails";
+import InvoiceNewEditStatusDate from "./InvoiceNewEditStatusDate";
 
 // ----------------------------------------------------------------------
 
-type IFormValuesProps = Omit<IInvoice, 'dueDate' | 'invoiceTo'>;
+type IFormValuesProps = Omit<IInvoice, "dueDate" | "invoiceTo">;
 
 interface FormValuesProps extends IFormValuesProps {
   dueDate: Date | null;
@@ -39,18 +37,18 @@ export default function InvoiceNewEditForm({ isEdit, currentInvoice }: Props) {
   const [loadingSend, setLoadingSend] = useState(false);
 
   const NewUserSchema = Yup.object().shape({
-    createDate: Yup.string().nullable().required('Create date is required'),
-    dueDate: Yup.string().nullable().required('Due date is required'),
-    invoiceTo: Yup.mixed().nullable().required('Invoice to is required'),
+    createDate: Yup.string().nullable().required("Create date is required"),
+    dueDate: Yup.string().nullable().required("Due date is required"),
+    invoiceTo: Yup.mixed().nullable().required("Invoice to is required"),
   });
 
   const defaultValues = useMemo(
     () => ({
-      invoiceNumber: currentInvoice?.invoiceID || '17099',
+      invoiceNumber: currentInvoice?.invoiceID || "17099",
       dueDate: currentInvoice?.dueDate || null,
       invoiceTo: currentInvoice?.invoiceTo || null,
       items: currentInvoice?.invoiceItems || [
-        { serviceName: '', unit: '', quantity: 1, cost: 0, total: 0 },
+        { serviceName: "", unit: "", quantity: 1, cost: 0, total: 0 },
       ],
       totalPrice: currentInvoice?.amountAfterPromotion || 0,
     }),
@@ -58,7 +56,7 @@ export default function InvoiceNewEditForm({ isEdit, currentInvoice }: Props) {
   );
 
   const methods = useForm<FormValuesProps>({
-    resolver: yupResolver(NewUserSchema),
+    resolver: yupResolver(NewUserSchema) as any,
     defaultValues,
   });
 
@@ -80,7 +78,6 @@ export default function InvoiceNewEditForm({ isEdit, currentInvoice }: Props) {
 
   const handleCreateAndSend = async (data: FormValuesProps) => {
     // setLoadingSend(true);
-
     // try {
     //   await new Promise((resolve) => setTimeout(resolve, 500));
     //   reset();
@@ -103,14 +100,19 @@ export default function InvoiceNewEditForm({ isEdit, currentInvoice }: Props) {
         <InvoiceNewEditDetails />
       </Card>
 
-      <Stack justifyContent="flex-end" direction="row" spacing={2} sx={{ mt: 3 }}>
+      <Stack
+        justifyContent="flex-end"
+        direction="row"
+        spacing={2}
+        sx={{ mt: 3 }}
+      >
         <LoadingButton
           size="large"
           variant="contained"
           loading={loadingSend && isSubmitting}
           onClick={handleSubmit(handleCreateAndSend)}
         >
-          {isEdit ? 'Update' : 'Create'} & Send
+          {isEdit ? "Update" : "Create"} & Send
         </LoadingButton>
       </Stack>
     </FormProvider>

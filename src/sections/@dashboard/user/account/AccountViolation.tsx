@@ -19,6 +19,7 @@ import {
 // sections
 import { Link } from 'react-router-dom';
 import Scrollbar from '../../../../components/scrollbar';
+import { Helmet } from 'react-helmet-async';
 
 // ----------------------------------------------------------------------
 

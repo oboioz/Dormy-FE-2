@@ -129,7 +129,7 @@ export default function ResidentListPage() {
   const [openConfirm, setOpenConfirm] = useState(false);
 
   const dataFiltered = applyFilter({
-    inputData: tableData,
+    inputData: tableData as any,
     comparator: getComparator(order, orderBy),
     filterName,
   });

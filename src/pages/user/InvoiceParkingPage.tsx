@@ -109,7 +109,7 @@ export default function InvoiceParkingPage() {
             },
             {
               name: "Invoice",
-              href: PATH_USER.invoice,
+              href: PATH_USER.invoice.parking,
             },
           ]}
         />

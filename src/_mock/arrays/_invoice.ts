@@ -5,7 +5,8 @@ import _mock from "../_mock";
 import { randomInArray, randomNumberRange } from "../utils";
 
 // Generate mock rooms
-const _mockRooms: IRoom[] = [...Array(5)].map((_, index) => ({
+const 
+_mockRooms: any[] = [...Array(5)].map((_, index) => ({
   roomID: index + 1,
   roomNumber: `A10${index + 1}`,
   floor: randomNumberRange(1, 5),
@@ -14,7 +15,7 @@ const _mockRooms: IRoom[] = [...Array(5)].map((_, index) => ({
 }));
 
 export const _invoices: IInvoice[] = [...Array(20)].map((_, index) => {
-  const invoiceItems: IInvoiceItem[] = [...Array(3)].map((__, itemIndex) => ({
+  const invoiceItems: any[] = [...Array(3)].map((__, itemIndex) => ({
     invoiceItemId: _mock.id(itemIndex),
     serviceId: itemIndex + 1,
     serviceName: randomInArray([

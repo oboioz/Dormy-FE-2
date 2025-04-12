@@ -36,7 +36,7 @@ export default function EnterEmailPage() {
         Please enter the email address associated with your account registration. Please notice that one email  for one registration only
       </Typography>
 
-      <EnterEmailForm generalInformation={generalInformation} />
+      {/* <EnterEmailForm generalInformation={generalInformation} /> */}
 
       <Container
         sx={{

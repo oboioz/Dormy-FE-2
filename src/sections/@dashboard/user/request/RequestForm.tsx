@@ -44,7 +44,7 @@ export default function RequestForm() {
 
 
   const methods = useForm<FormValuesProps>({
-    resolver: yupResolver(UpdateSchema),
+    resolver: yupResolver(UpdateSchema) as any,
     defaultValues,
   });
 

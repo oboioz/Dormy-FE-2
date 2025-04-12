@@ -33,7 +33,7 @@ type WorkerCardProps = {
 };
 
 function WorkerCard({ worker }: WorkerCardProps) {
-  const { firstname, lastname, jobTitle, email, imageURL } = worker;
+  const { jobTitle, email, imageURL } = worker;
 
   return (
     <>
@@ -47,13 +47,13 @@ function WorkerCard({ worker }: WorkerCardProps) {
         }}
       >
         <Avatar
-          alt={firstname}
+          alt={"firstname"}
           src={imageURL}
           sx={{ width: 64, height: 64, mb: 3 }}
         />
 
         <Link variant="subtitle1" color="text.primary">
-          {firstname + " " + lastname}
+          {"firstname" + " " + "lastname"}
         </Link>
 
         <Typography

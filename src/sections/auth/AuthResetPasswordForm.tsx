@@ -24,7 +24,7 @@ export default function AuthResetPasswordForm() {
   });
 
   const methods = useForm<FormValuesProps>({
-    resolver: yupResolver(ResetPasswordSchema),
+    resolver: yupResolver(ResetPasswordSchema) as any,
     defaultValues: { email: 'demo@minimals.cc' },
   });
 

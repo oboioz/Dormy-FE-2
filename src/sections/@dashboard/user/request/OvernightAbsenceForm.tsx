@@ -36,7 +36,7 @@ export default function OvernightAbsenceForm() {
 
 
   const methods = useForm<FormValuesProps>({
-    resolver: yupResolver(UpdateSchema),
+    resolver: yupResolver(UpdateSchema) as any,
     defaultValues,
   });
 
@@ -78,14 +78,14 @@ export default function OvernightAbsenceForm() {
                       label="Date Of Birth"
                       // inputFormat="dd/MM/yyyy"
                       format="DD/MM/YYYY"
-                      renderInput={(params) => (
-                        <TextField
-                          fullWidth
-                          {...params}
-                          error={!!error}
-                          helperText={error?.message}
-                        />
-                      )}
+                      // renderInput={(params) => (
+                      //   <TextField
+                      //     fullWidth
+                      //     {...params}
+                      //     error={!!error}
+                      //     helperText={error?.message}
+                      //   />
+                      // )}
                     />
                   )}
                 />
@@ -99,14 +99,14 @@ export default function OvernightAbsenceForm() {
                       label="Date Of Birth"
                       // inputFormat="dd/MM/yyyy"
                       format="DD/MM/YYYY"
-                      renderInput={(params) => (
-                        <TextField
-                          fullWidth
-                          {...params}
-                          error={!!error}
-                          helperText={error?.message}
-                        />
-                      )}
+                      // renderInput={(params) => (
+                      //   <TextField
+                      //     fullWidth
+                      //     {...params}
+                      //     error={!!error}
+                      //     helperText={error?.message}
+                      //   />
+                      // )}
                     />
                   )}
                 />

@@ -5,22 +5,21 @@ import { IUser } from "../../@types/user";
 import _mock from "../_mock";
 import { randomInArray } from "../utils";
 
-
-const _users: IUser[] = [...Array(10)].map((_, index) => ({
+const _users: any[] = [...Array(10)].map((_, index) => ({
   userId: _mock.id(index),
   name: _mock.name.fullName(index),
   email: _mock.email(index),
   phone: _mock.phoneNumber(index),
 }));
 
-const _admins: IAdmin[] = [...Array(5)].map((_, index) => ({
+const _admins: any[] = [...Array(5)].map((_, index) => ({
   adminId: _mock.id(index),
   name: _mock.name.fullName(index),
   email: _mock.email(index),
   phone: _mock.phoneNumber(index),
 }));
 
-const _rooms: IRoom[] = [...Array(15)].map((_, index) => ({
+const _rooms: any[] = [...Array(15)].map((_, index) => ({
   roomID: _mock.id(index),
   roomNumber: `Room ${100 + index}`,
   building: `Building ${randomInArray(["A", "B", "C", "D"])}`,
@@ -28,7 +27,7 @@ const _rooms: IRoom[] = [...Array(15)].map((_, index) => ({
   currentOccupants: randomInArray([0, 1, 2, 3, 4]),
 }));
 
-export const _mockRequests: IRequest[] = [
+export const _mockRequests: any[] = [
   {
     requestID: 1,
     description: "Leaky faucet in the bathroom",
@@ -53,11 +52,11 @@ export const _mockRequests: IRequest[] = [
         status: "Active",
         roomID: {
           building: {
-            name: "NAME"
+            name: "NAME",
           },
           floorNumber: 1,
           roomNumber: 1,
-        }
+        },
       },
       priorities: ["Near elevator", "Lower floor"],
       guardian: {
@@ -136,11 +135,11 @@ export const _mockRequests: IRequest[] = [
         status: "Active",
         roomID: {
           building: {
-            name: "NAME"
+            name: "NAME",
           },
           floorNumber: 1,
           roomNumber: 1,
-        }
+        },
       },
       priorities: ["Quiet area", "Higher floor"],
       guardian: {
@@ -187,11 +186,8 @@ export const _mockRequests: IRequest[] = [
       building: {
         buildingID: 2,
         name: "Dormitory B",
-        address: "456 Campus Avenue",
+        // address: "456 Campus Avenue",
       },
     },
   },
 ];
-
-
-

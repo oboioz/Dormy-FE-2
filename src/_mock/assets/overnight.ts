@@ -2,8 +2,7 @@ import { IAdmin } from "../../@types/admin";
 import { IOvernightAbsence } from "../../@types/request";
 import { IUser } from "../../@types/user";
 
-
-const mockUsers: IUser[] = [
+const mockUsers: any[] = [
   {
     userID: 1,
     password: "securepass123",
@@ -67,7 +66,7 @@ const mockUsers: IUser[] = [
   },
 ];
 
-const mockAdmins: IAdmin[] = [
+const mockAdmins: any[] = [
   {
     adminID: 1,
     firstName: "Alice",

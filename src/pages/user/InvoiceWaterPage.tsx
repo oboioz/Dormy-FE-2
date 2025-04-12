@@ -109,7 +109,7 @@ export default function InvoiceWaterPage() {
             },
             {
               name: "Invoice",
-              href: PATH_USER.invoice,
+              href: PATH_USER.invoice.water,
             },
           ]}
         />

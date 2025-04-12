@@ -248,7 +248,10 @@ export default function SystemSettingsPage() {
                       <TableCell>5</TableCell>
                       <TableCell>Garage Registration</TableCell>
                       <TableCell>
-                        <RHFSwitch name="switch" />
+                        <RHFSwitch
+                          name="switch"
+                          label={"Garage Registration"}
+                        />
                       </TableCell>
                     </TableRow>
                   </TableBody>

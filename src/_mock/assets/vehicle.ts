@@ -1,9 +1,8 @@
 import { IUser } from "../../@types/user";
 import { IHistory, IParkingSpot, IVehicle } from "../../@types/vehicle";
 
-
 // Mock Users
-const mockUsers: IUser[] = [
+const mockUsers: any[] = [
   {
     userID: 1,
     password: "securepass123",
@@ -31,7 +30,7 @@ const mockUsers: IUser[] = [
 ];
 
 // Mock Parking Spots
-const mockParkingSpots: IParkingSpot[] = [
+const mockParkingSpots: any[] = [
   {
     parkingSpotID: 1,
     spotNumber: "A101",
@@ -87,4 +86,3 @@ const mockHistory: IHistory[] = [
 ];
 
 export { mockHistory, mockParkingSpots, mockUsers, mockVehicles };
-

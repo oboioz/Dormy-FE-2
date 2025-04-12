@@ -1,21 +1,21 @@
 // @mui
-import { Container, Grid } from '@mui/material';
+import { Container, Grid } from "@mui/material";
 // utils
 // routes
-import { PATH_USER } from '../../routes/paths';
+import { PATH_USER } from "../../routes/paths";
 // @types
 // components
-import { Helmet } from 'react-helmet-async';
-import { INotification } from '../../@types/notification';
-import CustomBreadcrumbs from '../../components/custom-breadcrumbs';
-import { useSettingsContext } from '../../components/settings';
-import { SkeletonPostItem } from '../../components/skeleton';
-import NotificationPostCard from '../../sections/@dashboard/notifications/NotificationPostCard';
+import { Helmet } from "react-helmet-async";
+import { INotification } from "../../@types/notification";
+import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
+import { useSettingsContext } from "../../components/settings";
+import { SkeletonPostItem } from "../../components/skeleton";
+import NotificationPostCard from "../../sections/@dashboard/notifications/NotificationPostCard";
 // sections
 
 // ----------------------------------------------------------------------
 
-const mockNotifications: INotification[] = [
+const mockNotifications: any[] = [
   {
     notificationID: 1,
     content: "Your payment has been successfully processed.",
@@ -78,8 +78,6 @@ const mockNotifications: INotification[] = [
   },
 ];
 
-
-
 // ----------------------------------------------------------------------
 
 export default function NotificationsPage() {
@@ -106,12 +104,7 @@ export default function NotificationsPage() {
 
   // setPosts(mockNotifications);
 
-  const posts = mockNotifications
-
-
-
-
-
+  const posts = mockNotifications;
 
   return (
     <>
@@ -119,32 +112,32 @@ export default function NotificationsPage() {
         <title> Notification | Dormy</title>
       </Helmet>
 
-      <Container maxWidth={themeStretch ? false : 'lg'}>
+      <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
           heading="Notification"
           links={[
             {
-              name: 'Dashboard',
+              name: "Dashboard",
               href: PATH_USER.root,
             },
             {
-              name: 'User',
+              name: "User",
               href: PATH_USER.profile,
             },
             {
-              name: 'Notification',
+              name: "Notification",
             },
           ]}
-        // action={
-        //   <Button
-        //     component={RouterLink}
-        //     to={PATH_DASHBOARD.blog.new}
-        //     variant="contained"
-        //     startIcon={<Iconify icon="eva:plus-fill" />}
-        //   >
-        //     New Post
-        //   </Button>
-        // }
+          // action={
+          //   <Button
+          //     component={RouterLink}
+          //     to={PATH_DASHBOARD.blog.new}
+          //     variant="contained"
+          //     startIcon={<Iconify icon="eva:plus-fill" />}
+          //   >
+          //     New Post
+          //   </Button>
+          // }
         />
 
         <Grid container spacing={3}>

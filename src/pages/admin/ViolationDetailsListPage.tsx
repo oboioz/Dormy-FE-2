@@ -458,11 +458,13 @@ export default function ViolationDetailsListPage() {
             {/* User Autocomplete Field */}
             <Autocomplete
               options={users}
-              getOptionLabel={(option) =>
+              getOptionLabel={(option: Profile) =>
                 option.firstName + " " + option.lastName || "--"
               }
               value={selectUser}
-              onChange={(event, newValue) => handleChangeUser(newValue)}
+              onChange={(event, newValue: Profile) =>
+                handleChangeUser(newValue)
+              }
               renderInput={(params) => (
                 <TextField
                   {...params}

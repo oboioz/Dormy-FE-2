@@ -109,7 +109,7 @@ export default function InvoiceRentPage() {
             },
             {
               name: "Invoice",
-              href: PATH_USER.invoice,
+              href: PATH_USER.invoice.rent,
             },
           ]}
         />

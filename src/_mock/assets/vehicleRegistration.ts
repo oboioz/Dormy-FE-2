@@ -1,11 +1,11 @@
-import { IAdmin } from "./admin";
-import { IParkingRequest } from "./parkingRequest";
-import { IParkingSpot } from "./parkingSpot";
-import { IUser } from "./user";
-import { IVehicle } from "./vehicle";
+// import { IAdmin } from "./admin";
+// import { IParkingRequest } from "./parkingRequest";
+// import { IParkingSpot } from "./parkingSpot";
+// import { IUser } from "./user";
+// import { IVehicle } from "./vehicle";
 
 // Mock user
-const mockUser: IUser = {
+const mockUser: any = {
   userID: 1,
   firstName: "John",
   lastName: "Doe",
@@ -14,7 +14,7 @@ const mockUser: IUser = {
 };
 
 // Mock parking spot
-const mockParkingSpot: IParkingSpot = {
+const mockParkingSpot: any = {
   parkingSpotID: 101,
   spotNumber: "A1",
   status: "available",
@@ -24,7 +24,7 @@ const mockParkingSpot: IParkingSpot = {
 };
 
 // Mock vehicle
-const mockVehicle: IVehicle = {
+const mockVehicle: any = {
   vehicleID: 501,
   licensePlate: "XYZ-1234",
   type: "Car",
@@ -35,7 +35,7 @@ const mockVehicle: IVehicle = {
 };
 
 // Mock admin
-const mockAdmin: IAdmin = {
+const mockAdmin: any = {
   adminID: 2,
   firstName: "Jane",
   lastName: "Smith",
@@ -53,7 +53,7 @@ const mockAdmin: IAdmin = {
 };
 
 // Mock parking request
-const mockParkingRequests: IParkingRequest[] = [
+const mockParkingRequests: any[] = [
   {
     parkingRequestID: 1001,
     status: "pending",

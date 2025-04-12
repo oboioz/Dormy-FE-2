@@ -51,7 +51,7 @@ const defaultValues: FormValuesProps = {
 
 export default function VehicleRegistrationForm({ request }: Props) {
   const methods = useForm<FormValuesProps>({
-    resolver: yupResolver(UpdateSchema),
+    resolver: yupResolver(UpdateSchema) as any,
     defaultValues,
   });
 

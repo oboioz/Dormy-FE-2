@@ -109,7 +109,7 @@ export default function InvoiceOthersPage() {
             },
             {
               name: "Invoice",
-              href: PATH_USER.invoice,
+              href: PATH_USER.invoice.others,
             },
           ]}
         />

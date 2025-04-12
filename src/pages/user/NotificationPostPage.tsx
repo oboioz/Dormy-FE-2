@@ -21,7 +21,7 @@ import NotificationPostHero from '../../sections/@dashboard/notifications/Notifi
 
 // ----------------------------------------------------------------------
 
-const mockNotification: INotification = {
+const mockNotification: any = {
   notificationID: 1,
   content: "Your payment has been successfully processed.",
   date: "2024-09-10T08:30:00Z",

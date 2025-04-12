@@ -1,9 +1,12 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IParkingRequest } from '../../@types/vehicle';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { IParkingRequest } from "../../@types/vehicle";
 
 // ----------------------------------------------------------------------
 
-const initialState: IParkingRequest & { isLoading: boolean; error: string | null;} = {
+const initialState: IParkingRequest & {
+  isLoading: boolean;
+  error: string | null;
+} = {
   isLoading: false,
   error: null,
 
@@ -22,7 +25,6 @@ const initialState: IParkingRequest & { isLoading: boolean; error: string | null
     dateOfBirth: new Date(),
     nationalIDNumber: "",
     status: "",
-    contractID: null,
     priorities: [],
 
     guardian: {
@@ -36,28 +38,50 @@ const initialState: IParkingRequest & { isLoading: boolean; error: string | null
 
     workplace: null,
     healthInsurance: null,
+    contract: null,
   },
 
   parkingSpotID: {
     parkingSpotID: 0,
-    location: "",
+    spotNumber: "0",
+    adminID: 1,
+    status: "",
+    usedSpot: 1,
+    // location: "",
     capacity: 0,
-    availability: true,
+    // availability: true,
   },
 
   vehicleID: {
     vehicleID: 0,
     licensePlate: "",
-    model: "",
-    color: "",
-    ownerID: 0,
+    parkingSpot: null,
+    registrationDate: new Date(),
+    status: "",
+    type: "",
+    userID: null,
+    // model: "",
+    // color: "",
+    // ownerID: 0,
   },
 
   approverID: {
     adminID: 0,
-    name: "",
-    role: "",
+    // name: "",
+    // role: "",
     email: "",
+    absenceID: 1,
+    dateOfBirth: new Date(),
+    firstName: "",
+    gender: "",
+    imageURL: "",
+    jobTitle: "",
+    lastName: "",
+    notificationID: 1,
+    parkingSpotID: 1,
+    password: "",
+    phoneNumber: "",
+    workplaceID: 1,
   },
 };
 
@@ -88,4 +112,5 @@ const slice = createSlice({
 export default slice.reducer;
 
 // Actions
-export const { startLoading, hasError, setParkingRequest, resetForm } = slice.actions;
+export const { startLoading, hasError, setParkingRequest, resetForm } =
+  slice.actions;

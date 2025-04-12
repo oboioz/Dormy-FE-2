@@ -47,7 +47,7 @@ export default function NotificationNewPostForm() {
   };
 
   const methods = useForm<FormValuesProps>({
-    resolver: yupResolver(NewBlogSchema),
+    resolver: yupResolver(NewBlogSchema) as any,
     defaultValues,
   });
 

@@ -273,14 +273,14 @@ export default function VehicleDetails({ vehicle }: Props) {
 
             <Autocomplete
               options={parkingSpots}
-              getOptionLabel={(option) =>
+              getOptionLabel={(option: IParkingSpot) =>
                 option.parkingSpotName +
                   " - " +
                   `${option.currentQuantity}/${option.capacitySpots} Spots` ||
                 "--"
               }
               value={parkingSpot}
-              onChange={(event, newValue) => {
+              onChange={(event, newValue: IParkingSpot) => {
                 setParkingSpot(newValue || undefined);
                 handleSetPQSpotId(newValue?.id || "");
               }}

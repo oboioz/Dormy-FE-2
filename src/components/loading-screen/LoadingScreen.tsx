@@ -36,11 +36,11 @@ export default function LoadingScreen() {
 
   const isDesktop = useResponsive('up', 'lg');
 
-  const { isInitialized } = useAuthContext();
+  const { user } = useAuthContext();
 
   const { themeLayout } = useSettingsContext();
 
-  const isDashboard = isInitialized && pathname.includes('/dashboard') && isDesktop;
+  const isDashboard = user && pathname.includes('/dashboard') && isDesktop;
 
   const size =
     (themeLayout === 'mini' && NAV.W_DASHBOARD_MINI) ||

@@ -108,7 +108,7 @@ export default function InvoiceElectricPage() {
             },
             {
               name: "Invoice",
-              href: PATH_USER.invoice,
+              href: PATH_USER.invoice.electric,
             },
           ]}
         />

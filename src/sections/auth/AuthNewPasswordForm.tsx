@@ -69,7 +69,7 @@ export default function AuthNewPasswordForm() {
 
   const methods = useForm({
     mode: 'onChange',
-    resolver: yupResolver(VerifyCodeSchema),
+    resolver: yupResolver(VerifyCodeSchema) as any,
     defaultValues,
   });
 

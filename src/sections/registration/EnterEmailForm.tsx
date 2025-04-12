@@ -25,7 +25,7 @@ export default function EnterEmailForm({ generalInformation }: Props) {
   });
 
   const methods = useForm<FormValuesProps>({
-    resolver: yupResolver(ResetPasswordSchema),
+    resolver: yupResolver(ResetPasswordSchema) as any,
   });
 
   const {
