@@ -45,7 +45,7 @@ export default function InvoiceTableToolbar({
       }}
       sx={{ px: 2.5, py: 3 }}
     >
-      <TextField
+      {/* <TextField
         fullWidth
         select
         label="Service type"
@@ -77,7 +77,7 @@ export default function InvoiceTableToolbar({
             {option}
           </MenuItem>
         ))}
-      </TextField>
+      </TextField> */}
 
       <DatePicker
         label="Start date"

@@ -20,11 +20,7 @@ import {
 import { useTheme } from "@mui/material/styles";
 // utils
 import { fTimestamp } from "../../utils/formatTime";
-// _mock_
-// import { _invoices } from "../../_mock/arrays";
-
 // components
-import { IInvoice } from "../../@types/invoice";
 import ConfirmDialog from "../../components/confirm-dialog";
 import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
 import Iconify from "../../components/iconify";
@@ -70,7 +66,7 @@ const SERVICE_OPTIONS = [
 
 const TABLE_HEAD = [
   { id: "invoiceName", label: "Invoice name", align: "left" },
-  { id: "month_year", label: "Month/Year", align: "left" },
+  // { id: "month_year", label: "Month/Year", align: "left" },
   { id: "dueDate", label: "Due date", align: "left" },
   { id: "amountAfterPromotion", label: "Amount", align: "left" },
   { id: "roomName", label: "Room name", align: "left" },
@@ -80,7 +76,7 @@ const TABLE_HEAD = [
 
 // ----------------------------------------------------------------------
 
-export default function InvoiceListPage() {
+export default function InvoiceContractListPage() {
   useAuthGuard(UserRole.ADMIN);
   const theme = useTheme();
 
@@ -163,7 +159,7 @@ export default function InvoiceListPage() {
     const payload: GetBatchInvoiceRequestModel = {
       ids: [],
       roomId: null,
-      invoiceType: "ROOM_SERVICE_MONTHLY",
+      invoiceType: "PAYMENT_CONTRACT",
     };
     const response = await httpClient.invoiceService.getBatchInvoices(payload);
 
@@ -296,7 +292,7 @@ export default function InvoiceListPage() {
 
       <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
-          heading="Invoice List"
+          heading="Invoice for contract"
           links={[
             {
               name: "Dashboard",
@@ -307,19 +303,19 @@ export default function InvoiceListPage() {
               href: PATH_ADMIN.profile,
             },
             {
-              name: "Invoice",
+              name: "Invoice for contract",
             },
           ]}
-          action={
-            <Button
-              component={RouterLink}
-              to={PATH_ADMIN.invoice.create}
-              variant="contained"
-              startIcon={<Iconify icon="eva:plus-fill" />}
-            >
-              New Invoice
-            </Button>
-          }
+          // action={
+          //   <Button
+          //     component={RouterLink}
+          //     to={PATH_ADMIN.invoice.create}
+          //     variant="contained"
+          //     startIcon={<Iconify icon="eva:plus-fill" />}
+          //   >
+          //     New Invoice
+          //   </Button>
+          // }
         />
 
         <Card sx={{ mb: 2 }}>

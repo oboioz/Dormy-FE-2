@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 // @mui
 import {
   Button,
@@ -8,21 +8,22 @@ import {
   MenuItem,
   TableCell,
   TableRow,
-  Typography
-} from '@mui/material';
+  Typography,
+} from "@mui/material";
 // utils
-import { fCurrency } from '../../../../utils/formatNumber';
-import { fDate } from '../../../../utils/formatTime';
+import { fCurrency } from "../../../../utils/formatNumber";
+import { fDate } from "../../../../utils/formatTime";
 // @types
 // import { IInvoice } from '../../../../@types/invoice';
 // components
-import ConfirmDialog from '../../../../components/confirm-dialog';
-import Iconify from '../../../../components/iconify';
-import Label from '../../../../components/label';
-import MenuPopover from '../../../../components/menu-popover';
-import { InvoiceResponseModel } from '../../../../models/responses/InvoiceResponseModels';
-import InvoiceStatusTag from '../../../tag/InvoiceStatusTag';
-import { formatCurrency } from '../../../../utils/currencyUtils';
+import ConfirmDialog from "../../../../components/confirm-dialog";
+import Iconify from "../../../../components/iconify";
+import Label from "../../../../components/label";
+import MenuPopover from "../../../../components/menu-popover";
+import { InvoiceResponseModel } from "../../../../models/responses/InvoiceResponseModels";
+import InvoiceStatusTag from "../../../tag/InvoiceStatusTag";
+import { formatCurrency } from "../../../../utils/currencyUtils";
+import ViewDetailInvoiceModal from "./ViewDetailInvoiceModal";
 
 // ----------------------------------------------------------------------
 
@@ -48,6 +49,12 @@ export default function InvoiceTableRow({
   const [openConfirm, setOpenConfirm] = useState(false);
 
   const [openPopover, setOpenPopover] = useState<HTMLElement | null>(null);
+
+  const [openViewDetail, setOpenViewDetail] = useState(false);
+
+  const handleOpenViewDetail = () => {
+    setOpenViewDetail(true);
+  };
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -77,10 +84,16 @@ export default function InvoiceTableRow({
             {invoice.invoiceName}
           </Typography>
         </TableCell>
-        <TableCell align="left">{invoice.month + "/" + invoice.year}</TableCell>
+        {invoice.type === "ROOM_SERVICE_MONTHLY" && (
+          <TableCell align="left">
+            {invoice.month + "/" + invoice.year}
+          </TableCell>
+        )}
         <TableCell>{fDate(invoice.dueDate, "dd/MM/yyyy")}</TableCell>
 
-        <TableCell align="left">{formatCurrency(invoice.amountAfterPromotion)}</TableCell>
+        <TableCell align="left">
+          {formatCurrency(invoice.amountAfterPromotion)}
+        </TableCell>
         <TableCell align="center">{invoice.roomName}</TableCell>
 
         <TableCell align="left">
@@ -88,7 +101,10 @@ export default function InvoiceTableRow({
         </TableCell>
 
         <TableCell align="right">
-          <IconButton color={openPopover ? 'inherit' : 'default'} onClick={handleOpenPopover}>
+          <IconButton
+            color={openPopover ? "inherit" : "default"}
+            onClick={handleOpenPopover}
+          >
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
         </TableCell>
@@ -102,7 +118,8 @@ export default function InvoiceTableRow({
       >
         <MenuItem
           onClick={() => {
-            onViewRow();
+            // onViewRow();
+            handleOpenViewDetail();
             handleClosePopover();
           }}
         >
@@ -110,28 +127,32 @@ export default function InvoiceTableRow({
           View
         </MenuItem>
 
-        <MenuItem
-          onClick={() => {
-            onEditRow();
-            handleClosePopover();
-          }}
-        >
-          <Iconify icon="eva:edit-fill" />
-          Edit
-        </MenuItem>
+        {invoice.type === "ROOM_SERVICE_MONTHLY" && (
+          <>
+            <MenuItem
+              onClick={() => {
+                onEditRow();
+                handleClosePopover();
+              }}
+            >
+              <Iconify icon="eva:edit-fill" />
+              Edit
+            </MenuItem>
 
-        <Divider sx={{ borderStyle: 'dashed' }} />
+            <Divider sx={{ borderStyle: "dashed" }} />
 
-        <MenuItem
-          onClick={() => {
-            handleOpenConfirm();
-            handleClosePopover();
-          }}
-          sx={{ color: 'error.main' }}
-        >
-          <Iconify icon="eva:trash-2-outline" />
-          Delete
-        </MenuItem>
+            <MenuItem
+              onClick={() => {
+                handleOpenConfirm();
+                handleClosePopover();
+              }}
+              sx={{ color: "error.main" }}
+            >
+              <Iconify icon="eva:trash-2-outline" />
+              Delete
+            </MenuItem>
+          </>
+        )}
       </MenuPopover>
 
       <ConfirmDialog
@@ -144,6 +165,12 @@ export default function InvoiceTableRow({
             Delete
           </Button>
         }
+      />
+
+      <ViewDetailInvoiceModal
+        open={openViewDetail}
+        onClose={() => setOpenViewDetail(false)}
+        invoiceId={invoice.id}
       />
     </>
   );
