@@ -1,7 +1,7 @@
 import { HttpStatusCode } from "axios";
 import { API_URL } from "../consts/APIConstants";
 import { privateAxios } from "../libs/axios";
-import { GetBatchInvoiceRequestModel, GetInitialInvoiceCreationRequestModel } from "../models/requests/InvoiceRequestModels";
+import { CreateInvoiceRequestModel, GetBatchInvoiceRequestModel, GetInitialInvoiceCreationRequestModel } from "../models/requests/InvoiceRequestModels";
 import { DetailInvoiceResponseModel, GetInitialInvoiceCreationResponseModel, InvoiceResponseModel, RoomRecipients } from "../models/responses/InvoiceResponseModels";
 
 // Guardian
@@ -53,9 +53,26 @@ const getInitialInvoiceCreation = async (payload: GetInitialInvoiceCreationReque
   }
 };
 
+const createInvoice = async (payload: CreateInvoiceRequestModel) => {
+  try {
+    var response = await privateAxios.post(
+      API_URL.INVOICE.CREATE,
+      payload
+    );
+    if (response.status === HttpStatusCode.Created) {
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
+
 export const invoiceService = {
     getBatchInvoices: getBatchInvoices,
     getInvoiceById: getInvoiceById,
     getInitialInvoiceCreation: getInitialInvoiceCreation,
     getRoomsForInitialInvoiceCreation: getRoomsForInitialInvoiceCreation,
+    createInvoice: createInvoice,
 };

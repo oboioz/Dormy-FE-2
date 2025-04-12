@@ -53,6 +53,12 @@ export interface GetInitialInvoiceItemCreationResponseModel {
   roomServiceId: string;
   roomServiceName: string;
   roomServiceType: string;
+  cost: number;
+  unit: string;
   isServiceIndicatorUsed: boolean;
   currentIndicator: number;
+  oldIndicator: number;
+  newIndicator: number;
+  quantity: number;
+  total: number;
 }
