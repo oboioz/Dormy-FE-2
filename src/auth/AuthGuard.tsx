@@ -17,7 +17,7 @@ export const useAuthGuard = (role: UserRole) => {
     const rolePaths = {
       [UserRole.ADMIN]: PATH_USER.profile,
       [UserRole.CUSTOMER]: PATH_ADMIN.dashboard,
-      [UserRole.GUEST]: PATH_AUTH.login,
+      [UserRole.GUEST]: "/",
     };
 
     if (user.role !== role) {
