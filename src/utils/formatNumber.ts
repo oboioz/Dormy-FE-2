@@ -2,14 +2,17 @@ import numeral from 'numeral';
 
 // ----------------------------------------------------------------------
 
-type InputValue = string | number | null;
+type InputValue = string | number | null | undefined;
 
 export function fNumber(number: InputValue) {
   return numeral(number).format();
 }
 
-export function fCurrency(number: InputValue) {
-  const format = number ? numeral(number).format('$0,0.00') : '';
+export function fCurrency(number: InputValue, haveCurrency = false) {
+  let format = number ? numeral(number).format('0,0.00') : '';  
+  if (haveCurrency) {
+    format = number ? numeral(number).format('$0,0.00') : '';
+  }
 
   return result(format, '.00');
 }
