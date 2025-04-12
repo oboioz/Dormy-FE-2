@@ -1,4 +1,4 @@
-import { useRoutes } from "react-router-dom";
+import { Navigate, useRoutes } from "react-router-dom";
 import CompactLayout from "../layouts/compact";
 import DashboardLayout from "../layouts/dashboard";
 import SimpleLayout from "../layouts/simple";
@@ -141,7 +141,10 @@ export default function Router() {
         { path: "violation", element: <ViolationDetailsListPage /> },
         { path: "violationform", element: <ViolationFormPage /> },
 
-        { path: "invoice/room-service-monthly", element: <InvoiceMonthlyListPage /> },
+        {
+          path: "invoice/room-service-monthly",
+          element: <InvoiceMonthlyListPage />,
+        },
         { path: "invoice/contract", element: <InvoiceContractListPage /> },
 
         { path: "invoicecreate", element: <InvoiceCreatePage /> },
@@ -214,6 +217,10 @@ export default function Router() {
       path: "registration",
       element: <CompactLayout />,
       children: [{ path: "email", element: <EnterEmailPage /> }],
+    },
+    {
+      path: "*",
+      element: <Navigate to={"/"} replace />,
     },
   ]);
 }
