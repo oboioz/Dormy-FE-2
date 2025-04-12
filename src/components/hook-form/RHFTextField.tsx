@@ -7,6 +7,7 @@ type Props = TextFieldProps & {
   multiline?: boolean;
   rows?: number;
   rules?: object;
+  disabled?: boolean;
 };
 
 export default function RHFTextField({
@@ -15,6 +16,7 @@ export default function RHFTextField({
   multiline,
   rows,
   rules,
+  disabled,
 }: Props) {
   const {
     control,
@@ -26,6 +28,7 @@ export default function RHFTextField({
       name={name}
       control={control}
       rules={rules}
+      disabled={disabled}
       render={({ field }) => (
         <TextField
           {...field}
