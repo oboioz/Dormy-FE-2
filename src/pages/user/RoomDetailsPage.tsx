@@ -62,12 +62,8 @@ export default function RoomDetailsPage() {
 
         {room && <RoomDetails room={room} />}
 
-        {room && room.users && room.users.length > 0 && (
-          <>
-            <CardHeader title={"Roomate Information"} sx={{ mb: 3 }} />
-            <RoomateInformation users={room?.users || []} />
-          </>
-        )}
+        <CardHeader title={"Roomate Information"} sx={{ mb: 3 }} />
+        <RoomateInformation users={room?.users || []} />
       </Container>
     </>
   );

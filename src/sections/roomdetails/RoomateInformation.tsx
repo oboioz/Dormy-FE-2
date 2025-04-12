@@ -14,7 +14,12 @@ import {
 // components
 import Scrollbar from "../../components/scrollbar";
 import { useSettingsContext } from "../../components/settings";
-import { TableHeadCustom } from "../../components/table";
+import {
+  emptyRows,
+  TableEmptyRows,
+  TableHeadCustom,
+  TableNoData,
+} from "../../components/table";
 import { Profile } from "../../models/responses/UserModel";
 import Label from "../../components/label";
 import Iconify from "../../components/iconify";
@@ -138,6 +143,8 @@ export default function ContractListPage(props: IUsersRoomProps) {
                       </TableCell>
                     </TableRow>
                   ))}
+
+                  <TableNoData isNotFound={users.length <= 0} />
                 </TableBody>
               </Table>
             </Scrollbar>
