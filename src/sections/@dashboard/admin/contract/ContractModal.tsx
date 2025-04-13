@@ -15,6 +15,7 @@ import ConfirmDialog from "../../../../components/confirm-dialog";
 import { toast } from "react-toastify";
 import ContractExtensionStatusTag from "../../../tag/ContractExtensionStatusTag";
 import ContractStatusTag from "../../../tag/ContractStatusTag";
+import { ContractStatusEnum } from "../../../../models/enums/ContractStatusEnum";
 
 type ContractModalProps = {
     open: boolean;
@@ -29,9 +30,9 @@ export default function ContractModal({
     onStatusChange,
 }: ContractModalProps & { onStatusChange: (newStatus: string) => void }) {
     const [openConfirm, setOpenConfirm] = useState(false);
-    const [confirmAction, setConfirmAction] = useState<"APPROVE" | "REJECT" | null>(null);
+    const [confirmAction, setConfirmAction] = useState<ContractStatusEnum | null>(null);
 
-    const handleOpenConfirm = (action: "APPROVE" | "REJECT") => {
+    const handleOpenConfirm = (action: ContractStatusEnum) => {
         setConfirmAction(action);
         setOpenConfirm(true);
     };
@@ -45,11 +46,26 @@ export default function ContractModal({
         if (!confirmAction) return;
 
         try {
-            const payload = { isAccepted: confirmAction === "APPROVE" ? true : false };
-            const success = await httpClient.contractService.approveOrRejectContract(contract.id, payload);
+            let response;
+            switch (confirmAction) {
+                case ContractStatusEnum.WAITING_PAYMENT:
+                    response = await httpClient.contractService.approveOrRejectContract(contract.id, { isAccepted: true });
+                    break;
+                case ContractStatusEnum.REJECTED:
+                    response = await httpClient.contractService.approveOrRejectContract(contract.id, { isAccepted: false });
+                    break;
+                case ContractStatusEnum.ACTIVE:
+                    response = await httpClient.contractService.activeContract(contract.id);
+                    break;
+                case ContractStatusEnum.TERMINATED:
+                    response = await httpClient.contractService.terminateContract(contract.id);
+                    break;
+            }
+            // const payload = { isAccepted: confirmAction === "APPROVE" ? true : false };
+            // const success = await httpClient.contractService.approveOrRejectContract(contract.id, payload);
 
-            if (success) {
-                const newStatus = confirmAction === "APPROVE" ? "WAITING_PAYMENT" : "REJECTED";
+            if (response) {
+                const newStatus = confirmAction.toString();
                 toast.success(`Contract ${confirmAction.toLowerCase()}d successfully.`);
                 onStatusChange(newStatus);
                 onClose();
@@ -60,6 +76,76 @@ export default function ContractModal({
             toast.error(`Error during ${confirmAction.toLowerCase()} action:` + error);
         } finally {
             handleCloseConfirm();
+        }
+    };
+
+    const buildTitleForConfirmDialog = (action: ContractStatusEnum) => {
+        switch (action) {
+            case ContractStatusEnum.WAITING_PAYMENT:
+                return "Approve contract";
+            case ContractStatusEnum.ACTIVE:
+                return "Payment confirmation";
+            case ContractStatusEnum.EXTENDED:
+                return "Extend contract";
+            case ContractStatusEnum.REJECTED:
+                return "Reject contract";
+            case ContractStatusEnum.TERMINATED:
+                return "Terminate contract";
+            default:
+                return "Contract confirmation";
+        }
+    };
+
+    const buildContentForConfirmDialog = (action: ContractStatusEnum) => {
+        switch (action) {
+            case ContractStatusEnum.WAITING_PAYMENT:
+                return "Are you sure you want to APPROVE this contract?";
+            case ContractStatusEnum.ACTIVE:
+                return "Are you sure you PAY for this contract?";
+            case ContractStatusEnum.EXTENDED:
+                return "Are you sure you want to EXTEND this contract?";
+            case ContractStatusEnum.REJECTED:
+                return "Are you sure you want to REJECT this contract?";
+            case ContractStatusEnum.TERMINATED:
+                return "Are you sure you want to TERMINATE this contract?";
+            default:
+                return "Are you sure you want to perform this operation for contract?";
+        }
+    };
+
+    const buildColorForConfirmButtonConfirmDialog = (
+        action: ContractStatusEnum
+    ) => {
+        switch (action) {
+            case ContractStatusEnum.WAITING_PAYMENT:
+                return "warning";
+            case ContractStatusEnum.ACTIVE:
+                return "success";
+            case ContractStatusEnum.EXTENDED:
+                return "info";
+            case ContractStatusEnum.REJECTED:
+                return "error";
+            case ContractStatusEnum.TERMINATED:
+                return "error";
+            default:
+                return "secondary";
+        }
+    };
+
+    const buildActionForConfirmDialog = (action: ContractStatusEnum) => {
+        switch (action) {
+            case ContractStatusEnum.WAITING_PAYMENT:
+                return "Approve contract";
+            case ContractStatusEnum.ACTIVE:
+                return "Payment confirmation";
+            case ContractStatusEnum.EXTENDED:
+                return "Extend contract";
+            case ContractStatusEnum.REJECTED:
+                return "Reject contract";
+            case ContractStatusEnum.TERMINATED:
+                return "Terminate contract";
+            default:
+                return "Contract";
         }
     };
 
@@ -122,24 +208,51 @@ export default function ContractModal({
                     </Stack>
                 </DialogContent>
                 <DialogActions>
-                    {contract.status === "PENDING" ? (
-                        <>
-                            <Button
-                                onClick={() => handleOpenConfirm("APPROVE")}
-                                variant="contained"
-                                color="success"
-                            >
-                                Approve
-                            </Button>
-                            <Button
-                                onClick={() => handleOpenConfirm("REJECT")}
-                                variant="contained"
-                                color="error"
-                            >
-                                Reject
-                            </Button>
-                        </>
-                    ) : null}
+                {contract.status === ContractStatusEnum.PENDING.toString() ? (
+                    <>
+                        <Button
+                            onClick={() => handleOpenConfirm(ContractStatusEnum.WAITING_PAYMENT)}
+                            variant="contained"
+                            color={buildColorForConfirmButtonConfirmDialog(ContractStatusEnum.WAITING_PAYMENT)}
+                        >
+                            {buildActionForConfirmDialog(ContractStatusEnum.WAITING_PAYMENT)}
+                        </Button>
+                        <Button
+                            onClick={() => handleOpenConfirm(ContractStatusEnum.REJECTED)}
+                            variant="contained"
+                            color={buildColorForConfirmButtonConfirmDialog(ContractStatusEnum.REJECTED)}
+                        >
+                            {buildActionForConfirmDialog(ContractStatusEnum.REJECTED)}
+                        </Button>
+                    </>
+                ) : contract.status === ContractStatusEnum.WAITING_PAYMENT.toString() ? (
+                    <>
+                        <Button
+                            onClick={() => handleOpenConfirm(ContractStatusEnum.ACTIVE)}
+                            variant="contained"
+                            color={buildColorForConfirmButtonConfirmDialog(ContractStatusEnum.ACTIVE)}
+                        >
+                            {buildActionForConfirmDialog(ContractStatusEnum.ACTIVE)}
+                        </Button>
+                    </>
+                ) : contract.status === ContractStatusEnum.ACTIVE.toString() ? (
+                    <>
+                        <Button
+                            onClick={() => handleOpenConfirm(ContractStatusEnum.EXTENDED)}
+                            variant="contained"
+                            color={buildColorForConfirmButtonConfirmDialog(ContractStatusEnum.EXTENDED)}
+                        >
+                            {buildActionForConfirmDialog(ContractStatusEnum.EXTENDED)}
+                        </Button>
+                        <Button
+                            onClick={() => handleOpenConfirm(ContractStatusEnum.TERMINATED)}
+                            variant="contained"
+                            color={buildColorForConfirmButtonConfirmDialog(ContractStatusEnum.TERMINATED)}
+                        >
+                            {buildActionForConfirmDialog(ContractStatusEnum.TERMINATED)}
+                        </Button>
+                    </>
+                ) : null}
                     <Button onClick={onClose} variant="contained">
                         Close
                     </Button>
@@ -150,17 +263,15 @@ export default function ContractModal({
             <ConfirmDialog
                 open={openConfirm}
                 onClose={handleCloseConfirm}
-                title={confirmAction === "APPROVE" ? "Approve Contract" : "Reject Contract"}
-                content={`Are you sure you want to ${
-                    confirmAction === "APPROVE" ? "approve" : "reject"
-                } this contract?`}
+                title={buildTitleForConfirmDialog(confirmAction)}
+                content={buildContentForConfirmDialog(confirmAction)}
                 action={
                     <Button
                         variant="contained"
-                        color={confirmAction === "APPROVE" ? "success" : "error"}
+                        color={buildColorForConfirmButtonConfirmDialog(confirmAction)}
                         onClick={handleConfirmAction}
                     >
-                        {confirmAction === "APPROVE" ? "Approve" : "Reject"}
+                        {buildActionForConfirmDialog(confirmAction)}
                     </Button>
                 }
             />

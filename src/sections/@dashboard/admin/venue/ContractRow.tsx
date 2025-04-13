@@ -37,7 +37,7 @@ export default function ContractRow({ row, setContracts, selected, onSelectRow }
   const handleStatusChange = (contractId: string, newStatus: string) => {
     setContracts((prevContracts) =>
         prevContracts.map((contract) =>
-            contract.id === contractId ? { ...contract, status: newStatus, approverFullName: user?.name || "N/A" } : contract
+            contract.id === contractId ? { ...contract, status: newStatus, approverFullName: user?.name || "--" } : contract
         )
     );
   };
