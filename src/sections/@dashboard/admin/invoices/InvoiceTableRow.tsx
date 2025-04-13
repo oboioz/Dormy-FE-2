@@ -24,11 +24,13 @@ import { InvoiceResponseModel } from "../../../../models/responses/InvoiceRespon
 import InvoiceStatusTag from "../../../tag/InvoiceStatusTag";
 import { formatCurrency } from "../../../../utils/currencyUtils";
 import ViewDetailInvoiceModal from "./ViewDetailInvoiceModal";
+import { InvoiceStatusEnum } from "../../../../models/enums/InvoiceStatusEnum";
 
 // ----------------------------------------------------------------------
 
 type Props = {
   invoice: InvoiceResponseModel;
+  setInvoices: React.Dispatch<React.SetStateAction<InvoiceResponseModel[]>>;
   selected: boolean;
   onSelectRow: VoidFunction;
   onViewRow: VoidFunction;
@@ -38,6 +40,7 @@ type Props = {
 
 export default function InvoiceTableRow({
   invoice,
+  setInvoices,
   selected,
   onSelectRow,
   onViewRow,
@@ -72,6 +75,14 @@ export default function InvoiceTableRow({
     setOpenPopover(null);
   };
 
+  const handleStatusChange = (invoiceId: string, newStatus: string) => {
+    setInvoices((prevInvoices) =>
+      prevInvoices.map((invoice) =>
+        invoice.id === invoiceId ? { ...invoice, status: newStatus } : invoice
+      )
+    );
+  };
+
   return (
     <>
       <TableRow hover selected={selected}>
@@ -100,14 +111,29 @@ export default function InvoiceTableRow({
           <InvoiceStatusTag status={invoice.status} />
         </TableCell>
 
-        <TableCell align="right">
-          <IconButton
-            color={openPopover ? "inherit" : "default"}
-            onClick={handleOpenPopover}
-          >
-            <Iconify icon="eva:more-vertical-fill" />
-          </IconButton>
-        </TableCell>
+        {invoice.type === "ROOM_SERVICE_MONTHLY" &&
+        invoice.status === InvoiceStatusEnum.DRAFT.toString() ? (
+          <TableCell align="right">
+            <IconButton
+              color={openPopover ? "inherit" : "default"}
+              onClick={handleOpenPopover}
+            >
+              <Iconify icon="eva:more-vertical-fill" />
+            </IconButton>
+          </TableCell>
+        ) : (
+          <TableCell align="right">
+            <IconButton
+              onClick={() => {
+                // onViewRow();
+                handleOpenViewDetail();
+                handleClosePopover();
+              }}
+            >
+              <Iconify icon="eva:eye-outline" />
+            </IconButton>
+          </TableCell>
+        )}
       </TableRow>
 
       <MenuPopover
@@ -127,32 +153,28 @@ export default function InvoiceTableRow({
           View
         </MenuItem>
 
-        {invoice.type === "ROOM_SERVICE_MONTHLY" && (
-          <>
-            <MenuItem
-              onClick={() => {
-                onEditRow();
-                handleClosePopover();
-              }}
-            >
-              <Iconify icon="eva:edit-fill" />
-              Edit
-            </MenuItem>
+        <MenuItem
+          onClick={() => {
+            onEditRow();
+            handleClosePopover();
+          }}
+        >
+          <Iconify icon="eva:edit-fill" />
+          Edit
+        </MenuItem>
 
-            <Divider sx={{ borderStyle: "dashed" }} />
+        <Divider sx={{ borderStyle: "dashed" }} />
 
-            <MenuItem
-              onClick={() => {
-                handleOpenConfirm();
-                handleClosePopover();
-              }}
-              sx={{ color: "error.main" }}
-            >
-              <Iconify icon="eva:trash-2-outline" />
-              Delete
-            </MenuItem>
-          </>
-        )}
+        <MenuItem
+          onClick={() => {
+            handleOpenConfirm();
+            handleClosePopover();
+          }}
+          sx={{ color: "error.main" }}
+        >
+          <Iconify icon="eva:trash-2-outline" />
+          Delete
+        </MenuItem>
       </MenuPopover>
 
       <ConfirmDialog
@@ -171,6 +193,9 @@ export default function InvoiceTableRow({
         open={openViewDetail}
         onClose={() => setOpenViewDetail(false)}
         invoiceId={invoice.id}
+        onStatusChange={(newStatus) =>
+          handleStatusChange(invoice.id, newStatus)
+        }
       />
     </>
   );
