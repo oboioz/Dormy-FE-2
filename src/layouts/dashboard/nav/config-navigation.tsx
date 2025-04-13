@@ -82,20 +82,6 @@ const adminNavConfig = [
         icon: ICONS.dashboard,
         // roles: ['admin'],
       },
-      { title: "Settings", path: PATH_ADMIN.settings, icon: ICONS.settings },
-
-      {
-        title: "Residential",
-        path: PATH_ADMIN.resident,
-        icon: ICONS.resident,
-        // roles: ['admin'],
-
-        children: [
-          { title: "List", path: PATH_ADMIN.resident },
-          { title: "Workplace", path: PATH_ADMIN.workplace.list },
-        ],
-      },
-
       {
         title: "Dormitory",
         path: PATH_ADMIN.dormitory.root,
@@ -108,28 +94,34 @@ const adminNavConfig = [
           { title: "Room Services", path: PATH_ADMIN.dormitory.roomService },
         ],
       },
-
       {
         title: "Registration",
         path: PATH_ADMIN.register,
         icon: ICONS.registration,
         // roles: ['admin'],
       },
-
       {
-        title: "Overnight Request",
-        path: PATH_ADMIN.overnight,
-        icon: ICONS.overnight,
+        title: "Invoice",
+        path: PATH_ADMIN.invoice.monthly,
+        icon: ICONS.invoice,
+        // roles: ['admin'],
+        children: [
+          { title: "Monthly invoice", path: PATH_ADMIN.invoice.monthly },
+          { title: "Contract invoice", path: PATH_ADMIN.invoice.contract },
+        ],
+      },
+      {
+        title: "Residential",
+        path: PATH_ADMIN.resident,
+        icon: ICONS.resident,
         // roles: ['admin'],
       },
-
       {
-        title: "Violation",
-        path: PATH_ADMIN.violation.list,
-        icon: ICONS.violation,
+        title: "Workplace",
+        path: PATH_ADMIN.workplace.list,
+        icon: ICONS.workplace,
         // roles: ['admin'],
       },
-
       {
         title: "Garage",
         path: PATH_ADMIN.garage.parkingSpot,
@@ -145,18 +137,19 @@ const adminNavConfig = [
           },
         ],
       },
-
       {
-        title: "Invoice",
-        path: PATH_ADMIN.invoice.monthly,
-        icon: ICONS.invoice,
+        title: "Overnight Request",
+        path: PATH_ADMIN.overnight,
+        icon: ICONS.overnight,
         // roles: ['admin'],
-        children: [
-          { title: "Monthly invoice", path: PATH_ADMIN.invoice.monthly },
-          { title: "Contract invoice", path: PATH_ADMIN.invoice.contract },
-        ],
       },
 
+      {
+        title: "Violation",
+        path: PATH_ADMIN.violation.list,
+        icon: ICONS.violation,
+        // roles: ['admin'],
+      },
       {
         title: "Request",
         path: PATH_ADMIN.request,
@@ -170,6 +163,7 @@ const adminNavConfig = [
         icon: ICONS.notification,
         // roles: ['admin'],
       },
+      { title: "Settings", path: PATH_ADMIN.settings, icon: ICONS.settings },
     ],
   },
 ];
