@@ -287,7 +287,7 @@ export default function InvoiceMonthlyListPage() {
   return (
     <>
       <Helmet>
-        <title> Invoice: List | Admin</title>
+        <title>Invoice</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : "lg"}>
@@ -494,6 +494,7 @@ export default function InvoiceMonthlyListPage() {
                       <InvoiceTableRow
                         key={row.id}
                         invoice={row}
+                        setInvoices={setTableData}
                         selected={selected.includes(row.id)}
                         onSelectRow={() => onSelectRow(row.id)}
                         onViewRow={() => handleViewRow(row.id)}

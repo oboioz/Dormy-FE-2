@@ -66,7 +66,6 @@ const SERVICE_OPTIONS = [
 
 const TABLE_HEAD = [
   { id: "invoiceName", label: "Invoice name", align: "left" },
-  // { id: "month_year", label: "Month/Year", align: "left" },
   { id: "dueDate", label: "Due date", align: "left" },
   { id: "amountAfterPromotion", label: "Amount", align: "left" },
   { id: "roomName", label: "Room name", align: "left" },
@@ -287,7 +286,7 @@ export default function InvoiceContractListPage() {
   return (
     <>
       <Helmet>
-        <title> Invoice: List | Admin</title>
+        <title>Invoice for contract</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : "lg"}>
@@ -306,16 +305,6 @@ export default function InvoiceContractListPage() {
               name: "Invoice for contract",
             },
           ]}
-          // action={
-          //   <Button
-          //     component={RouterLink}
-          //     to={PATH_ADMIN.invoice.create}
-          //     variant="contained"
-          //     startIcon={<Iconify icon="eva:plus-fill" />}
-          //   >
-          //     New Invoice
-          //   </Button>
-          // }
         />
 
         <Card sx={{ mb: 2 }}>
@@ -494,6 +483,7 @@ export default function InvoiceContractListPage() {
                       <InvoiceTableRow
                         key={row.id}
                         invoice={row}
+                        setInvoices={setTableData}
                         selected={selected.includes(row.id)}
                         onSelectRow={() => onSelectRow(row.id)}
                         onViewRow={() => handleViewRow(row.id)}
