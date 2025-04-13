@@ -16,6 +16,7 @@ import { vehicleService } from "./vehicleService";
 import { parkingSpotService } from "./parkingSpotService";
 import { violationService } from "./violationService";
 import { invoiceService } from "./invoiceService";
+import { dashboardService } from "./dashboardService";
 
 export const httpClient = {
   authService: authService,
@@ -36,4 +37,5 @@ export const httpClient = {
   parkingSpotService: parkingSpotService,
   violationService: violationService,
   invoiceService: invoiceService,
+  dashboardService: dashboardService,
 };

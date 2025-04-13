@@ -1,8 +1,5 @@
-// @mui
 import { Container, Grid, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-// _mock_
-// components
 import { Helmet } from "react-helmet-async";
 import { useSettingsContext } from "../../components/settings";
 import AnalyticsByGender from "../../sections/@dashboard/AnalyticsByGender";
@@ -10,14 +7,40 @@ import AnalyticsWidgetSummary from "../../sections/@dashboard/AnalyticsWidgetSum
 import AppAreaInstalled from "../../sections/@dashboard/AppAreaInstalled";
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
-// sections
-
-// ----------------------------------------------------------------------
+import { dashboardService } from "../../services/dashboardService";
+import { useEffect, useState } from "react";
+import { IDashboard } from "../../models/responses/DashboardModels";
 
 export default function AdminDashboardPage() {
   const theme = useTheme();
   const { themeStretch } = useSettingsContext();
   useAuthGuard(UserRole.ADMIN);
+
+  const [dashboard, setDashboard] = useState<IDashboard>({
+    totalBeds: 0,
+    totalCurrentUsers: 0,
+    totalEmptyBeds: 0,
+    totalFemaleUsers: 0,
+    totalMaleUsers: 0,
+    totalParkingRequests: 0,
+    totalRegistrations: 0,
+    totalRequests: 0,
+    totalUnResovledParkingRequests: 0,
+    totalUnResovledRequests: 0,
+    totalUsedBeds: 0,
+    totalUsers: 0,
+  });
+
+  const fetchDashboard = async () => {
+    var response = await dashboardService.getDashboardInformation();
+    if (response) {
+      setDashboard(response);
+    }
+  };
+
+  useEffect(() => {
+    fetchDashboard();
+  }, []);
 
   return (
     <>
@@ -34,7 +57,7 @@ export default function AdminDashboardPage() {
           <Grid item xs={12} sm={6} md={3}>
             <AnalyticsWidgetSummary
               title="Registration Form"
-              total={714000}
+              total={dashboard.totalRegistrations}
               icon="ant-design:android-filled"
             />
           </Grid>
@@ -42,7 +65,7 @@ export default function AdminDashboardPage() {
           <Grid item xs={12} sm={6} md={3}>
             <AnalyticsWidgetSummary
               title="Empty Bed"
-              total={1352831}
+              total={dashboard.totalEmptyBeds}
               color="info"
               icon="ant-design:apple-filled"
             />
@@ -51,7 +74,7 @@ export default function AdminDashboardPage() {
           <Grid item xs={12} sm={6} md={3}>
             <AnalyticsWidgetSummary
               title="Current resident"
-              total={1723315}
+              total={dashboard.totalUsers}
               color="warning"
               icon="ant-design:windows-filled"
             />
@@ -60,7 +83,7 @@ export default function AdminDashboardPage() {
           <Grid item xs={12} sm={6} md={3}>
             <AnalyticsWidgetSummary
               title="Unresolved Request"
-              total={234}
+              total={dashboard.totalUnResovledRequests}
               color="error"
               icon="ant-design:bug-filled"
             />
@@ -117,11 +140,11 @@ export default function AdminDashboardPage() {
           <Grid item xs={12} md={6} lg={4}>
             <AnalyticsByGender
               title="Sale By Gender"
-              total={2324}
+              total={dashboard.totalUsers}
               chart={{
                 series: [
-                  { label: "Mens", value: 44 },
-                  { label: "Womens", value: 75 },
+                  { label: "Mens", value: dashboard.totalMaleUsers },
+                  { label: "Womens", value: dashboard.totalFemaleUsers },
                 ],
               }}
             />

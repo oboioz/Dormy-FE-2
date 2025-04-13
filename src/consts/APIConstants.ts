@@ -2,6 +2,7 @@ export const API_URL = {
   BASE_URL: import.meta.env.VITE_BASE_API_URL,
   ADMIN: {
     SIGN_IN: "auth/admin/sign-in",
+    GET_DASHBOARD: "admin/dashboard",
   },
   USER: {
     SIGN_IN: "user/sign-in",
