@@ -31,12 +31,8 @@ export const OvernightRequestFormPage = Loadable(lazy(() => import('../pages/use
 export const MyVehiclePage = Loadable(lazy(() => import('../pages/user/MyVehiclePage')));
 export const VehicleRegistrationFormPage = Loadable(lazy(() => import('../pages/user/VehicleRegistrationFormPage')));
 
-
-export const InvoiceRentPage = Loadable(lazy(() => import('../pages/user/InvoiceRentPage')));
-export const InvoiceWaterPage = Loadable(lazy(() => import('../pages/user/InvoiceWaterPage')));
-export const InvoiceParkingPage = Loadable(lazy(() => import('../pages/user/InvoiceParkingPage')));
-export const InvoiceOthersPage = Loadable(lazy(() => import('../pages/user/InvoiceOthersPage')));
-export const InvoiceElectricPage = Loadable(lazy(() => import('../pages/user/InvoiceElectricPage')));
+export const UserInvoiceMonthlyListPage = Loadable(lazy(() => import('../pages/user/UserInvoiceMonthlyListPage')));
+export const UserInvoiceContractListPage = Loadable(lazy(() => import('../pages/user/UserInvoiceContractListPage')));
 
 
 

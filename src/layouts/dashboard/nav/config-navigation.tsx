@@ -53,14 +53,11 @@ const userNavConfig = [
       { title: "my vehicle", path: PATH_USER.vehicle, icon: ICONS.vehicle }, // Cart is the closest to vehicle-related actions
       {
         title: "invoice",
-        path: PATH_USER.invoice.root,
+        path: PATH_USER.invoice.monthly,
         icon: ICONS.invoice, // Invoice represents billing
         children: [
-          { title: "rental fee", path: PATH_USER.invoice.rent },
-          { title: "water fee", path: PATH_USER.invoice.water }, // Banking is relevant for utilities
-          // { title: "electric fee", path: PATH_USER.invoice.electric }, // Banking is relevant for utilities
-          // { title: "parking fee", path: PATH_USER.invoice.parking }, // Banking is relevant for utilities
-          // { title: "others", path: PATH_USER.invoice.others }, // Miscellaneous financial matters
+          { title: "Monthly invoice", path: PATH_USER.invoice.monthly },
+          { title: "Contract invoice", path: PATH_USER.invoice.contract },
         ],
       },
       { title: "request", path: PATH_USER.request, icon: ICONS.request }, // Booking represents requests

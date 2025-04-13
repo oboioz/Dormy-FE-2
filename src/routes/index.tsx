@@ -13,11 +13,7 @@ import {
   DormitoryRoomListPage,
   EnterEmailPage,
   InvoiceCreatePage,
-  InvoiceElectricPage,
-  InvoiceOthersPage,
-  InvoiceParkingPage,
-  InvoiceRentPage,
-  InvoiceWaterPage,
+  UserInvoiceMonthlyListPage,
   LoginPage,
   MyVehiclePage,
   NewPasswordPage,
@@ -60,6 +56,7 @@ import {
   RoomPage,
   InvoiceMonthlyListPage,
   InvoiceContractListPage,
+  UserInvoiceContractListPage,
 } from "./elements";
 
 export default function Router() {
@@ -96,11 +93,8 @@ export default function Router() {
         { path: "overnight", element: <OvernightAbsencePage /> },
         { path: "vehicle", element: <MyVehiclePage /> },
 
-        { path: "invoicerent", element: <InvoiceRentPage /> },
-        { path: "invoicewater", element: <InvoiceWaterPage /> },
-        { path: "invoiceelectric", element: <InvoiceElectricPage /> },
-        { path: "invoiceparking", element: <InvoiceParkingPage /> },
-        { path: "invoiceothers", element: <InvoiceOthersPage /> },
+        { path: "invoice/room-service-monthly", element: <UserInvoiceMonthlyListPage /> },
+        { path: "invoice/contract", element: <UserInvoiceContractListPage /> },
 
         { path: "request", element: <RequestListPage /> },
 

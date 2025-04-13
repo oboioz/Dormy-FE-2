@@ -47,12 +47,8 @@ export const PATH_USER = {
   vehicleRegister: path(ROOTS_USER, "/newvehicle"),
 
   invoice: {
-    root: path(ROOTS_USER, "/invoicerent"),
-    rent: path(ROOTS_USER, "/invoicerent"),
-    water: path(ROOTS_USER, "/invoicewater"),
-    electric: path(ROOTS_USER, "/invoiceelectric"),
-    parking: path(ROOTS_USER, "/invoiceparking"),
-    others: path(ROOTS_USER, "/invoiceothers"),
+    monthly: path(ROOTS_USER, "/invoice/room-service-monthly"),
+    contract: path(ROOTS_USER, "/invoice/contract"),
   },
 
   request: path(ROOTS_USER, "/request"),
