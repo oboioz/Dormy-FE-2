@@ -16,6 +16,7 @@ COPY . .
 # Build the Vite app
 ARG VITE_BASE_API_URL
 ENV VITE_BASE_API_URL=$VITE_BASE_API_URL
+ENV NODE_OPTIONS=--max_old_space_size=512
 RUN yarn build
 
 # Stage 2: Serve with Nginx
