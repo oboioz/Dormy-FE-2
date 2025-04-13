@@ -37,13 +37,14 @@ const userNavConfig = [
     subheader: "user",
     items: [
       {
-        title: "residential",
-        path: PATH_USER.residential.root,
+        title: "Contract",
+        path: PATH_USER.contract,
         icon: ICONS.user, // General user-related actions
-        children: [
-          { title: "contract", path: PATH_USER.residential.contract }, // File represents contracts/documents
-          { title: "room details", path: PATH_USER.residential.roomDetails }, // Folder for room-related data
-        ],
+      },
+      {
+        title: "Room details",
+        path: PATH_USER.roomDetails,
+        icon: ICONS.dormitory, // General user-related actions
       },
       {
         title: "overnight absence",

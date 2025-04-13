@@ -34,11 +34,8 @@ export const PATH_USER = {
   root: path(ROOTS_USER, "/profile"),
   profile: path(ROOTS_USER, "/profile"),
 
-  residential: {
-    root: path(ROOTS_USER, "/contract"),
-    contract: path(ROOTS_USER, "/contract"),
-    roomDetails: path(ROOTS_USER, "/roomdetails"),
-  },
+  contract: path(ROOTS_USER, "/contract"),
+  roomDetails: path(ROOTS_USER, "/roomdetails"),
 
   overnight: path(ROOTS_USER, "/overnight"),
   overnightRequest: path(ROOTS_USER, "/newovernight"),
