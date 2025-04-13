@@ -72,7 +72,7 @@ export const API_URL = {
     GET_SINGLE: "contract/id/",
     CREATE: "contract",
     UPDATE: "contract",
-    ACCEPT_OR_REJECT: "contract/id/{{id}}/approve-or-reject",
+    ACCEPT_OR_REJECT: "contract/id/{id}/approve-or-reject",
     ACTIVE: "contract/id/{id}/active",
     TERMINATE: "contract/id/{id}/terminate",
     EXPIRED: "contract/id/{id}/expired",
@@ -110,6 +110,7 @@ export const API_URL = {
   INVOICE: {
     CREATE: "invoice",
     UPDATE: "invoice",
+    UPDATE_STATUS: "invoice/update/status",
     GET_BATCH: "invoice/batch",
     GET_SINGLE: "invoice/id/",
     GET_CREATE_INITIAL_DATA: "invoice/create-initial-data",

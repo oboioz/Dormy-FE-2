@@ -1,7 +1,7 @@
 import { HttpStatusCode } from "axios";
 import { API_URL } from "../consts/APIConstants";
 import { privateAxios } from "../libs/axios";
-import { CreateInvoiceRequestModel, GetBatchInvoiceRequestModel, GetInitialInvoiceCreationRequestModel } from "../models/requests/InvoiceRequestModels";
+import { CreateInvoiceRequestModel, GetBatchInvoiceRequestModel, GetInitialInvoiceCreationRequestModel, UpdateInvoiceStatusRequestModel } from "../models/requests/InvoiceRequestModels";
 import { DetailInvoiceResponseModel, GetInitialInvoiceCreationResponseModel, InvoiceResponseModel, RoomRecipients } from "../models/responses/InvoiceResponseModels";
 
 // Guardian
@@ -69,10 +69,27 @@ const createInvoice = async (payload: CreateInvoiceRequestModel) => {
   }
 };
 
+const updateInvoiceStatus = async (payload: UpdateInvoiceStatusRequestModel) => {
+  try {
+    var response = await privateAxios.put(
+      API_URL.INVOICE.UPDATE_STATUS,
+      payload
+    );
+    if (response.status === HttpStatusCode.Accepted) {
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
+
 export const invoiceService = {
     getBatchInvoices: getBatchInvoices,
     getInvoiceById: getInvoiceById,
     getInitialInvoiceCreation: getInitialInvoiceCreation,
     getRoomsForInitialInvoiceCreation: getRoomsForInitialInvoiceCreation,
     createInvoice: createInvoice,
+    updateInvoiceStatus: updateInvoiceStatus,
 };

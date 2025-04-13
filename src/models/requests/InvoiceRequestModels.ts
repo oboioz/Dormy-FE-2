@@ -28,3 +28,8 @@ export interface GetInitialInvoiceCreationRequestModel {
     year: number;
     roomId: string;
 }
+
+export interface UpdateInvoiceStatusRequestModel {
+    id: string;
+    status: string;
+}
