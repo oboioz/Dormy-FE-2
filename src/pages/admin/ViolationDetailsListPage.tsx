@@ -50,12 +50,12 @@ import { DatePicker } from "@mui/x-date-pickers";
 
 const TABLE_HEAD = [
   { id: "fullName", label: "Violator", align: "left" },
-  { id: "violationDate", label: "Violation Date", align: "left" },
+  { id: "violationDate", label: "Violation Date", align: "center" },
   { id: "description", label: "Description", align: "left" },
-  { id: "penalty", label: "Penalty", align: "left" },
+  { id: "penalty", label: "Penalty", align: "right" },
   { id: "phone", label: "Phone", align: "left" },
   { id: "email", label: "Email", align: "left" },
-  { id: "dateOfBirth", label: "DoB", align: "left" },
+  { id: "dateOfBirth", label: "DoB", align: "center" },
   { id: "" },
 ];
 

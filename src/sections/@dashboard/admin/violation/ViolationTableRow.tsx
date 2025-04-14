@@ -11,9 +11,10 @@ import {
 import ConfirmDialog from "../../../../components/confirm-dialog";
 import Iconify from "../../../../components/iconify";
 import MenuPopover from "../../../../components/menu-popover";
-import { fDateTime } from "../../../../utils/formatTime";
+import { fDate, fDateTime } from "../../../../utils/formatTime";
 import { IViolation } from "../../../../models/responses/ViolationModels";
 import { DateTimeUtils } from "../../../../utils/DateTimeUtils";
+import { fCurrency } from "../../../../utils/formatNumber";
 
 type Props = {
   row: IViolation;
@@ -80,20 +81,20 @@ export default function ViolationTableRow({
           </Typography>
         </TableCell>
 
-        <TableCell align="left">{fDateTime(violationDate)}</TableCell>
+        <TableCell align="center">{fDate(violationDate, "dd/MM/yyyy")}</TableCell>
 
         <TableCell align="left">{description}</TableCell>
 
-        <TableCell align="left">
-          {new Intl.NumberFormat("vi-VN").format(penalty)} VND
+        <TableCell align="right">
+          {fCurrency(penalty)}
         </TableCell>
 
         <TableCell align="left">{phoneNumber}</TableCell>
 
         <TableCell align="left">{email}</TableCell>
 
-        <TableCell align="left">
-          {DateTimeUtils.convertDateTimeToPRISMPattern(new Date(dateOfBirth))}
+        <TableCell align="center">
+          {fDate(dateOfBirth, "dd/MM/yyyy")}
         </TableCell>
 
         <TableCell align="left">
