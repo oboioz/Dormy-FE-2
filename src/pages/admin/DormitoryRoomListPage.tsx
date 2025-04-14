@@ -42,9 +42,9 @@ import { BuildingModel } from "../../models/responses/BuildingModels";
 import { buildingService } from "../../services/buildingService";
 
 const TABLE_HEAD = [
-  { id: "floor", label: "Floor Number", align: "left" },
-  { id: "room", label: "Room Number", align: "left" },
-  { id: "bed", label: "Occupied Bed", align: "left" },
+  { id: "floor", label: "Floor", align: "center" },
+  { id: "room", label: "Room", align: "center" },
+  { id: "bed", label: "Occupied Bed", align: "center" },
   { id: "roomtype", label: "Room Type", align: "left" },
   { id: "status", label: "Status", align: "left" },
   { id: "" },

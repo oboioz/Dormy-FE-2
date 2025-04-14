@@ -16,6 +16,7 @@ import Iconify from "../../../../components/iconify";
 import Label from "../../../../components/label";
 import MenuPopover from "../../../../components/menu-popover";
 import { Room } from "../../../../models/responses/BuildingModels";
+import RoomStatusTag from "../../../tag/RoomStatusTag";
 
 type Props = {
   row: Room;
@@ -67,31 +68,25 @@ export default function RoomTableRow({
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell>
 
-        <TableCell align="left">{floorNumber}</TableCell>
+        <TableCell align="center">{floorNumber}</TableCell>
 
-        <TableCell>
+        <TableCell align="center">
           <Typography variant="subtitle2" noWrap>
             {roomNumber}
           </Typography>
         </TableCell>
 
-        <TableCell align="left">
+        <TableCell align="center">
           {totalUsedBed.toString() + "/" + totalAvailableBed.toString()}
         </TableCell>
 
-        <TableCell align="left">{roomTypeName?.toUpperCase()}</TableCell>
+        <TableCell align="left">{roomTypeName}</TableCell>
 
         <TableCell align="left">
-          <Label
-            variant="soft"
-            color={(status === "banned" && "error") || "success"}
-            sx={{ textTransform: "capitalize" }}
-          >
-            {status?.toUpperCase()}
-          </Label>
+          <RoomStatusTag status={status}/>
         </TableCell>
 
-        <TableCell align="left">
+        <TableCell align="right">
           <IconButton
             color={openPopover ? "inherit" : "default"}
             onClick={handleOpenPopover}
