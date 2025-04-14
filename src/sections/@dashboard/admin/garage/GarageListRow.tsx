@@ -30,6 +30,7 @@ import {
   TableEmptyRows,
   TableNoData,
 } from "../../../../components/table";
+import ParkingSpotStatusTag from "../../../tag/ParkingSpotStatusTag";
 
 type Props = {
   row: IParkingSpot;
@@ -166,22 +167,16 @@ export default function GarageListRow({
           </Typography>
         </TableCell>
 
-        <TableCell align="left">{capacitySpots}</TableCell>
+        <TableCell align="center" sx={{ fontSize: "1rem" }}>{capacitySpots}</TableCell>
 
-        <TableCell align="left">
+        <TableCell align="center" sx={{ fontSize: "1rem" }}>
           {currentQuantity}
-          {"/"}
-          {capacitySpots}
+          {/* {"/"}
+          {capacitySpots} */}
         </TableCell>
 
         <TableCell align="left">
-          <Label
-            variant="soft"
-            color={(status === "AVAILABLE" && "success") || "error"}
-            sx={{ textTransform: "capitalize" }}
-          >
-            {status}
-          </Label>
+          <ParkingSpotStatusTag status={status}/>
         </TableCell>
 
         <TableCell align="right">

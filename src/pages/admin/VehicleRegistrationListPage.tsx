@@ -34,13 +34,13 @@ import { IParkingRequest } from "../../models/responses/ParkingRequestModels";
 import { toast } from "react-toastify";
 
 const TABLE_HEAD = [
-  { id: "parkingSpotName", label: "Spot", align: "left" },
-  { id: "parkingSpotStatus", label: "Spot Status", align: "left" },
-  { id: "createdDateUtc", label: "Timestamp", align: "left" },
+  { id: "parkingSpotName", label: "Parking spot", align: "left" },
+  { id: "parkingSpotStatus", label: "spot Status", align: "left" },
   { id: "userFullName", label: "Requester", align: "left" },
   { id: "license", label: "License", align: "left" },
-  { id: "vehicleType", label: "Vehicle Type", align: "left" },
+  { id: "vehicleType", label: "Vehicle type", align: "left" },
   { id: "description", label: "Note", align: "left" },
+  { id: "createdDateUtc", label: "Submitted at", align: "left" },
   { id: "status", label: "Status", align: "left" },
   { id: "" },
 ];

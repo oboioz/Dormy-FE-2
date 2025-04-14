@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Button, Stack, TableCell, TableRow, Typography } from "@mui/material";
 import ConfirmDialog from "../../../../components/confirm-dialog";
-import { fDateTime } from "../../../../utils/formatTime";
+import { fDate, fDateTime } from "../../../../utils/formatTime";
 import { IParkingRequest } from "../../../../models/responses/ParkingRequestModels";
 import Label from "../../../../components/label";
+import ParkingSpotStatusTag from "../../../tag/ParkingSpotStatusTag";
+import RequestStatusTag from "../../../tag/RequestStatusTag";
 
 type Props = {
   row: IParkingRequest;
@@ -49,46 +51,15 @@ export default function VehicleRegistrationRow({
           </Typography>
         </TableCell>
         <TableCell align="left">
-          <Label
-            variant="soft"
-            color={
-              parkingSpotStatus === "UNDER_MAINTENANCE"
-                ? "warning"
-                : parkingSpotStatus === "FULL"
-                ? "error"
-                : parkingSpotStatus === "AVAILABLE"
-                ? "success"
-                : undefined
-            }
-            sx={{ textTransform: "capitalize" }}
-          >
-            {parkingSpotStatus}
-          </Label>
+          <ParkingSpotStatusTag status={parkingSpotStatus}/>
         </TableCell>
-
-        <TableCell align="left">{fDateTime(createdDateUtc)}</TableCell>
         <TableCell align="left">{userFullName}</TableCell>
         <TableCell align="left">{licensePlate} </TableCell>
         <TableCell align="left">{vehicleType}</TableCell>
         <TableCell align="left">{description}</TableCell>
+        <TableCell align="left">{fDate(createdDateUtc, "dd/MM/yyyy")}</TableCell>
         <TableCell align="left">
-          <Label
-            variant="soft"
-            color={
-              status === "SUBMITTED"
-                ? "warning"
-                : status === "REJECTED"
-                ? "error"
-                : status === "APPROVED"
-                ? "success"
-                : status === "CANCELED"
-                ? "default"
-                : undefined
-            }
-            sx={{ textTransform: "capitalize" }}
-          >
-            {status}
-          </Label>
+          <RequestStatusTag status={status} />
         </TableCell>
 
         <TableCell align="left">

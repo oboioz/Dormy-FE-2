@@ -32,9 +32,9 @@ import { httpClient } from "../../services";
 import { IParkingSpot } from "../../models/responses/ParkingSpotModels";
 
 const TABLE_HEAD = [
-  { id: "parkingSpotName", label: "Name", align: "left" },
-  { id: "capacitySpots", label: "Capacity", align: "left" },
-  { id: "currentQuantity", label: "Occupied", align: "left" },
+  { id: "parkingSpotName", label: "Parking spot", align: "left" },
+  { id: "capacitySpots", label: "Capacity", align: "center" },
+  { id: "currentQuantity", label: "Occupied", align: "center" },
   { id: "status", label: "Status", align: "left" },
   { id: "" },
 ];
