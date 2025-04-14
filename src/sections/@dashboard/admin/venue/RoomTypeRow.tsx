@@ -14,6 +14,7 @@ import ConfirmDialog from "../../../../components/confirm-dialog";
 import Iconify from "../../../../components/iconify";
 import MenuPopover from "../../../../components/menu-popover";
 import { IRoomType } from "../../../../models/responses/RoomTypeModels";
+import { fCurrency } from "../../../../utils/formatNumber";
 
 type Props = {
   row: IRoomType;
@@ -61,15 +62,15 @@ export default function RoomTypeRow({
 
         <TableCell align="left">{roomTypeName}</TableCell>
 
-        <TableCell align="left">{capacity}</TableCell>
+        <TableCell align="center">{capacity}</TableCell>
+
+        <TableCell align="right" sx={{ fontSize: "1rem" }}>{fCurrency(price)}</TableCell>
 
         <TableCell align="left">{description}</TableCell>
 
-        <TableCell align="left">{price}</TableCell>
-
-        <TableCell align="left" sx={{ color: isDeleted ? "red" : "green" }}>
+        {/* <TableCell align="left" sx={{ color: isDeleted ? "red" : "green" }}>
           {isDeleted ? "Yes" : "No"}
-        </TableCell>
+        </TableCell> */}
 
         <TableCell align="right">
           <IconButton
@@ -89,6 +90,16 @@ export default function RoomTypeRow({
       >
         <MenuItem
           onClick={() => {
+            onEditRow();
+            handleClosePopover();
+          }}
+          disabled={isDeleted}
+        >
+          <Iconify icon="eva:edit-fill" />
+          Edit
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
             handleOpenConfirm();
             handleClosePopover();
           }}
@@ -97,17 +108,6 @@ export default function RoomTypeRow({
         >
           <Iconify icon="eva:trash-2-outline" />
           Delete
-        </MenuItem>
-
-        <MenuItem
-          onClick={() => {
-            onEditRow();
-            handleClosePopover();
-          }}
-          disabled={isDeleted}
-        >
-          <Iconify icon="eva:edit-fill" />
-          Edit
         </MenuItem>
       </MenuPopover>
 

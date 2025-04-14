@@ -38,10 +38,10 @@ import { toast } from "react-toastify";
 
 const TABLE_HEAD = [
   { id: "roomTypeName", label: "Name", align: "left" },
-  { id: "capacity", label: "Capacity", align: "left" },
+  { id: "capacity", label: "Capacity", align: "center" },
+  { id: "price", label: "Price", align: "center" },
   { id: "description", label: "Description", align: "left" },
-  { id: "price", label: "Price", align: "left" },
-  { id: "isDeleted", label: "Is Deleted?", align: "left" },
+  // { id: "isDeleted", label: "Is Deleted?", align: "left" },
   { id: "" },
 ];
 
