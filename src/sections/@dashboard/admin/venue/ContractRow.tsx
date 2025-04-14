@@ -60,8 +60,8 @@ export default function ContractRow({ row, setContracts, selected, onSelectRow }
         <TableCell align="left">{fDate(startDate, "dd/MM/yyyy")}</TableCell>
         <TableCell align="left">{fDate(endDate, "dd/MM/yyyy")}</TableCell>
         <TableCell align="left">{userFullname}</TableCell>
-        <TableCell align="left">{roomNumber}</TableCell>
-        <TableCell align="left">{buildingName}</TableCell>
+        <TableCell align="center">{roomNumber}</TableCell>
+        <TableCell align="center">{buildingName}</TableCell>
         <TableCell align="left">{roomTypeName}</TableCell>
         <TableCell align="left">{approverFullName || "N/A"}</TableCell>
         <TableCell align="left">
