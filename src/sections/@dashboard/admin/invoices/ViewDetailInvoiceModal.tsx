@@ -175,76 +175,77 @@ export default function ViewDetailInvoiceModal({
                     {fDate(invoice?.dueDate, "dd/MM/yyyy")}
                 </Typography>
                 <Typography variant="body2">
-                    <strong>Amount Before Promotion: </strong>
-                    {fCurrency(invoice?.amountBeforePromotion)}
-                </Typography>
-                <Typography variant="body2">
-                    <strong>Amount After Promotion: </strong>
-                    {fCurrency(invoice?.amountAfterPromotion)}
+                    <strong>Room: </strong> {invoice?.roomName}
                 </Typography>
                 <Typography variant="body2">
                     <strong>Status: </strong>
                     <InvoiceStatusTag status={invoice?.status || ""} />
                 </Typography>
+                
                 <Typography variant="body2">
-                    <strong>Room: </strong> {invoice?.roomName}
+                    <strong>Created by: </strong> {invoice?.createdByCreator}
                 </Typography>
                 <Typography variant="body2">
-                    <strong>Created By: </strong> {invoice?.createdBy}
-                </Typography>
-                <Typography variant="body2">
-                    <strong>Last Updated By: </strong> {invoice?.lastUpdatedBy}
+                    <strong>Created at: </strong> {fDate(invoice?.createdDateUtc, "dd/MM/yyyy")}
                 </Typography>
                 </Stack>
 
                 {/* Invoice Items */}
-                <Typography variant="h6" sx={{ mt: 3 }}>
-                Invoice Items
+                <Typography variant="h6" align="center" sx={{ mt: 3 }}>
+                    Invoice Items
                 </Typography>
                 <TableContainer component={Paper}>
-                <Table>
-                    <TableHead>
-                    <TableRow>
-                        <TableCell>Service Name</TableCell>
-                        <TableCell align="right">Cost</TableCell>
-                        <TableCell align="center">Quantity</TableCell>
-                        <TableCell>Unit</TableCell>
-                        {invoice?.type === "ROOM_SERVICE_MONTHLY" && (
-                        <>
-                            <TableCell align="center">Old Indicator</TableCell>
-                            <TableCell align="center">New Indicator</TableCell>
-                        </>
-                        )}
-                        <TableCell align="right">Amount</TableCell>
-                    </TableRow>
-                    </TableHead>
-                    <TableBody>
-                    {invoice?.invoiceItems.map((item) => (
-                        <TableRow key={item.id}>
-                        <TableCell>{item.roomServiceName}</TableCell>
-                        <TableCell align="right">
-                            {fCurrency(item.cost)}
-                        </TableCell>
-                        <TableCell align="center">{item.quantity}</TableCell>
-                        <TableCell>{item.unit}</TableCell>
-                        {invoice?.type === "ROOM_SERVICE_MONTHLY" && (
+                    <Table>
+                        <TableHead>
+                        <TableRow>
+                            <TableCell>Service Name</TableCell>
+                            <TableCell align="right">Cost</TableCell>
+                            <TableCell align="center">Quantity</TableCell>
+                            <TableCell>Unit</TableCell>
+                            {invoice?.type === "ROOM_SERVICE_MONTHLY" && (
                             <>
-                            <TableCell align="center">
-                                {item.oldIndicator}
-                            </TableCell>
-                            <TableCell align="center">
-                                {item.newIndicator}
-                            </TableCell>
+                                <TableCell align="center">Old Indicator</TableCell>
+                                <TableCell align="center">New Indicator</TableCell>
                             </>
-                        )}
-                        <TableCell align="right">
-                            {fCurrency(item.cost * item.quantity)}
-                        </TableCell>
+                            )}
+                            <TableCell align="right">Amount</TableCell>
                         </TableRow>
-                    ))}
-                    </TableBody>
-                </Table>
+                        </TableHead>
+                        <TableBody>
+                        {invoice?.invoiceItems.map((item) => (
+                            <TableRow key={item.id}>
+                            <TableCell>{item.roomServiceName}</TableCell>
+                            <TableCell align="right">
+                                {fCurrency(item.cost)}
+                            </TableCell>
+                            <TableCell align="center">{item.quantity}</TableCell>
+                            <TableCell>{item.unit}</TableCell>
+                            {invoice?.type === "ROOM_SERVICE_MONTHLY" && (
+                                <>
+                                <TableCell align="center">
+                                    {item.oldIndicator}
+                                </TableCell>
+                                <TableCell align="center">
+                                    {item.newIndicator}
+                                </TableCell>
+                                </>
+                            )}
+                            <TableCell align="right">
+                                {fCurrency(item.cost * item.quantity)}
+                            </TableCell>
+                            </TableRow>
+                        ))}
+                        </TableBody>
+                    </Table>
                 </TableContainer>
+                {/* <Typography variant="body2">
+                    <strong>Amount Before Promotion: </strong>
+                    {fCurrency(invoice?.amountBeforePromotion)}
+                </Typography> */}
+                <Typography variant="h4" align="right">
+                    <strong>Total payment: </strong>
+                    {fCurrency(invoice?.amountAfterPromotion)}
+                </Typography>
             </Stack>
             </DialogContent>
             <DialogActions>

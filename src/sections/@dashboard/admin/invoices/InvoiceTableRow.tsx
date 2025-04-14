@@ -103,7 +103,7 @@ export default function InvoiceTableRow({
         <TableCell>{fDate(invoice.dueDate, "dd/MM/yyyy")}</TableCell>
 
         <TableCell align="left">
-          {formatCurrency(invoice.amountAfterPromotion)}
+          {fCurrency(invoice.amountAfterPromotion)}
         </TableCell>
         <TableCell align="center">{invoice.roomName}</TableCell>
 
