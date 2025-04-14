@@ -43,8 +43,8 @@ const TABLE_HEAD = [
   { id: "name", label: "Workplace Name", align: "left" },
   { id: "address", label: "Address", align: "left" },
   { id: "abbrevation", label: "Abbreviation", align: "left" },
-  { id: "createdByCreator", label: "Abbreviation", align: "left" },
-  { id: "createdDateUtc", label: "Created At", align: "left" },
+  { id: "createdByCreator", label: "Created by", align: "left" },
+  { id: "createdDateUtc", label: "Created at", align: "left" },
   { id: "" },
 ];
 

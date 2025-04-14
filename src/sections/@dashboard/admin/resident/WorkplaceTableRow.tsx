@@ -14,7 +14,7 @@ import {
 import ConfirmDialog from "../../../../components/confirm-dialog";
 import Iconify from "../../../../components/iconify";
 import MenuPopover from "../../../../components/menu-popover";
-import { fDateTime } from "../../../../utils/formatTime";
+import { fDate, fDateTime } from "../../../../utils/formatTime";
 import { WorkplaceModel } from "../../../../models/responses/WorkplaceModels";
 
 // ----------------------------------------------------------------------
@@ -94,7 +94,7 @@ export default function WorkplaceTableRow({
 
         <TableCell align="left">{createdByCreator}</TableCell>
 
-        <TableCell align="left">{fDateTime(createdDateUtc)}</TableCell>
+        <TableCell align="left">{fDate(createdDateUtc, "dd/MM/yyyy")}</TableCell>
 
         <TableCell align="right">
           <IconButton
