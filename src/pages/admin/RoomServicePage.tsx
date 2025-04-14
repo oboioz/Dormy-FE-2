@@ -38,19 +38,19 @@ import { httpClient } from "../../services";
 
 const TABLE_HEAD = [
   { id: "roomServiceName", label: "Service Name", align: "left" },
-  { id: "cost", label: "Price", align: "left" },
+  { id: "cost", label: "Price", align: "center" },
   { id: "unit", label: "Unit", align: "left" },
   { id: "roomServiceType", label: "Type", align: "left" },
   {
     id: "isServiceIndicatorUsed",
     label: "Is Indicator Used?",
-    align: "left",
+    align: "center",
   },
-  {
-    id: "isDeleted",
-    label: "Is Deleted",
-    align: "left",
-  },
+  // {
+  //   id: "isDeleted",
+  //   label: "Is Deleted",
+  //   align: "left",
+  // },
   { id: "" },
 ];
 

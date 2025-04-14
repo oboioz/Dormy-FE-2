@@ -12,6 +12,8 @@ import ConfirmDialog from "../../../../components/confirm-dialog";
 import Iconify from "../../../../components/iconify";
 import MenuPopover from "../../../../components/menu-popover";
 import { IRoomService } from "../../../../models/responses/RoomServiceModels";
+import { fCurrency } from "../../../../utils/formatNumber";
+import { getRoomServiceTypeDescription } from "../../../../models/enums/RoomServiceTypeEnum";
 
 // ----------------------------------------------------------------------
 
@@ -69,19 +71,19 @@ export default function RoomServiceRow({
 
         <TableCell align="left">{roomServiceName}</TableCell>
 
-        <TableCell align="left">{cost}</TableCell>
+        <TableCell align="right" sx={{ fontSize: "1rem" }}>{fCurrency(cost)}</TableCell>
 
         <TableCell align="left">{unit}</TableCell>
 
-        <TableCell align="left">{roomServiceType}</TableCell>
+        <TableCell align="left">{getRoomServiceTypeDescription(roomServiceType)}</TableCell>
 
-        <TableCell align="left">
+        <TableCell align="center">
           {isServiceIndicatorUsed ? "Yes" : "No"}
         </TableCell>
 
-        <TableCell align="left" sx={{ color: isDeleted ? "red" : "green" }}>
+        {/* <TableCell align="left" sx={{ color: isDeleted ? "red" : "green" }}>
           {isDeleted ? "Yes" : "No"}
-        </TableCell>
+        </TableCell> */}
 
         <TableCell align="right">
           <IconButton
@@ -101,6 +103,16 @@ export default function RoomServiceRow({
       >
         <MenuItem
           onClick={() => {
+            onEditRow();
+            handleClosePopover();
+          }}
+          disabled={isDeleted}
+        >
+          <Iconify icon="eva:edit-fill" />
+          Edit
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
             handleOpenConfirm();
             handleClosePopover();
           }}
@@ -109,17 +121,6 @@ export default function RoomServiceRow({
         >
           <Iconify icon="eva:trash-2-outline" />
           Delete
-        </MenuItem>
-
-        <MenuItem
-          onClick={() => {
-            onEditRow();
-            handleClosePopover();
-          }}
-          disabled={isDeleted}
-        >
-          <Iconify icon="eva:edit-fill" />
-          Edit
         </MenuItem>
       </MenuPopover>
 
