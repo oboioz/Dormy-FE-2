@@ -32,9 +32,11 @@ import { PATH_ADMIN } from "../../routes/paths";
 import WorkplaceTableRow from "../../sections/@dashboard/admin/resident/WorkplaceTableRow";
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
-import { WorkplaceModel } from "../../models/responses/WorkplaceModels";
+import { WorkplaceCreateModel, WorkplaceModel, WorkplaceUpdateModel } from "../../models/responses/WorkplaceModels";
 import { httpClient } from "../../services";
 import { toast } from "react-toastify";
+import WorkplaceCreateEditModal from "../../sections/@dashboard/admin/resident/WorkplaceCreateEditModal";
+import { useAuthContext } from "../../auth/JwtContext";
 // sections
 
 // ----------------------------------------------------------------------
@@ -64,10 +66,12 @@ export default function WorkplaceListPage() {
   } = useTable();
 
   const { themeStretch } = useSettingsContext();
+  const { user } = useAuthContext();
 
   const navigate = useNavigate();
 
   const [_workplaceList, setWorkplaces] = useState<WorkplaceModel[]>([]);
+  const [openCreateModal, setOpenCreateModal] = useState<boolean>(false);
 
   const dataInPage = _workplaceList.slice(
     page * rowsPerPage,
@@ -92,6 +96,14 @@ export default function WorkplaceListPage() {
     navigate(PATH_ADMIN.workplace.form + `?id=${id}`);
   };
 
+  const handleOpenCreateModal = () => {
+    setOpenCreateModal(true);
+  };
+
+  const handleCloseCreateModal = () => {
+    setOpenCreateModal(false);
+  };
+
   const handleDeleteRow = async (id: string) => {
     var response = await httpClient.workplaceService.softDeleteWorkplace(id);
     if (response) {
@@ -104,7 +116,7 @@ export default function WorkplaceListPage() {
 
   const handleDeleteRows = (selectedRows: string[]) => {
     const deleteRows = _workplaceList.filter(
-      (row) => !selectedRows.includes(row.id.toString())
+      (row) => !selectedRows.includes(row.id)
     );
     setSelected([]);
     setWorkplaces(deleteRows);
@@ -135,6 +147,50 @@ export default function WorkplaceListPage() {
     fetchWorkplaces();
   }, []);
 
+  const handleEditWorkplace = async (updatedWorkplace: WorkplaceModel) => {
+    try {
+      const payload: WorkplaceUpdateModel = {
+        id: updatedWorkplace.id,
+        name: updatedWorkplace.name,
+        address: updatedWorkplace.address,
+        abbrevation: updatedWorkplace.abbrevation,
+    }
+      const response = await httpClient.workplaceService.updateWorkplace(payload);
+      if (response) {
+        toast.success("Workplace was updated successfully!");
+        setWorkplaces((prevWorkplaces) =>
+          prevWorkplaces.map((Workplace) =>
+            Workplace.id === updatedWorkplace.id ? updatedWorkplace : Workplace
+          )
+        );
+        handleCloseCreateModal();
+      }
+    } catch (error) {
+      toast.error("An error occurred while saving the workplace.");
+    }
+  };
+
+  const handleCreateWorkplace = async (formData: WorkplaceCreateModel) => {
+    try {
+      const response = await httpClient.workplaceService.createWorkplace(formData);
+      if (response) {
+        toast.success("Workplace was created successfully!");
+        const addWorkplace: WorkplaceModel = {
+          id: response[0],
+          name: formData.name,
+          address: formData.address,
+          abbrevation: formData.abbrevation,
+          createdByCreator: user.name,
+          createdDateUtc: (new Date()).toDateString(),
+        } 
+        setWorkplaces((prevWorkplaces) => [...prevWorkplaces, addWorkplace]);
+        handleCloseCreateModal();
+      }
+    } catch (error) {
+      toast.error("An error occurred while creating the workplace.");
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -151,10 +207,9 @@ export default function WorkplaceListPage() {
           ]}
           action={
             <Button
-              component={RouterLink}
-              to={PATH_ADMIN.workplace.form}
               variant="contained"
               startIcon={<Iconify icon="eva:plus-fill" />}
+              onClick={handleOpenCreateModal}
             >
               Add new workplace
             </Button>
@@ -169,7 +224,7 @@ export default function WorkplaceListPage() {
               onSelectAllRows={(checked) =>
                 onSelectAllRows(
                   checked,
-                  _workplaceList.map((row) => row.id.toString())
+                  _workplaceList.map((row) => row.id)
                 )
               }
               // action={
@@ -190,7 +245,7 @@ export default function WorkplaceListPage() {
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
                       checked,
-                      _workplaceList.map((row) => row.id.toString())
+                      _workplaceList.map((row) => row.id)
                     )
                   }
                 />
@@ -202,10 +257,10 @@ export default function WorkplaceListPage() {
                       <WorkplaceTableRow
                         key={row.id}
                         row={row}
-                        selected={selected.includes(row.id.toString())}
-                        onSelectRow={() => onSelectRow(row.id.toString())}
-                        onEditRow={() => handleEditRow(row.id.toString())}
-                        onDeleteRow={() => handleDeleteRow(row.id.toString())}
+                        selected={selected.includes(row.id)}
+                        onSelectRow={() => onSelectRow(row.id)}
+                        onEditRow={() => handleEditRow(row.id)}
+                        onDeleteRow={() => handleDeleteRow(row.id)}
                       />
                     ))}
 
@@ -247,6 +302,11 @@ export default function WorkplaceListPage() {
             Delete
           </Button>
         }
+      />
+      <WorkplaceCreateEditModal
+        open={openCreateModal}
+        onClose={handleCloseCreateModal}
+        onSubmit={handleCreateWorkplace}
       />
     </>
   );
