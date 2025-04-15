@@ -31,10 +31,11 @@ import { PATH_ADMIN } from "../../routes/paths";
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
 // import { httpClient } from "../../utils/axios";
-import { IRoomService } from "../../models/responses/RoomServiceModels";
+import { IRoomService, IRoomServiceUpdate } from "../../models/responses/RoomServiceModels";
 import RoomServiceRow from "../../sections/@dashboard/admin/venue/RoomServiceRow";
 import { toast } from "react-toastify";
 import { httpClient } from "../../services";
+import CreateEditRoomServiceModal from "../../sections/@dashboard/admin/venue/CreateEditRoomServiceModal";
 
 const TABLE_HEAD = [
   { id: "roomServiceName", label: "Service Name", align: "left" },
@@ -46,11 +47,6 @@ const TABLE_HEAD = [
     label: "Is Indicator Used?",
     align: "center",
   },
-  // {
-  //   id: "isDeleted",
-  //   label: "Is Deleted",
-  //   align: "left",
-  // },
   { id: "" },
 ];
 
@@ -59,7 +55,8 @@ export default function RoomServicePage() {
   const navigate = useNavigate();
 
   const [roomServices, setRoomServices] = useState<IRoomService[]>([]);
-
+  const [openCreateModal, setOpenCreateModal] = useState<boolean>(false);
+  
   const {
     page,
     rowsPerPage,
@@ -83,6 +80,14 @@ export default function RoomServicePage() {
 
   const handleCloseConfirm = () => {
     setOpenConfirm(false);
+  };
+
+  const handleOpenCreateModal = () => {
+    setOpenCreateModal(true);
+  };
+
+  const handleCloseCreateModal = () => {
+    setOpenCreateModal(false);
   };
 
   const handleEditRow = async (id: string) => {
@@ -125,6 +130,53 @@ export default function RoomServicePage() {
     setRoomServices(response || []);
   };
 
+  const handleUpdateRoomService = async (updatedRoomService: IRoomService) => {
+    try {
+      const payload: IRoomServiceUpdate = {
+        id: updatedRoomService.id,
+        roomServiceName: updatedRoomService.roomServiceName,
+        unit: updatedRoomService.unit,
+        cost: updatedRoomService.cost,
+        roomServiceType: updatedRoomService.roomServiceType,
+        isServiceIndicatorUsed: updatedRoomService.isServiceIndicatorUsed,
+      }
+      const response = await httpClient.roomServiceService.updateRoomServiceBatch(payload);
+      if (response) {
+        toast.success("Room service was updated successfully!");
+        setRoomServices((prevRoomServices) =>
+          prevRoomServices.map((roomService) =>
+            roomService.id === updatedRoomService.id ? updatedRoomService : roomService
+          )
+        );
+        handleCloseCreateModal();
+      }
+    } catch (error) {
+      toast.error("An error occurred while saving the room service.");
+    }
+  };
+
+  const handleCreateOrUpdateRoomService = async (formData: IRoomService) => {
+    try {
+      const response = await httpClient.roomServiceService.createRoomServiceBatch([formData]);
+      if (response) {
+        toast.success("Room type was created successfully!");
+        const addRoomService: IRoomService = {
+          id: response[0],
+          roomServiceName: formData.roomServiceName,
+          unit: formData.unit,
+          cost: formData.cost,
+          roomServiceType: formData.roomServiceType,
+          isServiceIndicatorUsed: formData.isServiceIndicatorUsed,     
+        } 
+        setRoomServices((prevRoomServices) => [...prevRoomServices, addRoomService]);
+        // fetchRoomTypes();
+        handleCloseCreateModal();
+      }
+    } catch (error) {
+      toast.error("An error occurred while saving the room service.");
+    }
+  };
+
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
   };
@@ -152,10 +204,9 @@ export default function RoomServicePage() {
           ]}
           action={
             <Button
-              component={RouterLink}
-              to={PATH_ADMIN.dormitory.roomServiceForm}
               variant="contained"
               startIcon={<Iconify icon="eva:plus-fill" />}
+              onClick={handleOpenCreateModal}
             >
               New Room Service
             </Button>
@@ -205,7 +256,8 @@ export default function RoomServicePage() {
                         row={row}
                         selected={selected.includes(row.id.toString())}
                         onSelectRow={() => onSelectRow(row.id.toString())}
-                        onEditRow={() => handleEditRow(row.id.toString())}
+                        // onEditRow={() => handleEditRow(row.id.toString())}
+                        onEditRow={(updatedRoomService) => handleUpdateRoomService(updatedRoomService)}
                         onDeleteRow={() => handleDeleteRow(row.id.toString())}
                       />
                     ))}
@@ -257,6 +309,11 @@ export default function RoomServicePage() {
             Delete
           </Button>
         }
+      />
+      <CreateEditRoomServiceModal
+        open={openCreateModal}
+        onClose={handleCloseCreateModal}
+        onSubmit={handleCreateOrUpdateRoomService}
       />
     </>
   );

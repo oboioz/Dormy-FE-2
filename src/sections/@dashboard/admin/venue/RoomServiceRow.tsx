@@ -14,13 +14,15 @@ import MenuPopover from "../../../../components/menu-popover";
 import { IRoomService } from "../../../../models/responses/RoomServiceModels";
 import { fCurrency } from "../../../../utils/formatNumber";
 import { getRoomServiceTypeDescription } from "../../../../models/enums/RoomServiceTypeEnum";
+import CreateEditRoomServiceModal from "./CreateEditRoomServiceModal";
 
 // ----------------------------------------------------------------------
 
 type Props = {
   row: IRoomService;
   selected: boolean;
-  onEditRow: VoidFunction;
+  // onEditRow: VoidFunction;
+  onEditRow: (updatedRoomService: IRoomService) => void;
   onSelectRow: VoidFunction;
   onDeleteRow: VoidFunction;
 };
@@ -43,6 +45,7 @@ export default function RoomServiceRow({
   } = row;
 
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
 
   const [openPopover, setOpenPopover] = useState<HTMLElement | null>(null);
 
@@ -60,6 +63,20 @@ export default function RoomServiceRow({
 
   const handleClosePopover = () => {
     setOpenPopover(null);
+  };
+
+  const handleOpenEditModal = () => {
+    setOpenEditModal(true);
+    handleClosePopover();
+  };
+
+  const handleCloseEditModal = () => {
+    setOpenEditModal(false);
+  };
+
+  const handleEditRoomType = (updatedRoomService: IRoomService) => {
+    onEditRow(updatedRoomService);
+    handleCloseEditModal();
   };
 
   return (
@@ -102,10 +119,11 @@ export default function RoomServiceRow({
         sx={{ width: 140 }}
       >
         <MenuItem
-          onClick={() => {
-            onEditRow();
-            handleClosePopover();
-          }}
+          // onClick={() => {
+          //   onEditRow();
+          //   handleClosePopover();
+          // }}
+          onClick={handleOpenEditModal}
           disabled={isDeleted}
         >
           <Iconify icon="eva:edit-fill" />
@@ -134,6 +152,12 @@ export default function RoomServiceRow({
             Delete
           </Button>
         }
+      />
+      <CreateEditRoomServiceModal
+        open={openEditModal}
+        onClose={handleCloseEditModal}
+        onSubmit={handleEditRoomType}
+        initialData={row}
       />
     </>
   );
