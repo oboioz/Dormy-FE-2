@@ -6,13 +6,13 @@ export interface IRoomType {
   description: string;
   capacity: number;
   price: number;
-  createdByCreator: string;
-  lastUpdatedByUpdater: string;
-  createdDateUtc: string;
-  lastUpdatedDateUtc: string;
-  createdBy: string;
-  lastUpdatedBy: string;
-  isDeleted: boolean;
+  createdByCreator?: string;
+  lastUpdatedByUpdater?: string;
+  createdDateUtc?: string;
+  lastUpdatedDateUtc?: string;
+  createdBy?: string;
+  lastUpdatedBy?: string;
+  isDeleted?: boolean;
   roomServices: IRoomService[];
 }
 
