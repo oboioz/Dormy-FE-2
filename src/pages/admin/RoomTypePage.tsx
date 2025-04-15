@@ -32,16 +32,16 @@ import RoomTypeRow from "../../sections/@dashboard/admin/venue/RoomTypeRow";
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
 import { roomTypeService } from "../../services/roomTypeService";
-import { IRoomType } from "../../models/responses/RoomTypeModels";
+import { IRoomType, IRoomTypeCreate } from "../../models/responses/RoomTypeModels";
 import { httpClient } from "../../services";
 import { toast } from "react-toastify";
+import CreateEditRoomTypeModal from "../../sections/@dashboard/admin/venue/CreateEditRoomTypeModal";
 
 const TABLE_HEAD = [
   { id: "roomTypeName", label: "Name", align: "left" },
   { id: "capacity", label: "Capacity", align: "center" },
   { id: "price", label: "Price", align: "center" },
   { id: "description", label: "Description", align: "left" },
-  // { id: "isDeleted", label: "Is Deleted?", align: "left" },
   { id: "" },
 ];
 
@@ -67,7 +67,8 @@ export default function RoomTypePage() {
 
   const { themeStretch } = useSettingsContext();
 
-  const [openConfirm, setOpenConfirm] = useState(false);
+  const [openConfirm, setOpenConfirm] = useState<boolean>(false);
+  const [openCreateModal, setOpenCreateModal] = useState<boolean>(false);
 
   const isNotFound = !roomTypes.length;
 
@@ -77,6 +78,36 @@ export default function RoomTypePage() {
 
   const handleCloseConfirm = () => {
     setOpenConfirm(false);
+  };
+
+  const handleOpenCreateModal = () => {
+    setOpenCreateModal(true);
+  };
+
+  const handleCloseCreateModal = () => {
+    setOpenCreateModal(false);
+  };
+
+  const handleCreateOrUpdateRoomType = async (formData: IRoomTypeCreate) => {
+    try {
+      const response = await httpClient.roomTypeService.createRoomType(formData);
+      if (response) {
+        toast.success("Room type was created successfully!");
+        const addRoomType: IRoomType = {
+          id: response,
+          roomTypeName: formData.roomTypeName,
+          description: formData.description,
+          capacity: formData.capacity,
+          price: formData.price,
+          roomServices: [],     
+        } 
+        setRoomTypes((prevRoomTypes) => [...prevRoomTypes, addRoomType]);
+        // fetchRoomTypes();
+        handleCloseCreateModal();
+      }
+    } catch (error) {
+      toast.error("An error occurred while saving the room type.");
+    }
   };
 
   const handleEditRow = (id: string) => {
@@ -136,10 +167,9 @@ export default function RoomTypePage() {
           ]}
           action={
             <Button
-              component={RouterLink}
-              to={PATH_ADMIN.dormitory.roomTypeForm}
               variant="contained"
               startIcon={<Iconify icon="eva:plus-fill" />}
+              onClick={handleOpenCreateModal}
             >
               New Room Type
             </Button>
@@ -236,6 +266,11 @@ export default function RoomTypePage() {
             Delete
           </Button>
         }
+      />
+      <CreateEditRoomTypeModal
+        open={openCreateModal}
+        onClose={handleCloseCreateModal}
+        onSubmit={handleCreateOrUpdateRoomType}
       />
     </>
   );

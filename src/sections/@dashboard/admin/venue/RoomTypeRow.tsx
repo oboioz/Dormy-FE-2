@@ -15,10 +15,12 @@ import Iconify from "../../../../components/iconify";
 import MenuPopover from "../../../../components/menu-popover";
 import { IRoomType } from "../../../../models/responses/RoomTypeModels";
 import { fCurrency } from "../../../../utils/formatNumber";
+import CreateEditRoomTypeModal from "./CreateEditRoomTypeModal";
 
 type Props = {
   row: IRoomType;
   selected: boolean;
+  // onEditRow: (updatedRoomType: IRoomType) => void;
   onEditRow: VoidFunction;
   onSelectRow: VoidFunction;
   onDeleteRow: VoidFunction;
@@ -34,6 +36,7 @@ export default function RoomTypeRow({
   const { roomTypeName, description, price, capacity, isDeleted } = row;
 
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
 
   const [openPopover, setOpenPopover] = useState<HTMLElement | null>(null);
 
@@ -52,6 +55,20 @@ export default function RoomTypeRow({
   const handleClosePopover = () => {
     setOpenPopover(null);
   };
+
+  const handleOpenEditModal = () => {
+    setOpenEditModal(true);
+    handleClosePopover();
+  };
+
+  const handleCloseEditModal = () => {
+    setOpenEditModal(false);
+  };
+
+  // const handleEditRoomType = (updatedRoomType: IRoomType) => {
+  //   onEditRow(updatedRoomType);
+  //   handleCloseEditModal();
+  // };
 
   return (
     <>
@@ -88,6 +105,7 @@ export default function RoomTypeRow({
         arrow="right-top"
         sx={{ width: 140 }}
       >
+        {/* <MenuItem onClick={handleOpenEditModal} disabled={isDeleted}> */}
         <MenuItem
           onClick={() => {
             onEditRow();
@@ -122,6 +140,13 @@ export default function RoomTypeRow({
           </Button>
         }
       />
+      {/* <CreateEditRoomTypeModal
+        open={openEditModal}
+        onClose={handleCloseEditModal}
+        onSubmit={handleEditRoomType}
+        initialData={row}
+      /> */}
+
     </>
   );
 }
