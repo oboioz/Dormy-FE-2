@@ -16,11 +16,14 @@ import ConfirmDialog from '../../../../components/confirm-dialog';
 import Iconify from '../../../../components/iconify';
 import Label from '../../../../components/label';
 import MenuPopover from '../../../../components/menu-popover';
+import { Profile } from '../../../../models/responses/UserModel';
+import { getGenderDescription } from '../../../../models/enums/GenderEnum';
+import UserStatusTag from '../../../tag/UserStatusTag';
 
 // ----------------------------------------------------------------------
 
 type Props = {
-  row: IUser;
+  row: Profile;
   selected: boolean;
   onEditRow: VoidFunction;
   onSelectRow: VoidFunction;
@@ -32,8 +35,6 @@ export default function ResidentTableRow({
   onEditRow,
   onSelectRow,
 }: Props) {
-
-  const { firstName, lastName, gender, userID, contract, phoneNumber, email, status } = row;
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
@@ -61,42 +62,25 @@ export default function ResidentTableRow({
         <TableCell padding="checkbox">
           <Checkbox checked={selected} onClick={onSelectRow} />
         </TableCell>
-
+        <TableCell align="left">{row.nationalIdNumber}</TableCell>
         <TableCell>
           <Typography variant="subtitle2" noWrap>
-            {firstName} {lastName}
+          {row.lastName} {row.firstName}
           </Typography>
         </TableCell>
 
-        <TableCell align="left">{gender}</TableCell>
-
-        <TableCell align="left" sx={{ textTransform: 'capitalize' }}>
-          {userID}
-        </TableCell>
-
-        <TableCell align="center">
-          {contract.roomID.roomNumber} {contract.roomID.floorNumber} {contract.roomID.building.name}
-        </TableCell>
-
-        <TableCell align="left">{phoneNumber}</TableCell>
-
-        <TableCell align="left">{email}</TableCell>
-
+        <TableCell align="left">{getGenderDescription(row.gender)}</TableCell>
+        <TableCell align="left">{row.email}</TableCell>
+        <TableCell align="left">{row.phoneNumber}</TableCell>
         <TableCell align="left">
-          <Label
-            variant="soft"
-            color={(status === 'banned' && 'error') || 'success'}
-            sx={{ textTransform: 'capitalize' }}
-          >
-            {status}
-          </Label>
+          <UserStatusTag status={row.status}/>
         </TableCell>
 
-        <TableCell align="right">
+        {/* <TableCell align="right">
           <IconButton color={openPopover ? 'inherit' : 'default'} onClick={handleOpenPopover}>
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
-        </TableCell>
+        </TableCell> */}
       </TableRow>
 
       <MenuPopover

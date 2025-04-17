@@ -29,7 +29,9 @@ import GarageListRow from "../../sections/@dashboard/admin/garage/GarageListRow"
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
 import { httpClient } from "../../services";
-import { IParkingSpot } from "../../models/responses/ParkingSpotModels";
+import { IParkingSpot, IParkingSpotCreateModel, IParkingSpotUpdateModel } from "../../models/responses/ParkingSpotModels";
+import { toast } from "react-toastify";
+import ParkingSpotCreateEditModal from "../../sections/@dashboard/admin/garage/ParkingSpotCreateEditModal";
 
 const TABLE_HEAD = [
   { id: "parkingSpotName", label: "Parking spot", align: "left" },
@@ -59,6 +61,7 @@ export default function VehicleGaragePage() {
   const [tableData, setTableData] = useState<IParkingSpot[]>([]);
 
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [openCreateModal, setOpenCreateModal] = useState<boolean>(false);
 
   const isNotFound = !tableData.length;
 
@@ -128,6 +131,57 @@ export default function VehicleGaragePage() {
     fetchParkingSpots();
   }, []);
 
+  const handleOpenCreateModal = () => {
+    setOpenCreateModal(true);
+  };
+
+  const handleCloseCreateModal = () => {
+    setOpenCreateModal(false);
+  };
+
+  const handleEditParkingSpot = async (updatedParkingSpot: IParkingSpot) => {
+    try {
+      const payload: IParkingSpotUpdateModel = {
+        id: updatedParkingSpot.id,
+        parkingSpotName: updatedParkingSpot.parkingSpotName,
+        capacitySpots: updatedParkingSpot.capacitySpots,
+    }
+      const response = await httpClient.parkingSpotService.updateParkingSpot(payload);
+      if (response) {
+        toast.success("Parking spot was updated successfully!");
+        setTableData((prevParkingSpots) =>
+          prevParkingSpots.map((parkingSpot) =>
+            parkingSpot.id === updatedParkingSpot.id ? updatedParkingSpot : parkingSpot
+          )
+        );
+        handleCloseCreateModal();
+      }
+    } catch (error) {
+      toast.error("An error occurred while saving the workplace.");
+    }
+  };
+
+  const handleCreateParkingSpot = async (formData: IParkingSpotCreateModel) => {
+    try {
+      const response = await httpClient.parkingSpotService.createParkingSpot(formData);
+      if (response) {
+        toast.success("Parking spot was created successfully!");
+        const addParkingSpot: IParkingSpot = {
+          id: response,
+          parkingSpotName: formData.parkingSpotName,
+          capacitySpots: formData.capacitySpots,
+          currentQuantity: 0,
+          status: "AVAILABLE",
+          vehicles: [],
+        } 
+        setTableData((prevParkingSpots) => [...prevParkingSpots, addParkingSpot]);
+        handleCloseCreateModal();
+      }
+    } catch (error) {
+      toast.error("An error occurred while creating the parking spot.");
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -144,10 +198,9 @@ export default function VehicleGaragePage() {
           ]}
           action={
             <Button
-              component={RouterLink}
-              to={PATH_ADMIN.garage.parkingSpotForm}
               variant="contained"
               startIcon={<Iconify icon="eva:plus-fill" />}
+              onClick={handleOpenCreateModal}
             >
               Add new Parking Spot
             </Button>
@@ -200,6 +253,7 @@ export default function VehicleGaragePage() {
                         selected={selected.includes(row.id.toString())}
                         onSelectRow={() => onSelectRow(row.id.toString())}
                         onEditRow={() => handleEditRow(row.id.toString())}
+                        // onEditRow={(updatedParkingSpot) => handleEditParkingSpot(updatedParkingSpot)}
                         onDeleteRow={() => handleDeleteRow(row.id.toString())}
                       />
                     ))}
@@ -238,6 +292,11 @@ export default function VehicleGaragePage() {
             Delete
           </Button>
         }
+      />
+      <ParkingSpotCreateEditModal
+        open={openCreateModal}
+        onClose={handleCloseCreateModal}
+        onSubmit={handleCreateParkingSpot}
       />
     </>
   );

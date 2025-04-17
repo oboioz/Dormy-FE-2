@@ -22,7 +22,7 @@ import ConfirmDialog from "../../../../components/confirm-dialog";
 import Iconify from "../../../../components/iconify";
 import Label from "../../../../components/label";
 import MenuPopover from "../../../../components/menu-popover";
-import { IParkingSpot } from "../../../../models/responses/ParkingSpotModels";
+import { IParkingSpot, IParkingSpotUpdateModel } from "../../../../models/responses/ParkingSpotModels";
 import { httpClient } from "../../../../services";
 import { toast } from "react-toastify";
 import {
@@ -118,11 +118,12 @@ export default function GarageListRow({
   };
 
   const handleEditParkingSpot = async () => {
-    var response = await httpClient.parkingSpotService.updateParkingSpot(
-      id,
-      parkingSpotEditName,
-      capacity
-    );
+    const payload: IParkingSpotUpdateModel = {
+      id: id,
+      parkingSpotName: parkingSpotEditName,
+      capacitySpots: capacity,
+    }
+    var response = await httpClient.parkingSpotService.updateParkingSpot(payload);
 
     if (response) {
       toast.success("Update success");
