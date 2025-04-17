@@ -259,7 +259,8 @@ export default function WorkplaceListPage() {
                         row={row}
                         selected={selected.includes(row.id)}
                         onSelectRow={() => onSelectRow(row.id)}
-                        onEditRow={() => handleEditRow(row.id)}
+                        // onEditRow={() => handleEditRow(row.id)}
+                        onEditRow={(updatedWorkplace) => handleEditWorkplace(updatedWorkplace)}
                         onDeleteRow={() => handleDeleteRow(row.id)}
                       />
                     ))}

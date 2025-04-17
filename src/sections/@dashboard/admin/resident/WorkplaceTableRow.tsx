@@ -16,13 +16,15 @@ import Iconify from "../../../../components/iconify";
 import MenuPopover from "../../../../components/menu-popover";
 import { fDate, fDateTime } from "../../../../utils/formatTime";
 import { WorkplaceModel } from "../../../../models/responses/WorkplaceModels";
+import WorkplaceCreateEditModal from "./WorkplaceCreateEditModal";
 
 // ----------------------------------------------------------------------
 
 type Props = {
   row: WorkplaceModel;
   selected: boolean;
-  onEditRow: VoidFunction;
+  // onEditRow: VoidFunction;
+  onEditRow: (updatedWorkplace: WorkplaceModel) => void;
   onSelectRow: VoidFunction;
   onDeleteRow: VoidFunction;
 };
@@ -48,6 +50,7 @@ export default function WorkplaceTableRow({
   // const amount = 8000;
 
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
 
   const [openPopover, setOpenPopover] = useState<HTMLElement | null>(null);
 
@@ -66,6 +69,20 @@ export default function WorkplaceTableRow({
   const handleClosePopover = () => {
     setOpenPopover(null);
   };
+
+  const handleOpenEditModal = () => {
+      setOpenEditModal(true);
+      handleClosePopover();
+    };
+  
+    const handleCloseEditModal = () => {
+      setOpenEditModal(false);
+    };
+  
+    const handleEditRoomType = (updatedWorkplace: WorkplaceModel) => {
+      onEditRow(updatedWorkplace);
+      handleCloseEditModal();
+    };
 
   return (
     <>
@@ -115,10 +132,7 @@ export default function WorkplaceTableRow({
       >
         <MenuItem
           disabled={isDeleted}
-          onClick={() => {
-            onEditRow();
-            handleClosePopover();
-          }}
+          onClick={handleOpenEditModal}
         >
           <Iconify icon="eva:edit-fill" />
           Edit
@@ -145,6 +159,12 @@ export default function WorkplaceTableRow({
             Delete
           </Button>
         }
+      />
+      <WorkplaceCreateEditModal
+        open={openEditModal}
+        onClose={handleCloseEditModal}
+        onSubmit={handleEditRoomType}
+        initialData={row}
       />
     </>
   );
