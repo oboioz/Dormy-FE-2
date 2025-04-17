@@ -5,6 +5,7 @@ import { GetBatchRequestModel } from "../models/requests/CommonModels";
 import {
   IParkingSpot,
   IParkingSpotCreateModel,
+  IParkingSpotUpdateModel,
 } from "../models/responses/ParkingSpotModels";
 
 const getParkingSpotBatch = async (payload: GetBatchRequestModel) => {
@@ -57,17 +58,9 @@ const updateStatus = async (id: string, status: string) => {
   }
 };
 
-const updateParkingSpot = async (
-  id: string,
-  name: string,
-  capacity: number
-) => {
+const updateParkingSpot = async (payload: IParkingSpotUpdateModel) => {
   try {
-    const response = await privateAxios.put(API_URL.PARKING_SPOT.UPDATE, {
-      id: id,
-      parkingSpotName: name,
-      capacitySpots: capacity,
-    });
+    const response = await privateAxios.put(API_URL.PARKING_SPOT.UPDATE, payload);
     if (response.status === HttpStatusCode.Accepted) {
       return true;
     }
@@ -85,12 +78,12 @@ const createParkingSpot = async (payload: IParkingSpotCreateModel) => {
       payload
     );
     if (response.status === HttpStatusCode.Created) {
-      return true;
+      return response.data.result;
     }
-    return false;
+    return undefined;
   } catch (err) {
     console.log(err);
-    return false;
+    return undefined;
   }
 };
 

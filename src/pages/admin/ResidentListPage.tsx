@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 // @mui
 import {
@@ -37,70 +37,20 @@ import ResidentTableRow from "../../sections/@dashboard/admin/resident/ResidentT
 import ResidentTableToolbar from "../../sections/@dashboard/admin/resident/ResidentTableToolbar";
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
+import { httpClient } from "../../services";
+import { Profile } from "../../models/responses/UserModel";
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: "name", label: "Name", align: "left" },
+  { id: "nationalIdNumber", label: "Citizen Id", align: "left" },
+  { id: "fullname", label: "Fullname", align: "left" },
   { id: "gender", label: "Gender", align: "left" },
-  { id: "id", label: "Resident ID", align: "left" },
-  { id: "place", label: "Place", align: "left" },
-  { id: "phoneNumber", label: "Phone Number", align: "left" },
   { id: "email", label: "Email", align: "left" },
-  { id: "status", label: "Status", align: "center" },
-  { id: "" },
+  { id: "phoneNumber", label: "Phone number", align: "left" },
+  { id: "status", label: "Status", align: "left" },
+  // { id: "" },
 ];
-
-const _userList = [...Array(24)].map((_, index) => ({
-  userID: index + 1,
-  password: `Password${index + 1}!`, // Placeholder password
-  firstName: _mock.name.firstName(index),
-  lastName: _mock.name.lastName(index),
-  email: _mock.email(index),
-  phoneNumber: _mock.phoneNumber(index),
-  gender: _mock.boolean(index) ? "Male" : "Female",
-  dateOfBirth: _mock.time(index),
-  nationalIDNumber: `ID-${index + 1000}`,
-  status: _mock.boolean(index) ? "active" : "inactive",
-  contract: {
-    contractID: _mock.id(index),
-    startDate: _mock.time(index),
-    endDate: _mock.time(index + 10),
-    status: _mock.boolean(index) ? "valid" : "expired",
-    roomID: {
-      roomNumber: _mock.number.age(index),
-      floorNumber: _mock.number.age(index),
-      building: {
-        name: _mock.name.firstName(index),
-      },
-    },
-  },
-  priorities: [...Array((_mock.number.age(index) % 3) + 1)].map(() =>
-    _mock.text.title(index)
-  ), // Example: picking random priority titles
-  guardian: {
-    name: _mock.name.fullName(index),
-    relationship: _mock.boolean(index) ? "Parent" : "Sibling",
-    phoneNumber: _mock.phoneNumber(index),
-    email: _mock.email(index),
-    address: _mock.address.fullAddress(index),
-  },
-  workplace: _mock.boolean(index)
-    ? {
-        companyName: _mock.company(index),
-        position: _mock.role(index),
-        address: _mock.address.fullAddress(index),
-        phoneNumber: _mock.phoneNumber(index),
-      }
-    : null,
-  healthInsurance: _mock.boolean(index)
-    ? {
-        provider: _mock.company(index),
-        policyNumber: `HI-${index + 5000}`,
-        coverageDetails: _mock.text.description(index),
-      }
-    : null,
-}));
 
 export default function ResidentListPage() {
   useAuthGuard(UserRole.ADMIN);
@@ -122,7 +72,7 @@ export default function ResidentListPage() {
 
   const navigate = useNavigate();
 
-  const [tableData, setTableData] = useState(_userList);
+  const [tableData, setTableData] = useState<Profile[]>([]);
 
   const [filterName, setFilterName] = useState("");
 
@@ -159,6 +109,15 @@ export default function ResidentListPage() {
   const handleResetFilter = () => {
     setFilterName("");
   };
+
+  const fetchAllUsersForAdmin = async () => {
+    var response = await httpClient.userService.getAllUsersForAdmin();
+    setTableData(response);
+  };
+
+  useEffect(() => {
+    fetchAllUsersForAdmin();
+  }, []);
 
   return (
     <>
@@ -201,7 +160,7 @@ export default function ResidentListPage() {
               onSelectAllRows={(checked) =>
                 onSelectAllRows(
                   checked,
-                  tableData.map((row) => row.userID.toString())
+                  tableData.map((row) => row.userId)
                 )
               }
               action={
@@ -225,7 +184,7 @@ export default function ResidentListPage() {
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
                       checked,
-                      tableData.map((row) => row.userID.toString())
+                      tableData.map((row) => row.userId)
                     )
                   }
                 />
@@ -233,12 +192,12 @@ export default function ResidentListPage() {
                 <TableBody>
                   {dataFiltered
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => (
+                    ?.map((row) => (
                       <ResidentTableRow
-                        key={row.userID}
+                        key={row.userId}
                         row={row}
-                        selected={selected.includes(row.userID.toString())}
-                        onSelectRow={() => onSelectRow(row.userID.toString())}
+                        selected={selected.includes(row.userId)}
+                        onSelectRow={() => onSelectRow(row.userId)}
                         onEditRow={() => handleEditRow(row.firstName)}
                       />
                     ))}
@@ -297,7 +256,7 @@ function applyFilter({
   comparator,
   filterName,
 }: {
-  inputData: IUser[];
+  inputData: Profile[];
   comparator: (a: any, b: any) => number;
   filterName: string;
 }) {

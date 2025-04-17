@@ -16,6 +16,20 @@ const userGetProfile = async (id: string) => {
   }
 };
 
+const getAllUsersForAdmin = async () => {
+  try {
+    var response = await privateAxios.post(API_URL.USER.GET_BATCH, {});
+    if (response.status === HttpStatusCode.Ok) {
+      return response.data.result as Profile[];
+    }
+    return [];
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+};
+
 export const userService = {
-  userGetProfile,
+  userGetProfile: userGetProfile,
+  getAllUsersForAdmin: getAllUsersForAdmin,
 };
