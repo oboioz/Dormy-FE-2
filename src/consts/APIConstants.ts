@@ -36,6 +36,7 @@ export const API_URL = {
   },
   ROOM: {
     GET_SINGLE: "room/id/",
+    UPDATE_STATUS: "room/update/status",
   },
   BUILDING: {
     CREATE: "building",

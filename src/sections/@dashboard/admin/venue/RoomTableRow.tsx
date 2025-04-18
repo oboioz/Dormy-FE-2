@@ -17,6 +17,10 @@ import Label from "../../../../components/label";
 import MenuPopover from "../../../../components/menu-popover";
 import { Room } from "../../../../models/responses/BuildingModels";
 import RoomStatusTag from "../../../tag/RoomStatusTag";
+import { RoomStatusEnum } from "../../../../models/enums/RoomStatusEnum";
+import { httpClient } from "../../../../services";
+import { HttpStatusCode } from "axios";
+import { toast } from "react-toastify";
 
 type Props = {
   row: Room;
@@ -39,7 +43,10 @@ export default function RoomTableRow({
     status,
     roomTypeId,
     roomTypeName,
+    id,
   } = row;
+
+  const isActive = status === RoomStatusEnum.AVAILABLE;
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
@@ -59,6 +66,30 @@ export default function RoomTableRow({
 
   const handleClosePopover = () => {
     setOpenPopover(null);
+  };
+
+  const handleUpdateRoomStatus = async (id: string) => {
+    if (isActive) {
+      var response = await httpClient.roomService.deactivateRoom(id);
+      if (response === HttpStatusCode.Accepted) {
+        toast.success("Success");
+        window.location.reload();
+      } else if (response === HttpStatusCode.Conflict) {
+        toast.error("Can not deactivate room contains active contract");
+      } else {
+        toast.error("An error has occurred, please try again later");
+      }
+      handleCloseConfirm();
+    } else {
+      var response = await httpClient.roomService.activeRoom(id);
+      if (response === HttpStatusCode.Accepted) {
+        toast.success("Success");
+        window.location.reload();
+      } else {
+        toast.error("An error has occurred, please try again later");
+      }
+      handleCloseConfirm();
+    }
   };
 
   return (
@@ -83,7 +114,7 @@ export default function RoomTableRow({
         <TableCell align="left">{roomTypeName}</TableCell>
 
         <TableCell align="left">
-          <RoomStatusTag status={status}/>
+          <RoomStatusTag status={status} />
         </TableCell>
 
         <TableCell align="right">
@@ -116,21 +147,33 @@ export default function RoomTableRow({
             handleOpenConfirm();
             handleClosePopover();
           }}
-          sx={{ color: "error.main" }}
+          sx={{ color: isActive ? "warning.main" : "success.main" }} // Updated color
         >
-          <Iconify icon="eva:trash-2-outline" />
-          Delete
+          <Iconify
+            icon={
+              isActive ? "eva:slash-outline" : "eva:checkmark-circle-2-outline"
+            } // Updated icon
+          />
+          {isActive ? "Deactivate" : "Activate"} {/* Updated text */}
         </MenuItem>
       </MenuPopover>
 
       <ConfirmDialog
         open={openConfirm}
         onClose={handleCloseConfirm}
-        title="Delete"
-        content="Are you sure want to delete?"
+        title={isActive ? "Deactivate Room" : "Activate Room"} // Updated title
+        content={
+          isActive
+            ? "Are you sure you want to deactivate this room?"
+            : "Are you sure you want to activate this room?"
+        } // Updated content
         action={
-          <Button variant="contained" color="error" onClick={handleOpenConfirm}>
-            Delete
+          <Button
+            variant="contained"
+            color={isActive ? "warning" : "success"} // Updated button color
+            onClick={() => handleUpdateRoomStatus(id)} // Updated to close dialog after action
+          >
+            {isActive ? "Deactivate" : "Activate"} {/* Updated button text */}
           </Button>
         }
       />
