@@ -448,7 +448,7 @@ export default function ViolationDetailsListPage() {
 
             {/* Penalty Field */}
             <TextField
-              label="Penalty (VND)"
+              label="Penalty (Point)"
               type="number"
               value={violationCreate.penalty}
               onChange={(e) => handleChangePenalty(e.target.value)}
