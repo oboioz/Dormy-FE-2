@@ -3,20 +3,21 @@ import { useForm, FormProvider } from "react-hook-form";
 import { RHFTextField } from "../../../../components/hook-form";
 import { RHFDatePicker } from "../../../../components/hook-form/RHFDatePicker";
 import { DateTimeUtils } from "../../../../utils/DateTimeUtils";
+import { useEffect } from "react";
 
 type EditOvernightAbsenceModalProps = {
   open: boolean;
   onClose: () => void;
   onSubmit: (formData: {
     id: string;
-    startDateTime: string;
-    endDateTime: string;
+    startDateTime: Date;
+    endDateTime: Date;
     reason: string;
   }) => void;
   initialData: {
     id: string;
-    startDateTime: string;
-    endDateTime: string;
+    startDateTime: Date;
+    endDateTime: Date;
     reason: string;
   };
 };
@@ -29,21 +30,30 @@ export default function EditOvernightAbsenceModal({
 }: EditOvernightAbsenceModalProps) {
   const methods = useForm({
     defaultValues: {
-      ...initialData,
-      startDateTime: DateTimeUtils.formatToMMDDYYYY(initialData.startDateTime), // Convert to yyyy-MM-dd
-      endDateTime: DateTimeUtils.formatToMMDDYYYY(initialData.endDateTime), // Convert to yyyy-MM-dd
+      reason: "",
+      startDateTime: null,
+      endDateTime: null,
     },
     mode: "onBlur", // Validate on blur
   });
 
   const { handleSubmit, reset } = methods;
 
-  console.log("initialData", initialData);
+  // Update form values when initialData changes
+  useEffect(() => {
+    if (initialData) {
+      reset({
+        reason: initialData.reason,
+        startDateTime: initialData.startDateTime,
+        endDateTime: initialData.endDateTime,
+      });
+    }
+  }, [initialData, reset]);
 
   const handleFormSubmit = (data: {
     id: string;
-    startDateTime: string;
-    endDateTime: string;
+    startDateTime: Date;
+    endDateTime: Date;
     reason: string;
   }) => {
     onSubmit(data);
@@ -59,7 +69,7 @@ export default function EditOvernightAbsenceModal({
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: { xs: 300, sm: 500, md: 600 }, // Adjust width for different screen sizes
+          width: { xs: 300, sm: 500, md: 600 },
           bgcolor: "background.paper",
           boxShadow: 24,
           p: 4,

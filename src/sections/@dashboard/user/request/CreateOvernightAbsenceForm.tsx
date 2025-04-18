@@ -7,8 +7,8 @@ type CreateOvernightAbsenceModalProps = {
   open: boolean;
   onClose: () => void;
   onSubmit: (formData: {
-    startDateTime: string;
-    endDateTime: string;
+    startDateTime: Date;
+    endDateTime: Date;
     reason: string;
   }) => void;
 };
@@ -20,8 +20,8 @@ export default function CreateOvernightAbsenceModal({
 }: CreateOvernightAbsenceModalProps) {
     const methods = useForm({
         defaultValues: {
-        startDateTime: "",
-        endDateTime: "",
+        startDateTime: new Date(),
+        endDateTime: new Date(),
         reason: "",
         },
         mode: "onBlur", // Validate on blur
@@ -30,8 +30,8 @@ export default function CreateOvernightAbsenceModal({
     const { handleSubmit, reset } = methods;
 
     const handleFormSubmit = (data: {
-        startDateTime: string;
-        endDateTime: string;
+        startDateTime: Date;
+        endDateTime: Date;
         reason: string;
     }) => {
         onSubmit(data);

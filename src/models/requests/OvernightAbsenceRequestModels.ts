@@ -1,14 +1,13 @@
 export interface CreateOvernightAbsenceRequestModel {
-    startDateTime: string,
-    endDateTime: string,
+    // startDateTime: string,
+    // endDateTime: string,
+    startDateTime: Date,
+    endDateTime: Date,
     reason: string
 }
 
-export interface UpdateOvernightAbsenceRequestModel {
+export interface UpdateOvernightAbsenceRequestModel extends CreateOvernightAbsenceRequestModel {
     id: string;
-    startDateTime: string,
-    endDateTime: string,
-    reason: string
 }
 
 export interface GetBatchOvernightAbsenceRequestModel {

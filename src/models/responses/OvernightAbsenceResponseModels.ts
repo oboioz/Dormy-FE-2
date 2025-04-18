@@ -1,7 +1,7 @@
 export interface OvernightAbsenceResponseModel {
   id: string;
-  startDateTime: string;
-  endDateTime: string;
+  startDateTime: Date;
+  endDateTime: Date;
   reason: string;
   status: string;
   userId: string;

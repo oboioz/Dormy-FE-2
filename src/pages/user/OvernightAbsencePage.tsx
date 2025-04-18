@@ -36,6 +36,8 @@ import CreateOvernightAbsenceModal from "../../sections/@dashboard/user/request/
 import { toast } from "react-toastify";
 import EditOvernightAbsenceModal from "../../sections/@dashboard/user/request/EditOvernightAbsenceModal";
 import { DateTimeUtils } from "../../utils/DateTimeUtils";
+import OvernightAbsenceStatusTag from "../../sections/tag/OvernightAbsenceStatusTag";
+import { UpdateOvernightAbsenceRequestModel } from "../../models/requests/OvernightAbsenceRequestModels";
 
 // ----------------------------------------------------------------------
 
@@ -89,15 +91,15 @@ export default function OvernightAbsencePage() {
   };
 
   const handleSubmit = async (formData: {
-    startDateTime: string;
-    endDateTime: string;
+    startDateTime: Date;
+    endDateTime: Date;
     reason: string;
   }) => {
     try {
       const payoad = {
-        ...formData,
-        startDateTime: DateTimeUtils.formatToYYYYMMDD(formData.startDateTime),
-        endDateTime: DateTimeUtils.formatToYYYYMMDD(formData.endDateTime),
+        reason: formData.reason,
+        startDateTime: formData.startDateTime,//DateTimeUtils.formatToYYYYMMDD(formData.startDateTime),
+        endDateTime: formData.endDateTime//DateTimeUtils.formatToYYYYMMDD(formData.endDateTime),
       }
       await httpClient.overnightAbsenceService.createOvernightAbsence(payoad);
       fetchOvernightAbsences(); // Refresh the table data
@@ -123,13 +125,26 @@ export default function OvernightAbsencePage() {
 
   const handleEditSubmit = async (formData: {
     id: string;
-    startDateTime: string;
-    endDateTime: string;
+    startDateTime: Date;
+    endDateTime: Date;
     reason: string;
   }) => {
     try {
-      await httpClient.overnightAbsenceService.updateOvernightAbsence(formData);
-      fetchOvernightAbsences(); // Refresh the table data
+      const payload: UpdateOvernightAbsenceRequestModel = {
+        id: editData.id,
+        reason: formData.reason,
+        startDateTime: formData.startDateTime,
+        endDateTime: formData.endDateTime,
+      }
+      console.log("payload: ", payload);
+      const response = await httpClient.overnightAbsenceService.updateOvernightAbsence(payload);
+      if (response) {
+        toast.success("Update overnight absence successfully");
+        fetchOvernightAbsences(); // Refresh the table data
+      }
+      else {
+        toast.error("Failed to update overnight absence.");
+      }
       handleCloseEditModal(); // Close the modal
     } catch (error) {
       toast.error("Failed to update overnight absence:" + error);
@@ -213,25 +228,19 @@ export default function OvernightAbsencePage() {
                       </TableCell>
                       <TableCell align="left">{row.reason}</TableCell>
                       <TableCell align="left">
-                        <Label
-                          variant="soft"
-                          color={
-                            (row.status === "Active" && "success") || "error"
-                          }
-                          sx={{ textTransform: "capitalize" }}
-                        >
-                          {row.status}
-                        </Label>
+                        <OvernightAbsenceStatusTag status={row.status}/>
                       </TableCell>
                       <TableCell align="left">{row.reason}</TableCell>
                       <TableCell align="center">
-                        <Button
+                        {row.status == "SUBMITTED" && (
+                          <Button
                           size="small"
                           variant="outlined"
                           onClick={() => handleEdit(row)}
-                        >
-                          Edit
-                        </Button>
+                          >
+                            Edit
+                          </Button>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
