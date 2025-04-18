@@ -23,3 +23,9 @@ export interface IRoom {
   lastUpdatedBy: string;
   isDeleted: boolean;
 }
+
+export interface ICreateRoomBatch {
+  roomTypeId: string;
+  floorNumber: number;
+  totalRoomsWantToCreate: number;
+}

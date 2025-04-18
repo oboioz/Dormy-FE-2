@@ -2,13 +2,24 @@ import { useEffect, useState } from "react";
 import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
 // @mui
 import {
+  Autocomplete,
   Button,
   Card,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
   IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
+  Stack,
   Table,
   TableBody,
   TableContainer,
+  TextField,
   Tooltip,
 } from "@mui/material";
 // routes
@@ -40,6 +51,12 @@ import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
 import { BuildingModel } from "../../models/responses/BuildingModels";
 import { buildingService } from "../../services/buildingService";
+import { IRoomType } from "../../models/responses/RoomTypeModels";
+import { httpClient } from "../../services";
+import { ICreateRoomBatch } from "../../models/responses/RoomModel";
+import { forEach } from "lodash";
+import { HttpStatusCode } from "axios";
+import { toast } from "react-toastify";
 
 const TABLE_HEAD = [
   { id: "floor", label: "Floor", align: "center" },
@@ -73,12 +90,46 @@ export default function DormitoryRoomListPage() {
   const navigate = useNavigate();
   const { buildingId } = useParams();
 
-  // const [tableData, setTableData] = useState<BuildingModel>();
   const [building, setBuilding] = useState<BuildingModel>();
 
-  // const [filterName, setFilterName] = useState("");
+  const [roomTypes, setRoomTypes] = useState<IRoomType[]>([]);
+  const [createRoomBatch, setCreateRoomBatch] = useState<ICreateRoomBatch>({
+    floorNumber: 0,
+    roomTypeId: "",
+    totalRoomsWantToCreate: 0,
+  });
+  const [selectedRoomType, setSelectedRoomType] = useState<IRoomType | null>(
+    null
+  );
+
+  const isEnableSubmit =
+    createRoomBatch.floorNumber > 0 &&
+    createRoomBatch.roomTypeId &&
+    createRoomBatch.totalRoomsWantToCreate > 0;
+
+  const handleSetFloorNumber = (value: number) => {
+    setCreateRoomBatch({ ...createRoomBatch, floorNumber: value });
+  };
+
+  const handleSetRoomType = (value: IRoomType) => {
+    setSelectedRoomType(value);
+    setCreateRoomBatch({ ...createRoomBatch, roomTypeId: value.id });
+  };
+
+  const handleSetTotalRoom = (value: number) => {
+    setCreateRoomBatch({ ...createRoomBatch, totalRoomsWantToCreate: value });
+  };
 
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [openCreateRoom, setOpenCreateForm] = useState<boolean>(false);
+
+  const handleOpenCreateRoomModal = () => {
+    setOpenCreateForm(true);
+  };
+
+  const handleCloseCreateRoomModal = () => {
+    setOpenCreateForm(false);
+  };
 
   // const dataFiltered = applyFilter({
   //   inputData: building?.rooms || [],
@@ -115,15 +166,38 @@ export default function DormitoryRoomListPage() {
   const fetchBuilding = async (buildingId: string) => {
     if (!buildingId) return;
 
-    var response = await buildingService.getBuildingById(buildingId);
+    var response = await httpClient.buildingService.getBuildingById(buildingId);
     if (response) {
       setBuilding(response);
     }
   };
 
+  const fetchRoomTypes = async () => {
+    var response = await httpClient.roomTypeService.getRoomTypeBatch();
+    if (response) {
+      setRoomTypes(response);
+      console.log(response);
+    }
+  };
+
+  const handleCreateRoomBatch = async (payload: ICreateRoomBatch) => {
+    var response = await httpClient.roomService.createRoomBatch(buildingId, [
+      payload,
+    ]);
+
+    if (response === HttpStatusCode.Ok) {
+      toast.success("Create rooms success");
+      fetchBuilding(buildingId);
+    } else {
+      toast.error("An error has occurred, please try again later");
+    }
+    handleCloseCreateRoomModal();
+  };
+
   useEffect(() => {
     if (buildingId) {
       fetchBuilding(buildingId);
+      fetchRoomTypes();
     }
   }, []);
 
@@ -145,12 +219,11 @@ export default function DormitoryRoomListPage() {
           ]}
           action={
             <Button
-              component={RouterLink}
-              to={PATH_ADMIN.dormitory.roomCreate}
+              onClick={() => handleOpenCreateRoomModal()}
               variant="contained"
               startIcon={<Iconify icon="eva:plus-fill" />}
             >
-              New Room
+              New Rooms
             </Button>
           }
         />
@@ -260,11 +333,81 @@ export default function DormitoryRoomListPage() {
           </Button>
         }
       />
+      <Dialog
+        open={openCreateRoom}
+        onClose={() => handleCloseCreateRoomModal()}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>Create New Rooms</DialogTitle>
+        <DialogContent>
+          <Stack spacing={3} sx={{ mt: 2 }}>
+            {/* Room Number Field */}
+            <TextField
+              id="roomCount"
+              label="Room Number"
+              type="number"
+              value={createRoomBatch.totalRoomsWantToCreate}
+              onChange={(e) => handleSetTotalRoom(Number(e.target.value || 0))}
+              fullWidth
+            />
+            <FormControl>
+              <InputLabel id="roomType-label">Select Room Type</InputLabel>
+              <Select
+                id="roomType"
+                labelId="roomType-label"
+                label="Select Room Type"
+                value={createRoomBatch.floorNumber}
+                onChange={(e) => handleSetFloorNumber(Number(e.target.value))}
+                displayEmpty
+                fullWidth
+              >
+                <MenuItem value="" disabled>
+                  Select Floor
+                </MenuItem>
+                {Array.from(
+                  { length: building?.totalFloors || 0 },
+                  (_, index) => (
+                    <MenuItem key={index + 1} value={index + 1}>
+                      Floor {index + 1}
+                    </MenuItem>
+                  )
+                )}
+              </Select>
+            </FormControl>
+
+            {/* Room Type Dropdown */}
+            <Autocomplete
+              id="roomType"
+              options={roomTypes}
+              getOptionLabel={(option: IRoomType) =>
+                `${option.roomTypeName || "N/A"} - ${option.price || 0} VND`
+              }
+              value={selectedRoomType}
+              onChange={(event, newValue: IRoomType | null) =>
+                handleSetRoomType(newValue!)
+              }
+              renderInput={(params) => (
+                <TextField {...params} label="Select Room Type" />
+              )}
+              fullWidth
+            />
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleCloseCreateRoomModal()}>Cancel</Button>
+          <Button
+            disabled={!isEnableSubmit}
+            variant="contained"
+            onClick={() => handleCreateRoomBatch(createRoomBatch)}
+          >
+            Create
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
-
-// ----------------------------------------------------------------------
 
 function applyFilter({
   inputData,
