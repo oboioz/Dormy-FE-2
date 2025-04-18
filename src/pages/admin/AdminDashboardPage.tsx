@@ -139,7 +139,7 @@ export default function AdminDashboardPage() {
 
           <Grid item xs={12} md={6} lg={4}>
             <AnalyticsByGender
-              title="Sale By Gender"
+              title="Gender demographics"
               total={dashboard.totalUsers}
               chart={{
                 series: [
