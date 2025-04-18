@@ -167,7 +167,7 @@ export default function AuthLoginForm() {
             labelPlacement="start"
             control={
               <Checkbox
-                color="success"
+                color="primary"
                 checked={isUser}
                 onChange={(evt) => setIsUser(evt.target.checked)}
               />
