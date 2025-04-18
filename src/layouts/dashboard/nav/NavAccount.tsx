@@ -15,7 +15,7 @@ const StyledRoot = styled("div")(({ theme }) => ({
 export default function NavAccount() {
   const { user } = useAuthContext();
 
-  const name = "Guest";
+  const name = user?.name;
   const avatarURL = `https://ui-avatars.com/api/?name=${encodeURIComponent(
     name
   )}&background=random&size=128`;

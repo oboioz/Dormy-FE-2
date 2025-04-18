@@ -5,11 +5,8 @@ import { httpClient } from "../../services";
 import { IParkingRequest } from "../../models/responses/ParkingRequestModels";
 
 export default function MyParkingRequests() {
-  const [isViewAll, setIsViewAll] = useState<boolean>(false);
   const [parkingRequests, setParkingRequests] = useState<IParkingRequest[]>([]);
-  const parkingRequestsView = isViewAll
-    ? parkingRequests
-    : parkingRequests.slice(0, 1);
+  const parkingRequestsView = parkingRequests.slice(0, 1);
 
   const fetchRequests = async () => {
     const request = await httpClient.parkingRequestService.getRequests({
@@ -20,7 +17,7 @@ export default function MyParkingRequests() {
         new Date(b.createdDateUtc).getTime() -
         new Date(a.createdDateUtc).getTime()
     );
-    setParkingRequests(request);
+    setParkingRequests(request.slice(0, 1));
   };
 
   useEffect(() => {
@@ -30,7 +27,7 @@ export default function MyParkingRequests() {
   return (
     <Stack spacing={3} alignItems="flex-end">
       <Typography variant="overline" sx={{ width: 1, color: "text.secondary" }}>
-        My Parking Requests
+        My Parking Request
       </Typography>
 
       <Stack spacing={2} sx={{ width: 1 }}>
@@ -129,23 +126,6 @@ export default function MyParkingRequests() {
           </Card>
         ))}
       </Stack>
-
-      <Button
-        size="small"
-        color="inherit"
-        onClick={() => setIsViewAll((prev) => !prev)}
-        endIcon={
-          <Iconify
-            icon={
-              isViewAll
-                ? "eva:arrow-ios-upward-fill"
-                : "eva:arrow-ios-downward-fill"
-            }
-          />
-        }
-      >
-        {isViewAll ? "View Less" : "View All"}
-      </Button>
     </Stack>
   );
 }

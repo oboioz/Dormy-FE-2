@@ -255,7 +255,7 @@ export default function ViolationDetailsListPage() {
     var response = await httpClient.violationService.createViolation(payload);
     if (response) {
       toast.success("Created");
-      window.location.reload();
+      fetchViolations();
     } else {
       toast.error("An error has occurred, please try again later");
     }

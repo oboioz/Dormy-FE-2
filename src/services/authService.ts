@@ -3,7 +3,9 @@ import { SignInModel } from "../models/requests/SignInModel";
 import { API_URL } from "../consts/APIConstants";
 import {
   AdminSignInResponse,
+  IChangePassword,
   Profile,
+  UserInformation,
   UserSignInResponse,
 } from "../models/responses/UserModel";
 import { privateAxios, publicAxios } from "../libs/axios";
@@ -48,8 +50,60 @@ const getUsers = async (payload: GetBatchRequestModel) => {
   }
 };
 
+const getAdminInfo = async (id: string) => {
+  try {
+    var response = await privateAxios.get(API_URL.ADMIN.GET_INFO + id);
+    if (response.status === HttpStatusCode.Ok) {
+      return response.data.result as UserInformation;
+    }
+    return undefined;
+  } catch (err) {
+    console.log(err);
+    return undefined;
+  }
+};
+
+const changeAdminPassword = async (payload: IChangePassword) => {
+  try {
+    var response = await privateAxios.put(
+      API_URL.ADMIN.CHANGE_PASSWORD,
+      payload
+    );
+    console.log(response.data);
+    if (response.status === HttpStatusCode.Ok) {
+      return true;
+    } else {
+      return response.data.error;
+    }
+  } catch (err) {
+    console.log(err);
+    return err.response.data.error;
+  }
+};
+
+const changeUserPassword = async (payload: IChangePassword) => {
+  try {
+    var response = await privateAxios.put(
+      API_URL.USER.CHANGE_PASSWORD,
+      payload
+    );
+    console.log(response.data);
+    if (response.status === HttpStatusCode.Ok) {
+      return true;
+    } else {
+      return response.data.error;
+    }
+  } catch (err) {
+    console.log(err);
+    return err.response.data.error;
+  }
+};
+
 export const authService = {
   adminSignIn,
   userSignIn,
   getUsers,
+  getAdminInfo,
+  changeAdminPassword,
+  changeUserPassword,
 };

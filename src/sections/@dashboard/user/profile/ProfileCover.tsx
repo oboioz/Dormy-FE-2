@@ -46,7 +46,7 @@ const StyledInfo = styled("div")(({ theme }) => ({
 export default function ProfileCover() {
   const { user } = useAuthContext();
 
-  const name = "Guest";
+  const name = user?.name;
   const avatarURL = `https://ui-avatars.com/api/?name=${encodeURIComponent(
     name
   )}&background=random&size=128`;

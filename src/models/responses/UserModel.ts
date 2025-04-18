@@ -63,3 +63,9 @@ export interface Profile {
   contractStatus?: string;
   roomId?: string;
 }
+
+export interface IChangePassword {
+  id: string;
+  oldPassword: string;
+  newPassword: string;
+}

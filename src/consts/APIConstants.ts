@@ -3,12 +3,15 @@ export const API_URL = {
   ADMIN: {
     SIGN_IN: "auth/admin/sign-in",
     GET_DASHBOARD: "admin/dashboard",
+    GET_INFO: "admin/id/",
+    CHANGE_PASSWORD: "auth/admin/change-password",
   },
   USER: {
     SIGN_IN: "user/sign-in",
     SIGN_UP: "user/sign-up",
     GET_PROFILE: "/user/id/",
     GET_BATCH: "user/batch",
+    CHANGE_PASSWORD: "user/change-password",
   },
   WORKPLACE: {
     GET: "workplace/all",
@@ -94,6 +97,7 @@ export const API_URL = {
   },
   VEHICLE_HISTORY: {
     GET_BY_vEHICLE_ID: "vehicle-history/id/",
+    DELETE: "vehicle/id/{id}/soft-delete",
   },
   PARKING_SPOT: {
     GET_BATCH: "parking-spot/batch",
