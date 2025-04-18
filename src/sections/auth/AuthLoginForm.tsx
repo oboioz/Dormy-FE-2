@@ -21,7 +21,6 @@ import { PATH_ADMIN, PATH_AUTH, PATH_USER } from "../../routes/paths";
 import { useAuthContext } from "../../auth/JwtContext";
 import { toast } from "react-toastify";
 import { UserRole } from "../../models/enums/DormyEnums";
-// import { httpClient } from "../../utils/axios";
 import { httpClient } from "../../services";
 
 type FormValuesProps = {
@@ -34,7 +33,7 @@ export default function AuthLoginForm() {
   const { signIn } = useAuthContext();
   const navigate = useNavigate();
 
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [isUser, setIsUser] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const LoginSchema = Yup.object().shape({
@@ -112,10 +111,10 @@ export default function AuthLoginForm() {
   };
 
   const onSubmit = async (data: FormValuesProps) => {
-    if (isAdmin) {
-      await adminSignIn(data);
-    } else {
+    if (isUser) {
       await userSignIn(data);
+    } else {
+      await adminSignIn(data);
     }
   };
 
@@ -162,15 +161,15 @@ export default function AuthLoginForm() {
             }}
             label={
               <Typography variant="body1" fontWeight={"bold"}>
-                I'm Admin
+                I'm Customer
               </Typography>
             }
             labelPlacement="start"
             control={
               <Checkbox
                 color="success"
-                checked={isAdmin}
-                onChange={(evt) => setIsAdmin(evt.target.checked)}
+                checked={isUser}
+                onChange={(evt) => setIsUser(evt.target.checked)}
               />
             }
           />
