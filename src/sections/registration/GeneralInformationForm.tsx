@@ -59,19 +59,26 @@ type FormValuesProps = {
 };
 
 const UpdateSchema = Yup.object().shape({
-  // firstName: Yup.string().required("First name is required"),
+  firstName: Yup.string().required("First name is required"),
   lastName: Yup.string().required("Last name is required"),
   gender: Yup.string().required("Gender is required!"),
   dateOfBirth: Yup.date()
     .nullable() // Allow null values
-    .typeError("Date of Birth must be a valid date")
-    .required("Date of Birth is required"),
+    .required("Date of Birth is required")
+    .typeError("Date of Birth must be a valid date"),
   email: Yup.string()
     .required("Email is required")
     .email("Email must be a valid email address"),
   phoneNumber: Yup.string().required("Phone number is required!"),
   workplaceName: Yup.string().required("Workplace name is required!"),
   nationalIDNumber: Yup.string().required("National ID Number is required!"),
+  insuranceCardNumber: Yup.string().required("Insurance card number is required!"),
+  expirationDate: Yup.date()
+    .nullable() // Allow null values
+    .required("Expiration date is required")
+    .typeError("Expiration date must be a valid date"),
+  registeredHospital: Yup.string().required("Registered hospital is required!"),
+  //
   // portraitPhoto: Yup.mixed().nullable().required("Single upload is required"),
   // educationPhoto: Yup.mixed().nullable().required("Single upload is required"),
   // nationalIDPhotosFront: Yup.mixed().nullable().required("Single upload is required"),
@@ -108,11 +115,10 @@ export default function GeneralInformationForm({
   };
 
   const methods = useForm<FormValuesProps>({
-    // resolver: yupResolver(UpdateSchema),
+    resolver: yupResolver(UpdateSchema) as any,
     defaultValues,
   });
 
-  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -127,50 +133,8 @@ export default function GeneralInformationForm({
   } = methods;
 
   // const values = watch();
-  const validateForm = (data: FormValuesProps) => {
-    const errors: Record<string, string> = {};
-
-    if (!data.firstName) {
-      errors.firstName = "First name is required.";
-    }
-    if (!data.lastName) {
-      errors.lastName = "Last name is required.";
-    }
-    if (!data.gender) {
-      errors.gender = "Gender is required.";
-    }
-    if (!data.dateOfBirth) {
-      errors.dateOfBirth = "Date of birth is required.";
-    }
-    if (!data.email) {
-      errors.email = "Email is required.";
-    }
-    if (!data.phoneNumber) {
-      errors.phoneNumber = "Phone number is required.";
-    }
-    if (!data.workplaceName) {
-      errors.workplaceName = "Workplace is required.";
-    }
-    if (!data.nationalIDNumber) {
-      errors.nationalIDNumber = "National ID number is required.";
-    }
-    if (!data.insuranceCardNumber) {
-      errors.insuranceCardNumber = "Insurance card number is required.";
-    }
-    if (!data.expirationDate) {
-      errors.expirationDate = "Expiration date is required.";
-    }
-    if (!data.registeredHospital) {
-      errors.registeredHospital = "Registered hospital is required.";
-    }
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
 
   const onSubmit = async (data: FormValuesProps) => {
-    if (!validateForm(data)) {
-      return;
-    }
     setIsLoading(true);
     const dataPayload: IRegistrationFormState = {
       userState: {
@@ -308,19 +272,9 @@ export default function GeneralInformationForm({
               <Grid container spacing={1}>
                 <Grid item xs={12} md={6}>
                   <RHFTextField name="firstName" label="First Name" />
-                  {formErrors.firstName && (
-                    <Typography color="error">
-                      {formErrors.firstName}
-                    </Typography>
-                  )}
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <RHFTextField name="lastName" label="Last Name" />
-                  {formErrors.lastName && (
-                    <Typography color="error">
-                      {formErrors.lastName}
-                    </Typography>
-                  )}
                 </Grid>
               </Grid>
 
@@ -338,38 +292,18 @@ export default function GeneralInformationForm({
                       </MenuItem>
                     ))}
                   </RHFSelect>
-                  {formErrors.gender && (
-                    <Typography color="error">
-                      {formErrors.gender}
-                    </Typography>
-                  )}
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <RHFDatePicker name="dateOfBirth" label="Date of birth" />
-                  {formErrors.dateOfBirth && (
-                    <Typography color="error">
-                      {formErrors.dateOfBirth}
-                    </Typography>
-                  )}
                 </Grid>
               </Grid>
 
               <Grid container spacing={1}>
                 <Grid item xs={12} md={6}>
                   <RHFTextField name="email" label="Email address" />
-                  {formErrors.email && (
-                    <Typography color="error">
-                      {formErrors.email}
-                    </Typography>
-                  )}
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <RHFTextField name="phoneNumber" label="Phone Number" />
-                  {formErrors.phoneNumber && (
-                    <Typography color="error">
-                      {formErrors.phoneNumber}
-                    </Typography>
-                  )}
                 </Grid>
               </Grid>
             </Stack>
@@ -402,11 +336,6 @@ export default function GeneralInformationForm({
                       </MenuItem>
                     ))}
                   </RHFSelect>
-                  {formErrors.workplaceName && (
-                    <Typography color="error">
-                      {formErrors.workplaceName}
-                    </Typography>
-                  )}
                 </Grid>
               </Grid>
             </Stack>
@@ -453,11 +382,6 @@ export default function GeneralInformationForm({
                     name="nationalIDNumber"
                     label="National Identity Number"
                   />
-                  {formErrors.nationalIDNumber && (
-                    <Typography color="error">
-                      {formErrors.nationalIDNumber}
-                    </Typography>
-                  )}
                 </Grid>
               </Grid>
             </Stack>
@@ -477,19 +401,9 @@ export default function GeneralInformationForm({
                     name="insuranceCardNumber"
                     label="Insurance card number"
                   />
-                  {formErrors.insuranceCardNumber && (
-                    <Typography color="error">
-                      {formErrors.insuranceCardNumber}
-                    </Typography>
-                  )}
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <RHFDatePicker name="expirationDate" label="Expired date" />
-                  {formErrors.expirationDate && (
-                    <Typography color="error">
-                      {formErrors.expirationDate}
-                    </Typography>
-                  )}
                 </Grid>
               </Grid>
 
@@ -499,11 +413,6 @@ export default function GeneralInformationForm({
                     name="registeredHospital"
                     label="Registered hospital"
                   />
-                  {formErrors.registeredHospital && (
-                    <Typography color="error">
-                      {formErrors.registeredHospital}
-                    </Typography>
-                  )}
                 </Grid>
               </Grid>
             </Stack>

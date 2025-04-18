@@ -52,7 +52,20 @@ type FormValuesProps = {
   endDate: Date | null;
 };
 
-const UpdateSchema = Yup.object().shape({});
+const UpdateSchema = Yup.object().shape({
+  gender: Yup.string().required("Gender is required"),
+  roomTypeId: Yup.string().required("Room type is required"),
+  buildingId: Yup.string().required("Building is required"),
+  roomId: Yup.string().required("Room is required"),
+  startDate: Yup.date()
+    .nullable()
+    .required("Start date is required")
+    .min(new Date(), "Start date cannot be in the past"),
+  endDate: Yup.date()
+    .nullable()
+    .required("End date is required")
+    .min(Yup.ref("startDate"), "End date must be after the start date"),
+});
 
 export default function RoomPickingForm({
   generalInformation,
@@ -65,7 +78,6 @@ export default function RoomPickingForm({
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [buildings, setBuildings] = useState<any[]>([]);
   const [rooms, setRooms] = useState<any[]>([]);
@@ -83,7 +95,7 @@ export default function RoomPickingForm({
     endDate: generalInformation.endDate,
   };
   const methods = useForm<FormValuesProps>({
-    // resolver: yupResolver(UpdateSchema),
+    resolver: yupResolver(UpdateSchema) as any,
     defaultValues,
   });
 
@@ -100,41 +112,7 @@ export default function RoomPickingForm({
   const roomTypeId = watch("roomTypeId"); // Watch for changes in roomTypeId
   const buildingId = watch("buildingId"); // Watch for changes in buildingId
 
-  const validateForm = (data: FormValuesProps) => {
-    const errors: Record<string, string> = {};
-
-    if (!data.startDate) {
-      errors.startDate = "Start date is required.";
-    }
-    if (!data.endDate) {
-      errors.endDate = "End date is required.";
-    }
-    if (!data.gender) {
-      errors.gender = "Gender is required.";
-    }
-    if (!data.roomTypeId) {
-      errors.roomTypeId = "Room type is required.";
-    }
-    if (!data.buildingId) {
-      errors.buildingId = "Building is required.";
-    }
-    if (!data.roomId) {
-      errors.roomId = "Room is required.";
-    }
-    if (data.startDate && data.endDate) {
-      const isValidDate = DateTimeUtils.compareDate(data.startDate, data.endDate, true);
-      if (isValidDate != undefined && isValidDate == 1) {
-        errors.endDate = "End date must be after start date.";
-      }
-    }
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
   const onSubmit = async (data: FormValuesProps) => {
-    if (!validateForm(data)) {
-      return;
-    }
     setIsLoading(true);
     const dataPayload: IRegistrationFormState = {
       userState: generalInformation.userState,
@@ -177,6 +155,8 @@ export default function RoomPickingForm({
   useEffect(() => {
     // console.log("gender: ", gender);
     // console.log("roomTypeId: ", roomTypeId);
+    setValue("buildingId", "");
+    setValue("roomId", "");
     if (gender && roomTypeId) {
       searchBuildingsAndRoomsByGenderAndRoomType({
         roomTypeId: roomTypeId,
@@ -228,11 +208,6 @@ export default function RoomPickingForm({
                     label="Start date"
                     minDate={new Date()}
                   />
-                  {formErrors.startDate && (
-                    <Typography color="error">
-                      {formErrors.startDate}
-                    </Typography>
-                  )}
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <RHFDatePicker
@@ -240,9 +215,6 @@ export default function RoomPickingForm({
                     label="End date"
                     minDate={new Date()}
                   />
-                  {formErrors.endDate && (
-                    <Typography color="error">{formErrors.endDate}</Typography>
-                  )}
                 </Grid>
               </Grid>
             </Stack>
@@ -264,9 +236,6 @@ export default function RoomPickingForm({
                       </MenuItem>
                     ))}
                   </RHFSelect>
-                  {formErrors.gender && (
-                    <Typography color="error">{formErrors.gender}</Typography>
-                  )}
                 </Grid>
                 <Grid item xs={12} md={9}>
                   <RHFSelect
@@ -284,11 +253,6 @@ export default function RoomPickingForm({
                       </MenuItem>
                     ))}
                   </RHFSelect>
-                  {formErrors.roomTypeId && (
-                    <Typography color="error">
-                      {formErrors.roomTypeId}
-                    </Typography>
-                  )}
                 </Grid>
               </Grid>
 
@@ -300,20 +264,22 @@ export default function RoomPickingForm({
                     // value={buildingId}
                     disabled={isDisabledBuidlingOption}
                   >
-                    {buildings?.map((option) => (
-                      <MenuItem
-                        key={option.buildingId}
-                        value={option.buildingId}
-                      >
-                        {option.buildingName}
+                    {buildings?.length > 0 ? (
+                      buildings.map((option) => (
+                        <MenuItem
+                          key={option.buildingId}
+                          value={option.buildingId}
+                        >
+                          {option.buildingName}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <MenuItem disabled value="">
+                        No building available with your choice. Please choose
+                        other room types.
                       </MenuItem>
-                    ))}
+                    )}
                   </RHFSelect>
-                  {formErrors.buildingId && (
-                    <Typography color="error">
-                      {formErrors.buildingId}
-                    </Typography>
-                  )}
                 </Grid>
               </Grid>
 
@@ -325,21 +291,24 @@ export default function RoomPickingForm({
                     // value={buildingId}
                     disabled={isDisabledRoomOption}
                   >
-                    {rooms?.map((option) => (
-                      <MenuItem key={option.roomId} value={option.roomId}>
-                        {option.roomNumber +
-                          " - Status: " +
-                          option.status +
-                          " - Used bed: " +
-                          option.totalUsedBed +
-                          "/" +
-                          option.totalAvailableBed}
+                    {rooms?.length > 0 ? (
+                      rooms?.map((option) => (
+                        <MenuItem key={option.roomId} value={option.roomId}>
+                          {option.roomNumber +
+                            " - Status: " +
+                            option.status +
+                            " - Used bed: " +
+                            option.totalUsedBed +
+                            "/" +
+                            option.totalAvailableBed}
+                        </MenuItem>
+                      ))
+                    ) : (
+                      <MenuItem disabled value="">
+                        No room available with your choice.
                       </MenuItem>
-                    ))}
+                    )}
                   </RHFSelect>
-                  {formErrors.roomId && (
-                    <Typography color="error">{formErrors.roomId}</Typography>
-                  )}
                 </Grid>
               </Grid>
             </Stack>

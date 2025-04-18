@@ -13,6 +13,7 @@ import { CreateInvoiceRequestModel } from "../../../../../models/requests/Invoic
 import { getMonth, getYear } from "date-fns";
 import { httpClient } from "../../../../../services";
 import { toast } from "react-toastify";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 // ----------------------------------------------------------------------
 
@@ -44,8 +45,11 @@ export default function InvoiceNewEditForm({ isEdit, currentInvoice }: Props) {
   >([]);
 
   const NewUserSchema = Yup.object().shape({
-    createDate: Yup.string().nullable().required("Create date is required"),
-    dueDate: Yup.string().nullable().required("Due date is required"),
+    invoiceMonthYear: Yup.date()
+        .nullable()
+        .required("Start date is required"),
+    // createDate: Yup.string().nullable().required("Create date is required"),
+    // dueDate: Yup.string().nullable().required("Due date is required"),
     invoiceTo: Yup.mixed().nullable().required("Invoice to is required"),
   });
 
@@ -69,7 +73,7 @@ export default function InvoiceNewEditForm({ isEdit, currentInvoice }: Props) {
   );
 
   const methods = useForm<FormValuesProps>({
-    // resolver: yupResolver(NewUserSchema),
+    resolver: yupResolver(NewUserSchema) as any,
     defaultValues,
   });
 
