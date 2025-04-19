@@ -29,3 +29,9 @@ export interface ICreateRoomBatch {
   floorNumber: number;
   totalRoomsWantToCreate: number;
 }
+
+export interface IRoomUpdate {
+  id: string;
+  roomTypeId: string;
+  floorNumber: number;
+}

@@ -1,12 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // @mui
 import {
   Button,
   Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  FormHelperText,
   IconButton,
+  InputLabel,
   MenuItem,
+  Select,
+  Stack,
   TableCell,
   TableRow,
+  TextField,
   Typography,
 } from "@mui/material";
 // @types
@@ -21,6 +31,7 @@ import { RoomStatusEnum } from "../../../../models/enums/RoomStatusEnum";
 import { httpClient } from "../../../../services";
 import { HttpStatusCode } from "axios";
 import { toast } from "react-toastify";
+import { IRoomType } from "../../../../models/responses/RoomTypeModels";
 
 type Props = {
   row: Room;
@@ -49,6 +60,9 @@ export default function RoomTableRow({
   const isActive = status === RoomStatusEnum.AVAILABLE;
 
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [openEditConfirm, setOpenEditConfirm] = useState(false);
+  const [roomType, setRoomType] = useState<string>(roomTypeId);
+  const [roomTypes, setRoomTypes] = useState<IRoomType[]>([]);
 
   const [openPopover, setOpenPopover] = useState<HTMLElement | null>(null);
 
@@ -58,6 +72,15 @@ export default function RoomTableRow({
 
   const handleCloseConfirm = () => {
     setOpenConfirm(false);
+  };
+
+  const handleOpenEditConfirm = () => {
+    setOpenEditConfirm(true);
+    handleClosePopover();
+  };
+
+  const handleCloseEditConfirm = () => {
+    setOpenEditConfirm(false);
   };
 
   const handleOpenPopover = (event: React.MouseEvent<HTMLElement>) => {
@@ -89,6 +112,32 @@ export default function RoomTableRow({
         toast.error("An error has occurred, please try again later");
       }
       handleCloseConfirm();
+    }
+  };
+
+  const fetchRoomTypes = async () => {
+    const response = await httpClient.roomTypeService.getRoomTypeBatch();
+    if (response) {
+      setRoomTypes(response);
+    }
+  };
+
+  useEffect(() => {
+    fetchRoomTypes();
+  }, []);
+
+  const updateRoomType = async (roomTypeId: string) => {
+    var response = await httpClient.roomService.updateRoom({
+      id: id,
+      floorNumber: floorNumber,
+      roomTypeId: roomTypeId,
+    });
+
+    if (response === HttpStatusCode.Accepted) {
+      toast.success("Update success");
+      window.location.reload();
+    } else {
+      toast.error("An error has occurred, please try again later");
     }
   };
 
@@ -131,15 +180,22 @@ export default function RoomTableRow({
         open={openPopover}
         onClose={handleClosePopover}
         arrow="right-top"
-        sx={{ width: 140 }}
       >
+        <MenuItem
+          disabled={totalUsedBed > 0}
+          onClick={() => handleOpenEditConfirm()}
+        >
+          <Iconify icon="eva:edit-fill" />
+          Change Room Type
+        </MenuItem>
         <MenuItem
           onClick={() => {
             onDetailRow();
             handleClosePopover();
           }}
+          sx={{ color: "primary.main" }}
         >
-          <Iconify icon="eva:edit-fill" />
+          <Iconify icon="eva:eye-outline" />
           Detail
         </MenuItem>
         {totalUsedBed <= 0 && (
@@ -181,6 +237,41 @@ export default function RoomTableRow({
           </Button>
         }
       />
+
+      <Dialog
+        open={openEditConfirm}
+        onClose={() => handleCloseEditConfirm()}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>Edit Room Type</DialogTitle>
+        <DialogContent>
+          <Stack spacing={3}>
+            <FormControl required fullWidth margin="dense">
+              <InputLabel id="roomTypeId-label">Room Type</InputLabel>
+              <Select
+                id={`roomTypeId`}
+                labelId={`roomTypeId-label`}
+                label="Room Type"
+                value={roomType}
+                onChange={(event) => setRoomType(event.target.value)}
+              >
+                {roomTypes.map((type) => (
+                  <MenuItem key={type.id} value={type.id}>
+                    {type.roomTypeName}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => handleCloseEditConfirm()}>Cancel</Button>
+          <Button variant="contained" onClick={() => updateRoomType(roomType)}>
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

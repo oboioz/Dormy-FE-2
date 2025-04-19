@@ -41,6 +41,7 @@ export const API_URL = {
   },
   ROOM: {
     GET_SINGLE: "room/id/",
+    UPDATE: "room",
     UPDATE_STATUS: "room/update/status",
     CREATE_BATCH: "room/buildingId/{buildingId}/batch/create",
   },

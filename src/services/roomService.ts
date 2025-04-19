@@ -1,7 +1,11 @@
 import { HttpStatusCode } from "axios";
 import { API_URL } from "../consts/APIConstants";
 import { privateAxios } from "../libs/axios";
-import { ICreateRoomBatch, IRoom } from "../models/responses/RoomModel";
+import {
+  ICreateRoomBatch,
+  IRoom,
+  IRoomUpdate,
+} from "../models/responses/RoomModel";
 import { RoomStatusEnum } from "../models/enums/RoomStatusEnum";
 
 const getRoomById = async (id: string) => {
@@ -60,9 +64,21 @@ const createRoomBatch = async (
   }
 };
 
+const updateRoom = async (payload: IRoomUpdate) => {
+  try {
+    var response = await privateAxios.put(API_URL.ROOM.UPDATE, payload);
+
+    return response.status;
+  } catch (err) {
+    console.log(err);
+    return HttpStatusCode.InternalServerError;
+  }
+};
+
 export const roomService = {
   getRoomById,
   activeRoom,
   deactivateRoom,
   createRoomBatch,
+  updateRoom,
 };
