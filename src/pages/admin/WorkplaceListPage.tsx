@@ -32,7 +32,11 @@ import { PATH_ADMIN } from "../../routes/paths";
 import WorkplaceTableRow from "../../sections/@dashboard/admin/resident/WorkplaceTableRow";
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
-import { WorkplaceCreateModel, WorkplaceModel, WorkplaceUpdateModel } from "../../models/responses/WorkplaceModels";
+import {
+  WorkplaceCreateModel,
+  WorkplaceModel,
+  WorkplaceUpdateModel,
+} from "../../models/responses/WorkplaceModels";
 import { httpClient } from "../../services";
 import { toast } from "react-toastify";
 import WorkplaceCreateEditModal from "../../sections/@dashboard/admin/resident/WorkplaceCreateEditModal";
@@ -139,6 +143,7 @@ export default function WorkplaceListPage() {
   const fetchWorkplaces = async () => {
     var response = await httpClient.workplaceService.getAllWorkplace();
     if (response?.length > 0) {
+      // response = response.filter((x) => !x.isDeleted);
       setWorkplaces(response);
     }
   };
@@ -154,8 +159,10 @@ export default function WorkplaceListPage() {
         name: updatedWorkplace.name,
         address: updatedWorkplace.address,
         abbrevation: updatedWorkplace.abbrevation,
-    }
-      const response = await httpClient.workplaceService.updateWorkplace(payload);
+      };
+      const response = await httpClient.workplaceService.updateWorkplace(
+        payload
+      );
       if (response) {
         toast.success("Workplace was updated successfully!");
         setWorkplaces((prevWorkplaces) =>
@@ -172,7 +179,9 @@ export default function WorkplaceListPage() {
 
   const handleCreateWorkplace = async (formData: WorkplaceCreateModel) => {
     try {
-      const response = await httpClient.workplaceService.createWorkplace(formData);
+      const response = await httpClient.workplaceService.createWorkplace(
+        formData
+      );
       if (response) {
         toast.success("Workplace was created successfully!");
         const addWorkplace: WorkplaceModel = {
@@ -181,8 +190,8 @@ export default function WorkplaceListPage() {
           address: formData.address,
           abbrevation: formData.abbrevation,
           createdByCreator: user.name,
-          createdDateUtc: (new Date()).toDateString(),
-        } 
+          createdDateUtc: new Date().toDateString(),
+        };
         setWorkplaces((prevWorkplaces) => [...prevWorkplaces, addWorkplace]);
         handleCloseCreateModal();
       }
@@ -260,7 +269,9 @@ export default function WorkplaceListPage() {
                         selected={selected.includes(row.id)}
                         onSelectRow={() => onSelectRow(row.id)}
                         // onEditRow={() => handleEditRow(row.id)}
-                        onEditRow={(updatedWorkplace) => handleEditWorkplace(updatedWorkplace)}
+                        onEditRow={(updatedWorkplace) =>
+                          handleEditWorkplace(updatedWorkplace)
+                        }
                         onDeleteRow={() => handleDeleteRow(row.id)}
                       />
                     ))}

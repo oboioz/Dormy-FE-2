@@ -26,7 +26,7 @@ type Props = {
   // onEditRow: VoidFunction;
   onEditRow: (updatedWorkplace: WorkplaceModel) => void;
   onSelectRow: VoidFunction;
-  onDeleteRow: VoidFunction;
+  onDeleteRow: (id: string) => void;
 };
 
 export default function WorkplaceTableRow({
@@ -71,18 +71,24 @@ export default function WorkplaceTableRow({
   };
 
   const handleOpenEditModal = () => {
-      setOpenEditModal(true);
-      handleClosePopover();
-    };
-  
-    const handleCloseEditModal = () => {
-      setOpenEditModal(false);
-    };
-  
-    const handleEditRoomType = (updatedWorkplace: WorkplaceModel) => {
-      onEditRow(updatedWorkplace);
-      handleCloseEditModal();
-    };
+    setOpenEditModal(true);
+    handleClosePopover();
+  };
+
+  const handleCloseEditModal = () => {
+    setOpenEditModal(false);
+  };
+
+  const handleEditRoomType = (updatedWorkplace: WorkplaceModel) => {
+    onEditRow(updatedWorkplace);
+    handleCloseEditModal();
+  };
+
+  const handleDeleteRow = () => {
+    handleClosePopover();
+    handleCloseConfirm();
+    onDeleteRow(row.id);
+  };
 
   return (
     <>
@@ -111,7 +117,9 @@ export default function WorkplaceTableRow({
 
         <TableCell align="left">{createdByCreator}</TableCell>
 
-        <TableCell align="left">{fDate(createdDateUtc, "dd/MM/yyyy")}</TableCell>
+        <TableCell align="left">
+          {fDate(createdDateUtc, "dd/MM/yyyy")}
+        </TableCell>
 
         <TableCell align="right">
           <IconButton
@@ -130,10 +138,7 @@ export default function WorkplaceTableRow({
         arrow="right-top"
         sx={{ width: 140 }}
       >
-        <MenuItem
-          disabled={isDeleted}
-          onClick={handleOpenEditModal}
-        >
+        <MenuItem disabled={isDeleted} onClick={handleOpenEditModal}>
           <Iconify icon="eva:edit-fill" />
           Edit
         </MenuItem>
@@ -155,7 +160,11 @@ export default function WorkplaceTableRow({
         title="Delete"
         content="Are you sure want to delete?"
         action={
-          <Button variant="contained" color="error" onClick={onDeleteRow}>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => handleDeleteRow()}
+          >
             Delete
           </Button>
         }
