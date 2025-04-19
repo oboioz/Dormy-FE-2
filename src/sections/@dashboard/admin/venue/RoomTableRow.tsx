@@ -142,20 +142,24 @@ export default function RoomTableRow({
           <Iconify icon="eva:edit-fill" />
           Detail
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            handleOpenConfirm();
-            handleClosePopover();
-          }}
-          sx={{ color: isActive ? "warning.main" : "success.main" }} // Updated color
-        >
-          <Iconify
-            icon={
-              isActive ? "eva:slash-outline" : "eva:checkmark-circle-2-outline"
-            } // Updated icon
-          />
-          {isActive ? "Deactivate" : "Activate"} {/* Updated text */}
-        </MenuItem>
+        {totalUsedBed <= 0 && (
+          <MenuItem
+            onClick={() => {
+              handleOpenConfirm();
+              handleClosePopover();
+            }}
+            sx={{ color: isActive ? "warning.main" : "success.main" }} // Updated color
+          >
+            <Iconify
+              icon={
+                isActive
+                  ? "eva:slash-outline"
+                  : "eva:checkmark-circle-2-outline"
+              } // Updated icon
+            />
+            {isActive ? "Deactivate" : "Activate"} {/* Updated text */}
+          </MenuItem>
+        )}
       </MenuPopover>
 
       <ConfirmDialog
