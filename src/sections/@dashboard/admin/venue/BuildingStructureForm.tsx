@@ -454,7 +454,7 @@ export default function BuildingStructureForm() {
                             label="Room Count"
                             type="number"
                             value={roomType.totalRoomsWantToCreate}
-                            disabled={isEditMode}
+                            disabled
                             fullWidth
                           />
                         </Grid>
