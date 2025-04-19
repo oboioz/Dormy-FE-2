@@ -49,7 +49,7 @@ const TABLE_HEAD = [
   { id: "email", label: "Email", align: "left" },
   { id: "phoneNumber", label: "Phone number", align: "left" },
   { id: "status", label: "Status", align: "left" },
-  // { id: "" },
+  { id: "" },
 ];
 
 export default function ResidentListPage() {
@@ -273,7 +273,11 @@ function applyFilter({
   if (filterName) {
     inputData = inputData.filter(
       (user) =>
-        user.firstName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        user.phoneNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        user.firstName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        user.lastName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        user.email.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        user.nationalIdNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 

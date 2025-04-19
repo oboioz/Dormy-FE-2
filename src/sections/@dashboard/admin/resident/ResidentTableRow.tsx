@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 // @mui
 import {
   Button,
@@ -8,17 +8,18 @@ import {
   TableCell,
   TableRow,
   Typography,
-} from '@mui/material';
+} from "@mui/material";
 // @types
-import { IUser } from '../../../../@types/user';
+import { IUser } from "../../../../@types/user";
 // components
-import ConfirmDialog from '../../../../components/confirm-dialog';
-import Iconify from '../../../../components/iconify';
-import Label from '../../../../components/label';
-import MenuPopover from '../../../../components/menu-popover';
-import { Profile } from '../../../../models/responses/UserModel';
-import { getGenderDescription } from '../../../../models/enums/GenderEnum';
-import UserStatusTag from '../../../tag/UserStatusTag';
+import ConfirmDialog from "../../../../components/confirm-dialog";
+import Iconify from "../../../../components/iconify";
+import Label from "../../../../components/label";
+import MenuPopover from "../../../../components/menu-popover";
+import { Profile } from "../../../../models/responses/UserModel";
+import { getGenderDescription } from "../../../../models/enums/GenderEnum";
+import UserStatusTag from "../../../tag/UserStatusTag";
+import UserProfileModal from "./UserProfileModal";
 
 // ----------------------------------------------------------------------
 
@@ -35,10 +36,18 @@ export default function ResidentTableRow({
   onEditRow,
   onSelectRow,
 }: Props) {
-
   const [openConfirm, setOpenConfirm] = useState(false);
 
   const [openPopover, setOpenPopover] = useState<HTMLElement | null>(null);
+  const [openViewDetail, setOpenViewDetail] = useState(false);
+
+  const handleOpenViewDetail = () => {
+    setOpenViewDetail(true);
+  };
+
+  const handleCloseViewDetail = () => {
+    setOpenViewDetail(false);
+  };
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -65,7 +74,7 @@ export default function ResidentTableRow({
         <TableCell align="left">{row.nationalIdNumber}</TableCell>
         <TableCell>
           <Typography variant="subtitle2" noWrap>
-          {row.lastName} {row.firstName}
+            {row.lastName} {row.firstName}
           </Typography>
         </TableCell>
 
@@ -73,9 +82,20 @@ export default function ResidentTableRow({
         <TableCell align="left">{row.email}</TableCell>
         <TableCell align="left">{row.phoneNumber}</TableCell>
         <TableCell align="left">
-          <UserStatusTag status={row.status}/>
+          <UserStatusTag status={row.status} />
         </TableCell>
 
+        <TableCell align="right">
+          <IconButton
+            onClick={() => {
+              // onViewRow();
+              handleOpenViewDetail();
+              // handleClosePopover();
+            }}
+          >
+            <Iconify icon="eva:eye-outline" />
+          </IconButton>
+        </TableCell>
         {/* <TableCell align="right">
           <IconButton color={openPopover ? 'inherit' : 'default'} onClick={handleOpenPopover}>
             <Iconify icon="eva:more-vertical-fill" />
@@ -94,7 +114,7 @@ export default function ResidentTableRow({
             handleOpenConfirm();
             handleClosePopover();
           }}
-          sx={{ color: 'error.main' }}
+          sx={{ color: "error.main" }}
         >
           <Iconify icon="eva:trash-2-outline" />
           Delete
@@ -122,6 +142,14 @@ export default function ResidentTableRow({
           </Button>
         }
       />
+
+      {openViewDetail && (
+        <UserProfileModal
+          open={openViewDetail}
+          onClose={handleCloseViewDetail}
+          userId={row.userId}
+        />
+      )}
     </>
   );
 }
