@@ -10,6 +10,7 @@ import { UserRole } from "../../models/enums/DormyEnums";
 import { dashboardService } from "../../services/dashboardService";
 import { useEffect, useState } from "react";
 import { IDashboard } from "../../models/responses/DashboardModels";
+import { BarChart } from "@mui/x-charts/BarChart";
 
 export default function AdminDashboardPage() {
   const theme = useTheme();
@@ -29,6 +30,7 @@ export default function AdminDashboardPage() {
     totalUnResovledRequests: 0,
     totalUsedBeds: 0,
     totalUsers: 0,
+    contractsPerMonths: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   });
 
   const fetchDashboard = async () => {
@@ -89,82 +91,51 @@ export default function AdminDashboardPage() {
             />
           </Grid>
 
-          <Grid item xs={12} md={6} lg={8}>
-            <AppAreaInstalled
-              title="Area Installed"
-              subheader="(+43%) than last year"
-              chart={{
-                categories: [
-                  "Jan",
-                  "Feb",
-                  "Mar",
-                  "Apr",
-                  "May",
-                  "Jun",
-                  "Jul",
-                  "Aug",
-                  "Sep",
-                ],
-                series: [
+          {/* Align BarChart and AnalyticsByGender */}
+          <Grid container item xs={12} spacing={3} alignItems="flex-end">
+            <Grid item xs={12} md={6} lg={8}>
+              <BarChart
+                xAxis={[
                   {
-                    year: "2019",
+                    scaleType: "band",
                     data: [
-                      {
-                        name: "Asia",
-                        data: [10, 41, 35, 51, 49, 62, 69, 91, 148],
-                      },
-                      {
-                        name: "America",
-                        data: [10, 34, 13, 56, 77, 88, 99, 77, 45],
-                      },
-                    ],
+                      "Jan",
+                      "Feb",
+                      "Mar",
+                      "Apr",
+                      "May",
+                      "Jun",
+                      "Jul",
+                      "Aug",
+                      "Sep",
+                      "Oct",
+                      "Nov",
+                      "Dec",
+                    ], // Months as x-axis labels
                   },
+                ]}
+                series={[
                   {
-                    year: "2020",
-                    data: [
-                      {
-                        name: "Asia",
-                        data: [148, 91, 69, 62, 49, 51, 35, 41, 10],
-                      },
-                      {
-                        name: "America",
-                        data: [45, 77, 99, 88, 77, 56, 13, 34, 10],
-                      },
-                    ],
+                    data: dashboard.contractsPerMonths,
+                    label: "Monthly Contracts",
                   },
-                ],
-              }}
-            />
-          </Grid>
+                ]}
+              />
+            </Grid>
 
-          <Grid item xs={12} md={6} lg={4}>
-            <AnalyticsByGender
-              title="Gender demographics"
-              total={dashboard.totalUsers}
-              chart={{
-                series: [
-                  { label: "Mens", value: dashboard.totalMaleUsers },
-                  { label: "Womens", value: dashboard.totalFemaleUsers },
-                ],
-              }}
-            />
+            <Grid item xs={12} md={6} lg={4}>
+              <AnalyticsByGender
+                title="Gender demographics"
+                total={dashboard.totalUsers}
+                chart={{
+                  series: [
+                    { label: "Mens", value: dashboard.totalMaleUsers },
+                    { label: "Womens", value: dashboard.totalFemaleUsers },
+                  ],
+                }}
+              />
+            </Grid>
           </Grid>
-
-          {/* <Grid item xs={12}>
-            <BookingDetails
-              title="Booking Details"
-              tableData={_bookings}
-              tableLabels={[
-                { id: 'booker', label: 'Booker' },
-                { id: 'checkIn', label: 'Check In' },
-                { id: 'checkOut', label: 'Check Out' },
-                { id: 'status', label: 'Status' },
-                { id: 'phone', label: 'Phone' },
-                { id: 'roomType', label: 'Room Type' },
-                { id: '' },
-              ]}
-            />
-          </Grid> */}
         </Grid>
       </Container>
     </>
