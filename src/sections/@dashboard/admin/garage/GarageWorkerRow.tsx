@@ -81,7 +81,7 @@ export default function GarageWorkerRow({ row }: IWorkerProps) {
 
         <TableCell align="left">{phoneNumber}</TableCell>
         <TableCell align="left">{email}</TableCell>
-        <TableCell align="center">{jobTitle}</TableCell>
+        <TableCell align="left">{jobTitle}</TableCell>
 
         <TableCell align="right">
           <IconButton
