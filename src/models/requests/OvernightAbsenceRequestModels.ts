@@ -1,8 +1,8 @@
 export interface CreateOvernightAbsenceRequestModel {
-    // startDateTime: string,
-    // endDateTime: string,
-    startDateTime: Date,
-    endDateTime: Date,
+    startDateTime: string,
+    endDateTime: string,
+    // startDateTime: Date,
+    // endDateTime: Date,
     reason: string
 }
 

@@ -14,6 +14,7 @@ import { getMonth, getYear } from "date-fns";
 import { httpClient } from "../../../../../services";
 import { toast } from "react-toastify";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { DateTimeUtils } from "../../../../../utils/DateTimeUtils";
 
 // ----------------------------------------------------------------------
 
@@ -102,7 +103,7 @@ export default function InvoiceNewEditForm({ isEdit, currentInvoice }: Props) {
     try {
       // Build the payload
       const payload: CreateInvoiceRequestModel = {
-        dueDate: data.dueDate,
+        dueDate: DateTimeUtils.toStringWithDefaultTime(data.dueDate),
         month: data.invoiceMonthYear
           ? getMonth(data.invoiceMonthYear) + 1
           : null,

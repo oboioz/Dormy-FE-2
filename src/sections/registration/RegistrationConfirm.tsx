@@ -74,22 +74,22 @@ export default function RegistrationConfirm({
         gender: userState.gender,
         nationalIdNumber: userState.nationalIdNumber,
         dateOfBirth: userState.dateOfBirth
-          ? DateTimeUtils.formatToYYYYMMDD(userState.dateOfBirth)
+          ? DateTimeUtils.toStringWithDefaultTime(userState.dateOfBirth)
           : "",
         phoneNumber: userState.phoneNumber,
       },
       workplaceId: workplaceId,
       roomId: roomState.roomId,
       startDate: startDate
-          ? DateTimeUtils.formatToYYYYMMDD(startDate)
+          ? DateTimeUtils.toStringWithDefaultTime(startDate)
           : "",
       endDate: endDate
-          ? DateTimeUtils.formatToYYYYMMDD(endDate)
+          ? DateTimeUtils.toStringWithDefaultTime(endDate)
           : "",
       healthInsurance: {
         insuranceCardNumber: healthInsuranceState.insuranceCardNumber,
         expirationDate: healthInsuranceState.expirationDate
-          ? DateTimeUtils.formatToYYYYMMDD(healthInsuranceState.expirationDate)
+          ? DateTimeUtils.toStringWithDefaultTime(healthInsuranceState.expirationDate)
           : "",
         registeredHospital: healthInsuranceState.registeredHospital,
       },

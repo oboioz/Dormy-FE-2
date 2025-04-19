@@ -5,7 +5,7 @@ export interface GetBatchInvoiceRequestModel {
 }
 
 export interface CreateInvoiceRequestModel {
-    dueDate: Date | null;
+    dueDate: string | null;
     month: number | null;
     year: number | null;
     type: string;

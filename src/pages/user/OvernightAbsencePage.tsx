@@ -37,7 +37,7 @@ import { toast } from "react-toastify";
 import EditOvernightAbsenceModal from "../../sections/@dashboard/user/request/EditOvernightAbsenceModal";
 import { DateTimeUtils } from "../../utils/DateTimeUtils";
 import OvernightAbsenceStatusTag from "../../sections/tag/OvernightAbsenceStatusTag";
-import { UpdateOvernightAbsenceRequestModel } from "../../models/requests/OvernightAbsenceRequestModels";
+import { CreateOvernightAbsenceRequestModel, UpdateOvernightAbsenceRequestModel } from "../../models/requests/OvernightAbsenceRequestModels";
 
 // ----------------------------------------------------------------------
 
@@ -96,10 +96,10 @@ export default function OvernightAbsencePage() {
     reason: string;
   }) => {
     try {
-      const payoad = {
+      const payoad: CreateOvernightAbsenceRequestModel = {
         reason: formData.reason,
-        startDateTime: formData.startDateTime,//DateTimeUtils.formatToYYYYMMDD(formData.startDateTime),
-        endDateTime: formData.endDateTime//DateTimeUtils.formatToYYYYMMDD(formData.endDateTime),
+        startDateTime: DateTimeUtils.toStringWithDefaultTime(formData.startDateTime),
+        endDateTime: DateTimeUtils.toStringWithDefaultTime(formData.endDateTime),
       }
       await httpClient.overnightAbsenceService.createOvernightAbsence(payoad);
       fetchOvernightAbsences(); // Refresh the table data
@@ -133,8 +133,8 @@ export default function OvernightAbsencePage() {
       const payload: UpdateOvernightAbsenceRequestModel = {
         id: editData.id,
         reason: formData.reason,
-        startDateTime: formData.startDateTime,
-        endDateTime: formData.endDateTime,
+        startDateTime: DateTimeUtils.toStringWithDefaultTime(formData.startDateTime),
+        endDateTime: DateTimeUtils.toStringWithDefaultTime(formData.endDateTime),
       }
       console.log("payload: ", payload);
       const response = await httpClient.overnightAbsenceService.updateOvernightAbsence(payload);
