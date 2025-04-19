@@ -69,3 +69,64 @@ export interface IChangePassword {
   oldPassword: string;
   newPassword: string;
 }
+
+export interface UserProfileResponseModel {
+  user: UserProfileDetailInformationResponseModel,
+  guardians: UserProfileGuardianResponseModel[],
+  workplace: UserProfileWorkplaceResponseModel,
+  healthInsurance: UserProfileHealthInsuranceResponseModel,
+  contract: UserProfileContractResponseModel
+}
+
+export interface UserProfileDetailInformationResponseModel {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  dateOfBirth: string;
+  phoneNumber: string;
+  nationalIdNumber: string;
+  status: string;
+  gender: string;
+}
+
+export interface UserProfileGuardianResponseModel {
+  id: string;
+  name: string;
+  email: string;
+  phoneNumber: string;
+  address: string;
+  relationshipToUser: string;
+}
+
+export interface UserProfileWorkplaceResponseModel {
+  id: string;
+  name: string;
+  address: string;
+  abbrevation: string;
+}
+
+export interface UserProfileHealthInsuranceResponseModel {
+  id: string;
+  insuranceCardNumber: string;
+  registeredHospital: string;
+  expirationDate: string;
+}
+
+export interface UserProfileContractResponseModel {
+  id: string;
+  submissionDate: string;
+  startDate: string;
+  endDate: string;
+  status: string;
+  numberExtension: number;
+  approverId: string | null;
+  approverFullName: string;
+  roomId: string;
+  roomNumber: number;
+  roomTypeId: string;
+  roomTypeName: string;
+  price: number;
+  buildingId: string;
+  buildingName: string;
+}
