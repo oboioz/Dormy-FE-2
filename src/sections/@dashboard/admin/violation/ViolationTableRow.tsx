@@ -81,21 +81,17 @@ export default function ViolationTableRow({
           </Typography>
         </TableCell>
 
-        <TableCell align="center">{fDate(violationDate, "dd/MM/yyyy")}</TableCell>
+        <TableCell align="center">
+          {fDate(violationDate, "dd/MM/yyyy")}
+        </TableCell>
 
         <TableCell align="left">{description}</TableCell>
 
-        <TableCell align="right">
-          {fCurrency(penalty)}
-        </TableCell>
+        <TableCell align="left">{fCurrency(penalty)}</TableCell>
 
         <TableCell align="left">{phoneNumber}</TableCell>
 
         <TableCell align="left">{email}</TableCell>
-
-        <TableCell align="center">
-          {fDate(dateOfBirth, "dd/MM/yyyy")}
-        </TableCell>
 
         <TableCell align="left">
           <IconButton
