@@ -352,11 +352,11 @@ export default function DormitoryRoomListPage() {
               fullWidth
             />
             <FormControl>
-              <InputLabel id="roomType-label">Select Room Type</InputLabel>
+              <InputLabel id="floor-label">Select Floor</InputLabel>
               <Select
-                id="roomType"
-                labelId="roomType-label"
-                label="Select Room Type"
+                id="floor"
+                labelId="floor-label"
+                label="Select Floor"
                 value={createRoomBatch.floorNumber}
                 onChange={(e) => handleSetFloorNumber(Number(e.target.value))}
                 displayEmpty

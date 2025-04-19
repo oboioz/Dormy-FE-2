@@ -65,6 +65,10 @@ export default function BuildingStructureForm() {
   };
   const [building, setBuilding] = useState<FormValuesProps>(defaultBuilding);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [buildingData, setBuildingData] = useState<BuildingModel>(null);
+  const isBuildingDataUnEditable = buildingData?.rooms?.some(
+    (r) => r.totalUsedBed > 0
+  );
 
   const fetchRoomTypes = async () => {
     const response = await httpClient.roomTypeService.getRoomTypeBatch();
@@ -157,12 +161,13 @@ export default function BuildingStructureForm() {
 
     if (isEditMode) {
       if (id) {
-        await editBuilding({
+        var payloadEdit: BuildingEditModel = {
           id: id,
           name: data.name,
           totalFloors: data.floors.length,
           genderRestriction: data.genderRestriction,
-        });
+        };
+        await editBuilding(payloadEdit);
       }
     } else {
       const payload: BuildingCreateModel = {
@@ -278,6 +283,7 @@ export default function BuildingStructureForm() {
     var response = await httpClient.buildingService.getBuildingById(id);
     if (response) {
       setBuilding(mapBuildingModelToFormValues(response));
+      setBuildingData(response);
     }
   };
 
@@ -337,7 +343,7 @@ export default function BuildingStructureForm() {
               id="genderRestriction"
               labelId="genderRestriction-label"
               value={building.genderRestriction}
-              disabled={isEditMode}
+              disabled={isBuildingDataUnEditable}
               label="Gender Restriction"
               onChange={handleChangeGenderRestriction}
               fullWidth
@@ -448,7 +454,7 @@ export default function BuildingStructureForm() {
                             label="Room Count"
                             type="number"
                             value={roomType.totalRoomsWantToCreate}
-                            disabled
+                            disabled={isEditMode}
                             fullWidth
                           />
                         </Grid>
