@@ -74,6 +74,14 @@ export default function RequestListPage() {
   const [selectedRequest, setSelectedRequest] = useState<string>("");
   const [requestType, setRequestType] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const [currentUserRoomId, setCurrentRoomId] = useState<string>(null);
+
+  const fetchProfile = async () => {
+    var profile = await httpClient.userService.userGetProfile(user?.id);
+    if (profile?.roomId) {
+      setCurrentRoomId(profile.roomId || null);
+    }
+  };
 
   const fetchRequests = async () => {
     var request = await httpClient.requestService.getRequests({ ids: [] });
@@ -125,7 +133,7 @@ export default function RequestListPage() {
       const response = await httpClient.requestService.createRequest({
         description: payload.description,
         requestType: payload.requestType,
-        roomId: tableData[0]?.roomId,
+        roomId: currentUserRoomId,
       });
       if (response) {
         toast.success("Request created successfully!");
@@ -147,7 +155,7 @@ export default function RequestListPage() {
         id: selectedRequest,
         description: payload.description,
         requestType: payload.requestType,
-        roomId: tableData.find((x) => x.id === selectedRequest)?.roomId || null,
+        roomId: currentUserRoomId,
       });
       if (response) {
         toast.success("Request updated successfully!");
@@ -207,6 +215,7 @@ export default function RequestListPage() {
 
   useEffect(() => {
     fetchRequests();
+    fetchProfile();
   }, []);
 
   useEffect(() => {
