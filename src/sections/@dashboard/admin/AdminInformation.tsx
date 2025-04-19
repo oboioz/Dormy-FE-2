@@ -1,85 +1,143 @@
 // form
 // @mui
-import { Box, Card, CardHeader, Stack } from '@mui/material';
-import { useForm } from 'react-hook-form';
-import FormProvider, { RHFTextField } from '../../../components/hook-form';
+import { Box, Card, CardHeader, Stack } from "@mui/material";
+import { useForm } from "react-hook-form";
+import FormProvider, { RHFTextField } from "../../../components/hook-form";
+import { useAuthContext } from "../../../auth/JwtContext";
+import { useEffect, useState } from "react";
+import { Profile, UserInformation } from "../../../models/responses/UserModel";
+import { httpClient } from "../../../services";
+import { fDate } from "../../../utils/formatTime";
 
 // utils
-
 
 // ----------------------------------------------------------------------
 
 type FormValuesProps = {
-    adminID: string;
-    role: string;
+  adminID: string;
+  role: string;
 
-    displayName: string;
-    gender: string;
-    email: string;
-    phoneNumber: string;
+  displayName: string;
+  gender: string;
+  email: string;
+  phoneNumber: string;
 };
 
 export default function AdminInformation() {
+  const { user } = useAuthContext();
 
-    const defaultValues = {
-        adminID: '4JHDL6HKE',
-        role: 'Supervisor',
+  const [profile, setProfile] = useState<UserInformation>({
+    id: "",
+    dateOfBirth: fDate(new Date()),
+    email: "--",
+    firstName: "--",
+    lastName: "--",
+    gender: "N/A",
+    phoneNumber: "--",
+    userName: "--",
+    jobTitle: "Administrator",
+  });
 
-        displayName: 'Dat',
-        gender: 'Male',
-        email: 'dat.nguyen@example.com',
-        phoneNumber: '0987654321',
-    };
+  const defaultValues = {
+    adminID: profile.id,
+    role: "Administrator",
 
-    const methods = useForm<FormValuesProps>({
-        defaultValues,
-    });
+    displayName: profile.firstName + " " + profile.lastName || "--",
+    gender: profile.gender,
+    email: profile.email,
+    phoneNumber: profile.phoneNumber,
+  };
 
-    return (
-        <FormProvider methods={methods}>
-            <Stack spacing={3}>
-                <Card sx={{ p: 3 }}>
-                    <CardHeader title="Administrator Information" />
-                    <Box
-                        rowGap={3}
-                        columnGap={2}
-                        display="grid"
-                        gridTemplateColumns={{
-                            xs: 'repeat(1, 1fr)',
-                            sm: 'repeat(2, 1fr)',
-                        }}
-                    >
-                        <RHFTextField name="adminID" label="Admin ID" InputProps={{ readOnly: true }} />
+  const methods = useForm<FormValuesProps>({
+    defaultValues,
+  });
 
-                        <RHFTextField name="role" label="Role" InputProps={{ readOnly: true }} />
-                    </Box>
-                </Card>
+  const { setValue } = methods;
 
+  const fetchProfile = async () => {
+    if (user) {
+      var response = await httpClient.authService.getAdminInfo(user?.id);
+      if (response) {
+        setProfile(response);
+        setValue("adminID", response.id.slice(0, 8));
+        setValue("displayName", response.firstName + " " + response.lastName);
+        setValue("email", response.email);
+        setValue("email", response.email);
+        setValue("phoneNumber", response.phoneNumber);
+        setValue("gender", response.gender.toLocaleUpperCase());
+      }
+    }
+  };
 
+  useEffect(() => {
+    fetchProfile();
+  }, []);
 
-                <Card sx={{ p: 3 }}>
-                    <CardHeader title="Personal Information" />
-                    <Box
-                        rowGap={3}
-                        columnGap={2}
-                        display="grid"
-                        gridTemplateColumns={{
-                            xs: 'repeat(1, 1fr)',
-                            sm: 'repeat(2, 1fr)',
-                        }}
-                    >
-                        <RHFTextField name="displayName" label="Name" InputProps={{ readOnly: true }} />
+  return (
+    <FormProvider methods={methods}>
+      <Stack spacing={3}>
+        <Card sx={{ p: 3 }}>
+          <CardHeader title="Administrator Information" />
+          <Box
+            rowGap={3}
+            columnGap={2}
+            display="grid"
+            gridTemplateColumns={{
+              xs: "repeat(1, 1fr)",
+              sm: "repeat(2, 1fr)",
+            }}
+          >
+            <RHFTextField
+              name="adminID"
+              label="Admin ID"
+              InputProps={{ readOnly: true }}
+            />
 
-                        <RHFTextField name="gender" label="Gender" InputProps={{ readOnly: true }} />
+            <RHFTextField
+              name="role"
+              label="Role"
+              InputProps={{ readOnly: true }}
+            />
+          </Box>
+        </Card>
 
-                        <RHFTextField name="email" label="Email Address" InputProps={{ readOnly: true }} />
+        <Card sx={{ p: 3 }}>
+          <CardHeader title="Personal Information" />
+          <Box
+            rowGap={3}
+            columnGap={2}
+            display="grid"
+            gridTemplateColumns={{
+              xs: "repeat(1, 1fr)",
+              sm: "repeat(2, 1fr)",
+            }}
+          >
+            <RHFTextField
+              name="displayName"
+              label="Name"
+              InputProps={{ readOnly: true }}
+            />
 
-                        <RHFTextField name="phoneNumber" label="Phone Number" InputProps={{ readOnly: true }} />
+            <RHFTextField
+              name="gender"
+              label="Gender"
+              InputProps={{ readOnly: true }}
+            />
 
-                    </Box>
-                </Card>
-            </Stack>
-        </FormProvider>
+            <RHFTextField
+              name="email"
+              label="Email Address"
+              InputProps={{ readOnly: true }}
+            />
 
-    );
+            <RHFTextField
+              name="phoneNumber"
+              label="Phone Number"
+              InputProps={{ readOnly: true }}
+            />
+          </Box>
+        </Card>
+      </Stack>
+    </FormProvider>
+  );
 }

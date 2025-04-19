@@ -68,9 +68,25 @@ const getVehicleHistoriesByVehicleId = async (vehicleId: string) => {
   }
 };
 
+const softDeleteVehicle = async (vehicleId: string) => {
+  try {
+    const response = await privateAxios.delete(
+      API_URL.VEHICLE_HISTORY.DELETE.replace("{id}", vehicleId)
+    );
+    if (response.status === HttpStatusCode.Accepted) {
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
+
 export const vehicleService = {
   getVehicleBatch,
   getVehicleHistoriesByVehicleId,
   updateVehicle,
   addVehicle,
+  softDeleteVehicle,
 };

@@ -5,6 +5,7 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
+  DialogContentText,
   DialogTitle,
   Grid,
   Stack,
@@ -29,6 +30,7 @@ export default function VehicleDetails({ vehicle }: Props) {
   const { user } = useAuthContext();
   const [isOpenForm, setIsOpenForm] = useState<boolean>(false);
   const [isOpenPRForm, setIsOpenPRForm] = useState<boolean>(false);
+  const [openDeleteVehicle, setOpenDeleteVehicle] = useState<boolean>(false);
   const [parkingSpots, setParkingSpots] = useState<IParkingSpot[]>([]);
   const [parkingSpot, setParkingSpot] = useState<IParkingSpot>();
   const [parkingRequest, setParkingRequest] = useState<ICreateParkingRequest>({
@@ -118,6 +120,18 @@ export default function VehicleDetails({ vehicle }: Props) {
     setIsOpenPRForm(true);
   };
 
+  const handleDeleteVehicle = async (id: string) => {
+    var response = await httpClient.vehicleService.softDeleteVehicle(id);
+    if (response) {
+      toast.success("Deleted");
+      handleCloseDeleteVehicleDialog();
+      window.location.reload();
+    } else {
+      toast.error("An error has occurred, please try again later");
+      handleCloseDeleteVehicleDialog();
+    }
+  };
+
   const handleClosePRForm = () => {
     setIsOpenPRForm(false);
     setParkingRequest({
@@ -125,6 +139,14 @@ export default function VehicleDetails({ vehicle }: Props) {
       parkingSpotId: "",
       vehicleId: vehicle.id,
     });
+  };
+
+  const handleCloseDeleteVehicleDialog = () => {
+    setOpenDeleteVehicle(false);
+  };
+
+  const handleOpenDeleteVehicleDialog = () => {
+    setOpenDeleteVehicle(true);
   };
 
   const handleSubmitParkingRequest = () => {
@@ -164,13 +186,24 @@ export default function VehicleDetails({ vehicle }: Props) {
           </Typography>
         </Grid>
         <Grid item>
-          <Button
-            startIcon={<Iconify icon="eva:edit-fill" />}
-            variant="outlined"
-            onClick={() => handleOpenForm()}
-          >
-            {!vehicle.id ? "Add vehicle" : "Update Vehicle Info"}
-          </Button>
+          <Stack direction="row" spacing={2}>
+            <Button
+              startIcon={<Iconify icon="eva:edit-fill" />}
+              variant="outlined"
+              onClick={() => handleOpenForm()}
+            >
+              {!vehicle.id ? "Add Vehicle" : "Update Vehicle Info"}
+            </Button>
+            <Button
+              startIcon={<Iconify icon="eva:trash-2-outline" />}
+              variant="outlined"
+              color="error"
+              disabled={!vehicle || !vehicle.id}
+              onClick={() => handleOpenDeleteVehicleDialog()}
+            >
+              Delete Vehicle
+            </Button>
+          </Stack>
         </Grid>
       </Grid>
 
@@ -305,6 +338,32 @@ export default function VehicleDetails({ vehicle }: Props) {
             onClick={() => handleSubmitParkingRequest()}
           >
             Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={openDeleteVehicle}
+        onClose={handleCloseDeleteVehicleDialog}
+        aria-labelledby="confirm-delete-title"
+        aria-describedby="confirm-delete-description"
+      >
+        <DialogTitle id="confirm-delete-title">Confirm Delete</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="confirm-delete-description">
+            Are you sure you want to delete the vehicle ? This action cannot be
+            undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteVehicleDialog} color="inherit">
+            Cancel
+          </Button>
+          <Button
+            onClick={() => handleDeleteVehicle(vehicle?.id)}
+            color="error"
+            variant="contained"
+          >
+            Delete Vehicle
           </Button>
         </DialogActions>
       </Dialog>

@@ -25,7 +25,7 @@ export default function AccountPopover() {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const name = "Guest";
+  const name = user?.name;
   const avatarURL = `https://ui-avatars.com/api/?name=${encodeURIComponent(
     name
   )}&background=random&size=128`;
@@ -55,7 +55,7 @@ export default function AccountPopover() {
   const handleLogout = async () => {
     try {
       signOut();
-      navigate('/');
+      navigate("/");
       handleClosePopover();
     } catch (error) {
       console.error(error);
