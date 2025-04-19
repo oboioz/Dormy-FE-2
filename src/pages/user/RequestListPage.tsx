@@ -90,7 +90,7 @@ export default function RequestListPage() {
       selectedStatus === "ALL" || row.status === selectedStatus;
 
     const matchesSearchQuery =
-      row.roomNumber.toString().includes(searchQuery) ||
+      row.roomNumber?.toString()?.includes(searchQuery) ||
       row.requestType.toLowerCase().includes(searchQuery.toLowerCase());
 
     return matchesStatus && matchesSearchQuery;
@@ -147,7 +147,7 @@ export default function RequestListPage() {
         id: selectedRequest,
         description: payload.description,
         requestType: payload.requestType,
-        roomId: tableData.find((x) => x.id === selectedRequest)?.roomId || "",
+        roomId: tableData.find((x) => x.id === selectedRequest)?.roomId || null,
       });
       if (response) {
         toast.success("Request updated successfully!");
