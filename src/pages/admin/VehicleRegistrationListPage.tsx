@@ -117,7 +117,7 @@ export default function VehicleRegistrationListPage() {
     );
     if (response) {
       toast.success(isApprove ? "Approved" : "Rejected");
-      window.location.reload();
+      fetchRequests();
     } else {
       toast.error("An error has occurred, please try again later");
     }

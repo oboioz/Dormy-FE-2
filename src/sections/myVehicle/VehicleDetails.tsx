@@ -22,6 +22,7 @@ import { useAuthContext } from "../../auth/JwtContext";
 import { ICreateParkingRequest } from "../../models/responses/ParkingRequestModels";
 import { IParkingSpot } from "../../models/responses/ParkingSpotModels";
 import { ParkingSpotStatusEnum } from "../../models/enums/ParkingSpotStatusEnum";
+import { RequestStatusEnum } from "../../models/enums/RequestStatusEnum";
 
 type Props = {
   vehicle: IVehicle;
@@ -46,6 +47,9 @@ export default function VehicleDetails({ vehicle }: Props) {
     licensePlate: vehicle.licensePlate,
   });
 
+  const [isCanCreateParkingRequest, setIsCanCreateParkingRequest] =
+    useState<boolean>(false);
+
   const updateVehicleInfo = async (payload: IUpdateVehicle) => {
     var isSuccess = await httpClient.vehicleService.updateVehicle(payload);
     if (isSuccess) {
@@ -67,6 +71,16 @@ export default function VehicleDetails({ vehicle }: Props) {
     } else {
       toast.error("Failed, please try again later");
     }
+  };
+
+  const fetchParkingRequests = async () => {
+    var requests = await httpClient.parkingRequestService.getRequests({
+      ids: [],
+    });
+    var isHaveSubmitParkingRequest = requests.some(
+      (x) => x.status.toLowerCase() == RequestStatusEnum.SUBMITTED.toLowerCase()
+    );
+    setIsCanCreateParkingRequest(!isHaveSubmitParkingRequest);
   };
 
   const getParkingSpots = async () => {
@@ -178,6 +192,7 @@ export default function VehicleDetails({ vehicle }: Props) {
 
   useEffect(() => {
     getParkingSpots();
+    fetchParkingRequests();
   }, []);
 
   return (
@@ -230,7 +245,11 @@ export default function VehicleDetails({ vehicle }: Props) {
               {vehicle.parkingSpotName}
             </Typography>
           ) : (
-            <Button variant="outlined" onClick={() => handleOpenPRForm()}>
+            <Button
+              disabled={!isCanCreateParkingRequest}
+              variant="outlined"
+              onClick={() => handleOpenPRForm()}
+            >
               Create Parking Request
             </Button>
           )}
