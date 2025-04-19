@@ -6,6 +6,7 @@ export const API_URL = {
     GET_INFO: "admin/id/",
     CHANGE_PASSWORD: "auth/admin/change-password",
     GET_USER_PROFILE: "admin/userId/",
+    GET_ALL_ADMIN: "admin",
   },
   USER: {
     SIGN_IN: "user/sign-in",

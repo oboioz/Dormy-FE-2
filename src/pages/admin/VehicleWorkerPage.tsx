@@ -8,7 +8,7 @@ import {
   TableContainer,
 } from "@mui/material";
 // components
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { IAdmin } from "../../@types/admin";
 import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
@@ -25,15 +25,18 @@ import { PATH_ADMIN } from "../../routes/paths";
 import GarageWorkerRow from "../../sections/@dashboard/admin/garage/GarageWorkerRow";
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
+import { UserInformation } from "../../models/responses/UserModel";
+import { httpClient } from "../../services";
+import { useAuthContext } from "../../auth/JwtContext";
 // sections
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: "name", label: "Name", align: "left" },
+  { id: "userName", label: "Name", align: "left" },
   { id: "phoneNumber", label: "Phone Number", align: "left" },
   { id: "email", label: "Email", align: "left" },
-  { id: "role", label: "role", align: "left" },
+  { id: "jobTitle", label: "Role", align: "left" },
   // { id: 'status', label: 'Status', align: 'center' },
   { id: "" },
 ];
@@ -112,12 +115,13 @@ export default function VehicleWorkerPage() {
   const { themeStretch } = useSettingsContext();
 
   const navigate = useNavigate();
+  const { user } = useAuthContext();
 
-  const [tableData, setTableData] = useState(mockAdmins);
+  const [tableData, setTableData] = useState<UserInformation[]>([]);
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
-  const isNotFound = !mockAdmins.length;
+  const isNotFound = !tableData.length;
 
   const handleOpenConfirm = () => {
     setOpenConfirm(true);
@@ -130,6 +134,16 @@ export default function VehicleWorkerPage() {
   const handleEditRow = (id: string) => {
     // navigate(PATH_DASHBOARD.user.edit(paramCase(id)));
   };
+
+  const fetchWorkers = async () => {
+    var workers = await httpClient.authService.getAllAdmins();
+    // workers = workers.filter((x) => x.id !== user?.id);
+    setTableData(workers);
+  };
+
+  useEffect(() => {
+    fetchWorkers();
+  }, []);
 
   // const handleDeleteRow = (id: string) => {
   //   const deleteRow = tableData.filter((row) => row.vehicleID.toString() !== id);
@@ -171,7 +185,7 @@ export default function VehicleWorkerPage() {
           heading="Garage Worker"
           links={[
             { name: "Dashboard", href: PATH_ADMIN.root },
-            { name: "User", href: PATH_ADMIN.profile },
+            { name: "Admin", href: PATH_ADMIN.profile },
             { name: "Garage Worker" },
           ]}
           // action={
@@ -196,10 +210,10 @@ export default function VehicleWorkerPage() {
                 />
 
                 <TableBody>
-                  {mockAdmins
+                  {tableData
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => (
-                      <GarageWorkerRow key={row.adminID} row={row} />
+                      <GarageWorkerRow key={row.id} row={row} />
                     ))}
 
                   <TableEmptyRows
@@ -216,5 +230,3 @@ export default function VehicleWorkerPage() {
     </>
   );
 }
-
-// ----------------------------------------------------------------------

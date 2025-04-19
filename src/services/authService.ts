@@ -50,6 +50,19 @@ const getUsers = async (payload: GetBatchRequestModel) => {
   }
 };
 
+const getAllAdmins = async () => {
+  try {
+    var response = await privateAxios.get(API_URL.ADMIN.GET_ALL_ADMIN);
+    if (response.status === HttpStatusCode.Ok) {
+      return response.data as UserInformation[];
+    }
+    return [];
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+};
+
 const getAdminInfo = async (id: string) => {
   try {
     var response = await privateAxios.get(API_URL.ADMIN.GET_INFO + id);
@@ -106,4 +119,5 @@ export const authService = {
   getAdminInfo,
   changeAdminPassword,
   changeUserPassword,
+  getAllAdmins,
 };
