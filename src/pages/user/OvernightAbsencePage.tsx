@@ -221,10 +221,10 @@ export default function OvernightAbsencePage() {
                   {overnightAbsences.map((row) => (
                     <TableRow key={row.id}>
                       <TableCell align="left">
-                        {fDate(row.startDateTime)}
+                        {fDate(row.startDateTime, "dd/MM/yyyy")}
                       </TableCell>
                       <TableCell align="left">
-                        {fDate(row.endDateTime)}
+                        {fDate(row.endDateTime, "dd/MM/yyyy")}
                       </TableCell>
                       <TableCell align="left">{row.reason}</TableCell>
                       <TableCell align="left">

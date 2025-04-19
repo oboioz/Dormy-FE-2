@@ -1,10 +1,32 @@
 import { Card, CardContent, Divider, Grid, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { IRoom } from "../../models/responses/RoomModel";
+import { fCurrency } from "../../utils/formatNumber";
 
 const StyledCard = styled(Card)(({ theme }) => ({
-  marginBottom: theme.spacing(3),
+  marginBottom: theme.spacing(1),
   boxShadow: theme.shadows[3],
+  borderRadius: theme.shape.borderRadius,
+  overflow: "hidden",
+  transition: "transform 0.3s ease, box-shadow 0.3s ease",
+  "&:hover": {
+    transform: "scale(1.02)",
+    boxShadow: theme.shadows[6],
+  },
+}));
+
+const StyledCardContent = styled(CardContent)(({ theme }) => ({
+  padding: theme.spacing(3),
+  "&:last-child": {
+    paddingBottom: theme.spacing(3),
+  },
+}));
+
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  marginBottom: theme.spacing(1),
+  "&:last-child": {
+    marginBottom: 0,
+  },
 }));
 
 type Props = {
@@ -32,65 +54,69 @@ export default function RoomDetails({ room }: Props) {
       {/* General Information */}
       <Grid item xs={12} md={6}>
         <StyledCard>
-          <CardContent>
+          <StyledCardContent>
             <Typography
               variant="overline"
-              sx={{ color: "text.disabled", mb: 2 }}
+              sx={{ color: "text.disabled", mb: 2, fontWeight: "bold" }}
             >
               General Information
             </Typography>
-            <Typography variant="body2">Block: {buildingName}</Typography>
-            <Typography variant="body2">
-              Room: {floorNumber}.{roomNumber}
-            </Typography>
-            <Typography variant="body2">
-              Bed: {totalUsedBed}/{totalAvailableBed}
-            </Typography>
-            <Typography variant="body2">
-              Price: {price} VND/person/month
-            </Typography>
-          </CardContent>
+            <StyledTypography variant="body2">
+              <b>Block:</b> {buildingName}
+            </StyledTypography>
+            <StyledTypography variant="body2">
+              <b>Room:</b> {floorNumber}.{roomNumber}
+            </StyledTypography>
+            <StyledTypography variant="body2">
+              <b>Bed:</b> {totalUsedBed}/{totalAvailableBed}
+            </StyledTypography>
+            <StyledTypography variant="body2">
+              <b>Price:</b> {fCurrency(price)} VND/person/month
+            </StyledTypography>
+          </StyledCardContent>
         </StyledCard>
       </Grid>
 
       {/* Room Type and Equipment */}
       <Grid item xs={12} md={6}>
         <StyledCard>
-          <CardContent>
+          <StyledCardContent>
             <Typography
               variant="overline"
-              sx={{ color: "text.disabled", mb: 2 }}
+              sx={{ color: "text.disabled", mb: 2, fontWeight: "bold" }}
             >
               Room Type and Equipment
             </Typography>
-            <Typography variant="body2">Room Type: {roomTypeName}</Typography>
-          </CardContent>
+            <StyledTypography variant="body2">
+              <b>Room Type:</b> {roomTypeName}
+            </StyledTypography>
+          </StyledCardContent>
         </StyledCard>
       </Grid>
 
       {/* Room Services */}
       <Grid item xs={12}>
         <StyledCard>
-          <CardContent>
+          <StyledCardContent>
             <Typography
               variant="overline"
-              sx={{ color: "text.disabled", mb: 2 }}
+              sx={{ color: "text.disabled", mb: 2, fontWeight: "bold" }}
             >
               Room Services
             </Typography>
             {roomServices && roomServices.length > 0 ? (
               roomServices.map((service) => (
-                <Typography key={service.id} variant="body2">
-                  - {service.roomServiceName}: {service.cost} VND/
-                  <b>{service.unit}</b>
-                </Typography>
+                <StyledTypography key={service.id} variant="body2">
+                  - <b>{service.roomServiceName}:</b> {fCurrency(service.cost)}{" "}
+                  VND/{service.unit}
+                </StyledTypography>
               ))
             ) : (
               <Typography variant="body2" color="text.secondary">
                 No services available.
               </Typography>
             )}
-          </CardContent>
+          </StyledCardContent>
         </StyledCard>
       </Grid>
     </Grid>

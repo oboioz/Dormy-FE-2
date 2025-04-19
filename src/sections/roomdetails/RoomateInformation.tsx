@@ -23,6 +23,8 @@ import {
 import { Profile } from "../../models/responses/UserModel";
 import Label from "../../components/label";
 import Iconify from "../../components/iconify";
+import UserStatusTag from "../tag/UserStatusTag";
+import { fDate } from "../../utils/formatTime";
 
 const TABLE_HEAD = [
   { id: "fullName", label: "Full Name", align: "left" },
@@ -36,7 +38,7 @@ export interface IUsersRoomProps {
   users: Profile[];
 }
 
-export default function ContractListPage(props: IUsersRoomProps) {
+export default function RoomateInformation(props: IUsersRoomProps) {
   if (!props) {
     return null;
   }
@@ -118,28 +120,13 @@ export default function ContractListPage(props: IUsersRoomProps) {
                       {/* Date of Birth */}
                       <TableCell align="left">
                         {row.dateOfBirth
-                          ? new Intl.DateTimeFormat("en-US", {
-                              year: "numeric",
-                              month: "2-digit",
-                              day: "2-digit",
-                            }).format(new Date(row.dateOfBirth))
+                          ? fDate(row.dateOfBirth, "dd/MM/yyyy")
                           : "--/--/--"}
                       </TableCell>
 
                       {/* Status */}
                       <TableCell align="left">
-                        <Label
-                          variant="soft"
-                          color={
-                            row.status === "ACTIVE"
-                              ? "success"
-                              : row.status === "INACTIVE"
-                              ? "error"
-                              : "default"
-                          }
-                        >
-                          {row.status}
-                        </Label>
+                        <UserStatusTag status={row.status} />
                       </TableCell>
                     </TableRow>
                   ))}

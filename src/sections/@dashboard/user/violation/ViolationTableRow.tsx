@@ -1,7 +1,8 @@
 import { Checkbox, TableCell, TableRow, Typography } from "@mui/material";
-import { fDateTime } from "../../../../utils/formatTime";
+import { fDate, fDateTime } from "../../../../utils/formatTime";
 import { IViolation } from "../../../../models/responses/ViolationModels";
 import { DateTimeUtils } from "../../../../utils/DateTimeUtils";
+import { fCurrency } from "../../../../utils/formatNumber";
 
 type Props = {
   row: IViolation;
@@ -38,10 +39,10 @@ export default function ViolationTableRow({
             onClick={onSelectRow}
           />
         </TableCell>
-        <TableCell align="left">{fDateTime(violationDate)}</TableCell>
+        <TableCell align="left">{fDate(violationDate, "dd/MM/yyyy hh:mm:ss")}</TableCell>
         <TableCell align="left">{description}</TableCell>
         <TableCell align="left">
-          {new Intl.NumberFormat("vi-VN").format(penalty)} VND
+          {fCurrency(penalty)}
         </TableCell>
       </TableRow>
     </>

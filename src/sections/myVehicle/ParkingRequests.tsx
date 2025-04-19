@@ -3,6 +3,8 @@ import Iconify from "../../components/iconify";
 import { useEffect, useState } from "react";
 import { httpClient } from "../../services";
 import { IParkingRequest } from "../../models/responses/ParkingRequestModels";
+import { fDate } from "../../utils/formatTime";
+import RequestStatusTag from "../tag/RequestStatusTag";
 
 export default function MyParkingRequests() {
   const [parkingRequests, setParkingRequests] = useState<IParkingRequest[]>([]);
@@ -41,15 +43,7 @@ export default function MyParkingRequests() {
                 </Typography>
                 <Typography variant="subtitle2">
                   {request.createdDateUtc
-                    ? new Intl.DateTimeFormat("en-US", {
-                        year: "numeric",
-                        month: "2-digit",
-                        day: "2-digit",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit",
-                        hour12: false,
-                      }).format(new Date(request.createdDateUtc))
+                    ? fDate(request.createdDateUtc, "dd/MM/yyyy hh:mm:ss")
                     : "--/--/--"}
                 </Typography>
               </Grid>
@@ -109,17 +103,8 @@ export default function MyParkingRequests() {
                 <Typography variant="body2" sx={{ color: "text.secondary" }}>
                   Status
                 </Typography>
-                <Typography
-                  variant="subtitle2"
-                  color={
-                    request.status === "APPROVED"
-                      ? "success.main"
-                      : request.status === "REJECTED"
-                      ? "error.main"
-                      : "warning.main"
-                  }
-                >
-                  {request.status}
+                <Typography variant="subtitle2">
+                  <RequestStatusTag status={request.status} />
                 </Typography>
               </Grid>
             </Grid>

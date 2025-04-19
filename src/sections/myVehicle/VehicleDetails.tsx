@@ -236,7 +236,7 @@ export default function VehicleDetails({ vehicle }: Props) {
           </Typography>
           <Typography variant="subtitle2">
             {vehicle.lastUpdatedDateUtc
-              ? fDate(new Date(vehicle.lastUpdatedDateUtc))
+              ? fDate(new Date(vehicle.lastUpdatedDateUtc), "dd/MM/yyyy")
               : "--/--/--"}
           </Typography>
         </Stack>
