@@ -87,12 +87,12 @@ export default function RoomPickingForm({
     useState<boolean>(true);
 
   const defaultValues: FormValuesProps = {
-    roomTypeId: generalInformation.roomState.roomTypeId,
-    buildingId: generalInformation.roomState.buildingId,
-    gender: generalInformation.roomState.gender,
-    roomId: generalInformation.roomState.roomId,
-    startDate: generalInformation.startDate,
-    endDate: generalInformation.endDate,
+    roomTypeId: generalInformation?.roomState?.roomTypeId,
+    buildingId: generalInformation?.roomState?.buildingId,
+    gender: generalInformation?.roomState?.gender,
+    roomId: generalInformation?.roomState?.roomId,
+    startDate: generalInformation?.startDate,
+    endDate: generalInformation?.endDate,
   };
   const methods = useForm<FormValuesProps>({
     resolver: yupResolver(UpdateSchema) as any,
