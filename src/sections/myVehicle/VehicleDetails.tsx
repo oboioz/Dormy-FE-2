@@ -21,6 +21,7 @@ import Iconify from "../../components/iconify";
 import { useAuthContext } from "../../auth/JwtContext";
 import { ICreateParkingRequest } from "../../models/responses/ParkingRequestModels";
 import { IParkingSpot } from "../../models/responses/ParkingSpotModels";
+import { ParkingSpotStatusEnum } from "../../models/enums/ParkingSpotStatusEnum";
 
 type Props = {
   vehicle: IVehicle;
@@ -72,6 +73,11 @@ export default function VehicleDetails({ vehicle }: Props) {
     var response = await httpClient.parkingSpotService.getParkingSpotBatch({
       ids: [],
     });
+    response = response.filter(
+      (x) =>
+        x.currentQuantity < x.capacitySpots &&
+        x.status === ParkingSpotStatusEnum.AVAILABLE
+    );
     setParkingSpots(response);
   };
 
