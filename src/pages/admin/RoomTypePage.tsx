@@ -39,8 +39,8 @@ import CreateEditRoomTypeModal from "../../sections/@dashboard/admin/venue/Creat
 
 const TABLE_HEAD = [
   { id: "roomTypeName", label: "Name", align: "left" },
-  { id: "capacity", label: "Capacity", align: "center" },
-  { id: "price", label: "Price", align: "center" },
+  { id: "capacity", label: "Capacity", align: "left" },
+  { id: "price", label: "Price", align: "left" },
   { id: "description", label: "Description", align: "left" },
   { id: "" },
 ];
