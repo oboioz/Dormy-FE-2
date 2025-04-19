@@ -29,7 +29,7 @@ export default function RoomDetailsPage() {
       if (roomDetail) {
         setRoom({
           ...roomDetail,
-          users: roomDetail.users.filter((x) => x.userId !== userId),
+          users: roomDetail.users//.filter((x) => x.userId !== userId),
         });
       }
     }
