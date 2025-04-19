@@ -91,7 +91,7 @@ export default function RequestListingPage() {
       selectedStatus === "ALL" || row.status === selectedStatus;
 
     const matchesSearchQuery =
-      row.roomNumber.toString().includes(searchQuery) ||
+      row.roomNumber?.toString()?.includes(searchQuery) ||
       row.requestType.toLowerCase().includes(searchQuery.toLowerCase()) ||
       row.userName.toLowerCase().includes(searchQuery.toLowerCase());
 
@@ -106,25 +106,25 @@ export default function RequestListingPage() {
     setOpenConfirm(false);
   };
 
-  const approveRequestRequest = async (id: string, isApprove: boolean) => {
+  const approveRejectRequest = async (id: string, isApprove: boolean) => {
     var response = await httpClient.requestService.approveRejectRequest(
       id,
       isApprove
     );
     if (response) {
       toast.success(isApprove ? "Approved" : "Rejected");
-      window.location.reload();
+      fetchRequests();
     } else {
       toast.error("An error has occurred, please try again later");
     }
   };
 
   const handleApproveRow = (id: string) => {
-    approveRequestRequest(id, true);
+    approveRejectRequest(id, true);
   };
 
   const handleRejectRow = (id: string) => {
-    approveRequestRequest(id, false);
+    approveRejectRequest(id, false);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
