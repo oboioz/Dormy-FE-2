@@ -306,6 +306,14 @@ export default function BuildingStructureForm() {
         roomTypeId: room.roomTypeId,
         totalRoomsWantToCreate: room.totalAvailableBed + room.totalUsedBed, // Assuming total rooms = available + used beds
       });
+
+      // Ensure roomTypes are distinct by roomTypeId
+      floorsMap[room.floorNumber].roomTypes = floorsMap[
+        room.floorNumber
+      ].roomTypes.filter(
+        (roomType, index, self) =>
+          index === self.findIndex((t) => t.roomTypeId === roomType.roomTypeId)
+      );
     });
 
     // Convert floorsMap to an array of FormFloorCreate
