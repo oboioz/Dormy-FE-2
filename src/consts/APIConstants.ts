@@ -99,8 +99,9 @@ export const API_URL = {
     ADD: "vehicle",
   },
   VEHICLE_HISTORY: {
-    GET_BY_vEHICLE_ID: "vehicle-history/id/",
+    GET_BY_VEHICLE_ID: "vehicle-history/id/",
     DELETE: "vehicle/id/{id}/soft-delete",
+    UPDATE_HISTORY: "vehicle-history",
   },
   PARKING_SPOT: {
     GET_BATCH: "parking-spot/batch",

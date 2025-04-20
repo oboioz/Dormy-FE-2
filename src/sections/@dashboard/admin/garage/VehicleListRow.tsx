@@ -12,6 +12,8 @@ import Iconify from "../../../../components/iconify";
 import Label from "../../../../components/label";
 import MenuPopover from "../../../../components/menu-popover";
 import { IVehicle } from "../../../../models/responses/VehicleModels";
+import { httpClient } from "../../../../services";
+import { toast } from "react-toastify";
 
 type Props = {
   row: IVehicle;
@@ -57,6 +59,18 @@ export default function VehicleListRow({
     setOpenPopover(null);
   };
 
+  const updateVehicleHistory = async (vehicleId: string) => {
+    var response = await httpClient.vehicleService.updateVehicleHistory(
+      vehicleId
+    );
+    if (response) {
+      toast.success("Updated vehicle history");
+      window.location.reload();
+    } else {
+      toast.error("An error has occurred, please try again later");
+    }
+  };
+
   return (
     <>
       <TableRow hover selected={selected}>
@@ -84,18 +98,23 @@ export default function VehicleListRow({
             color={(!isDeleted && "success") || "error"}
             sx={{ textTransform: "capitalize" }}
           >
-            Active
+            {isDeleted ? "Inactive" : "Active"}
           </Label>
         </TableCell>
 
-        {/* <TableCell align="left">
-          <IconButton
-            color={openPopover ? "inherit" : "default"}
-            onClick={handleOpenPopover}
+        <TableCell align="center">
+          <Button
+            variant="contained"
+            color="success"
+            disabled={isDeleted}
+            startIcon={<Iconify icon="eva:arrow-circle-up-outline" />}
+            endIcon={<Iconify icon="eva:arrow-circle-down-outline" />}
+            onClick={() => updateVehicleHistory(id)}
+            sx={{ mr: 1 }}
           >
-            <Iconify icon="eva:more-vertical-fill" />
-          </IconButton>
-        </TableCell> */}
+            In/Out
+          </Button>
+        </TableCell>
       </TableRow>
 
       <MenuPopover

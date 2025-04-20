@@ -56,7 +56,7 @@ const addVehicle = async (payload: IUpdateVehicle, userId: string) => {
 const getVehicleHistoriesByVehicleId = async (vehicleId: string) => {
   try {
     const response = await privateAxios.get(
-      API_URL.VEHICLE_HISTORY.GET_BY_vEHICLE_ID + vehicleId
+      API_URL.VEHICLE_HISTORY.GET_BY_VEHICLE_ID + vehicleId
     );
     if (response.status === HttpStatusCode.Ok) {
       return response.data.result as VehicleHistoryModel[];
@@ -83,10 +83,29 @@ const softDeleteVehicle = async (vehicleId: string) => {
   }
 };
 
+const updateVehicleHistory = async (vehicleId: string) => {
+  try {
+    const response = await privateAxios.post(
+      API_URL.VEHICLE_HISTORY.UPDATE_HISTORY,
+      {
+        vehicleId: vehicleId,
+      }
+    );
+    if (response.status === HttpStatusCode.Ok) {
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
+
 export const vehicleService = {
   getVehicleBatch,
   getVehicleHistoriesByVehicleId,
   updateVehicle,
   addVehicle,
   softDeleteVehicle,
+  updateVehicleHistory,
 };

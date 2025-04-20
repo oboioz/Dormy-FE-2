@@ -38,6 +38,7 @@ const TABLE_HEAD = [
   { id: "parkingSpotName", label: "Parking Spot", align: "left" },
   { id: "userFullname", label: "Owner", align: "left" },
   { id: "isDeleted", label: "Status", align: "left" },
+  { id: "history", label: "History", align: "center" },
   // { id: "" },
 ];
 
