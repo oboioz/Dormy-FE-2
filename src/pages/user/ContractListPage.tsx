@@ -1,39 +1,42 @@
-import { Link as RouterLink } from "react-router-dom";
-// @mui
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
   Button,
   Card,
   Container,
+  Grid,
   IconButton,
+  Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableRow,
+  Typography,
 } from "@mui/material";
-
-// components
+// import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
 import Iconify from "../../components/iconify";
-import Label from "../../components/label";
 import Scrollbar from "../../components/scrollbar";
-import { useSettingsContext } from "../../components/settings";
 import { TableHeadCustom, useTable } from "../../components/table";
-import { PATH_REGISTER, PATH_USER } from "../../routes/paths";
+import { useSettingsContext } from "../../components/settings";
+import { PATH_USER } from "../../routes/paths";
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
-import ContractStatusTag from "../../sections/tag/ContractStatusTag";
-import { useEffect, useState } from "react";
 import { ContractResponseModel } from "../../models/responses/ContractResponseModels";
-import { GetBatchContractRequestModel } from "../../models/requests/ContractRequestModels";
+import {
+  ContractExtensionCreateRequestModel,
+  GetBatchContractRequestModel,
+} from "../../models/requests/ContractRequestModels";
 import { httpClient } from "../../services";
-import { toast } from "react-toastify";
 import { fDate } from "../../utils/formatTime";
-import ContractModal from "../../sections/@dashboard/admin/contract/ContractModal";
-import UserContractModal from "../../sections/@dashboard/user/contract/UserContractModal";
-// sections
-
-// ----------------------------------------------------------------------
+import { DateTimeUtils } from "../../utils/DateTimeUtils";
+import ContractStatusTag from "../../sections/tag/ContractStatusTag";
+import ContractExtensionModal from "../../sections/@dashboard/user/contract/ContractExtensionModal";
 
 const TABLE_HEAD = [
   { id: "startDate", label: "Start date", align: "left" },
@@ -47,13 +50,11 @@ const TABLE_HEAD = [
   { id: "action", label: "", align: "left" },
 ];
 
-// ----------------------------------------------------------------------
-
 export default function ContractListPage() {
   useAuthGuard(UserRole.CUSTOMER);
-  const { page } = useTable();
-  const [openDetails, setOpenDetails] = useState(false);
   const [contracts, setContracts] = useState<ContractResponseModel[]>([]);
+  const [openContractExtension, setOpenContractExtension] =
+    useState<boolean>(false);
 
   const { themeStretch } = useSettingsContext();
 
@@ -66,7 +67,6 @@ export default function ContractListPage() {
     );
 
     if (response) {
-      console.log("response", response);
       setContracts(response);
     } else {
       setContracts([]);
@@ -78,20 +78,39 @@ export default function ContractListPage() {
     fetchContractsData();
   }, []);
 
-  const handleOpenDetails = () => {
-    setOpenDetails(true);
+  const handleOpenContractExtension = () => {
+    setOpenContractExtension(true);
   };
 
-  const handleCloseDetails = () => {
-    setOpenDetails(false);
+  const handleCloseContractExtension = () => {
+    setOpenContractExtension(false);
+  };
+
+  const handleSubmitContractExtension = async (data: {
+    startDate: Date;
+    endDate: Date;
+  }) => {
+    try {
+      const payload: ContractExtensionCreateRequestModel = {
+        startDate: DateTimeUtils.toStringWithDefaultTime(data.startDate),
+        endDate: DateTimeUtils.toStringWithDefaultTime(data.endDate),
+      };
+      const response = await httpClient.contractService.createContractExtension(
+        payload
+      );
+      if (response) {
+        toast.success("Extend contract successfully.");
+      } else {
+        toast.error("Failed to extend contract.");
+      }
+    } catch (error) {
+      toast.error("Failed to extend contract:" + error);
+    }
+    handleCloseContractExtension();
   };
 
   return (
     <>
-      {/* <Helmet>
-        <title>Contract List</title>
-      </Helmet> */}
-
       <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
           heading="Contract List"
@@ -102,76 +121,172 @@ export default function ContractListPage() {
           ]}
           action={
             <Button
-              component={RouterLink}
-              to={PATH_REGISTER.policy}
               variant="contained"
               startIcon={<Iconify icon="eva:plus-fill" />}
+              onClick={handleOpenContractExtension}
             >
               Extend Contract
             </Button>
           }
         />
 
-        <Card>
-          <TableContainer sx={{ position: "relative", overflow: "unset" }}>
-            <Scrollbar>
-              <Table size={"medium"} sx={{ minWidth: 800 }}>
-                <TableHeadCustom
-                  headLabel={TABLE_HEAD}
-                  // rowCount={tableData.length}
-                />
+        {/* Accordion for Contracts */}
+        {contracts.map((contract) => (
+          <Accordion key={contract.id} sx={{ mt: 2 }}>
+            <AccordionSummary
+              expandIcon={<Iconify icon="eva:arrow-ios-downward-fill" />}
+              sx={{
+                bgcolor: "background.default",
+                borderBottom: "1px solid",
+                borderColor: "divider",
+                "& .MuiAccordionSummary-content": {
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                },
+              }}
+            >
+              <Box>
+                <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+                  Room {contract.roomNumber} - Building {contract.buildingName}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  <b>Status:</b> <ContractStatusTag status={contract.status} />
+                </Typography>
+              </Box>
+              <Stack direction="row" spacing={2} sx={{ mr: 16 }}>
+                <Typography variant="body2" sx={{ mr: 16 }}>
+                  <b>Start Date:</b> {fDate(contract.startDate, "dd/MM/yyyy")}
+                </Typography>
+                <Typography variant="body2">
+                  <b>End Date:</b> {fDate(contract.endDate, "dd/MM/yyyy")}
+                </Typography>
+              </Stack>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Box sx={{ mb: 2 }}>
+                <Grid container spacing={3}>
+                  {/* First Column */}
+                  <Grid item xs={12} md={6}>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                      <strong>Tenant:</strong> {contract.userFullname}
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                      <strong>Submission Date:</strong>{" "}
+                      {fDate(contract.submissionDate, "dd/MM/yyyy")}
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                      <strong>Workplace:</strong> {contract.workplaceName}
+                    </Typography>
+                  </Grid>
 
-                <TableBody>
-                  {contracts.map((contract, index) => (
-                    <>
-                      <TableRow hover key={contract.id}>
-                        <TableCell align="left">
-                          {fDate(contract.startDate, "dd/MM/yyyy")}
-                        </TableCell>
-                        <TableCell align="left">
-                          {fDate(contract.endDate, "dd/MM/yyyy")}
-                        </TableCell>
-                        <TableCell align="left">
-                          {contract.userFullname}
-                        </TableCell>
-                        <TableCell align="left">
-                          {contract.roomNumber}
-                        </TableCell>
-                        <TableCell align="left">
-                          {contract.buildingName}
-                        </TableCell>
-                        <TableCell align="left">
-                          {contract.roomTypeName}
-                        </TableCell>
-                        <TableCell align="left">
-                          {contract.approverFullName || "--"}
-                        </TableCell>
-                        <TableCell align="left">
-                          <ContractStatusTag status={contract.status} />
-                        </TableCell>
+                  {/* Second Column */}
+                  <Grid item xs={12} md={6}>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                      <strong>Insurance Card Number:</strong>{" "}
+                      {contract.insuranceCardNumber}
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                      <strong>Registered Hospital:</strong>{" "}
+                      {contract.registeredHospital}
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                      <strong>Expiration Date:</strong>{" "}
+                      {fDate(contract.expirationDate)}
+                    </Typography>
+                  </Grid>
+                </Grid>
+                <Grid container spacing={3} sx={{ mt: 1 }}>
+                  {/* First Column */}
+                  <Grid item xs={12} md={6}>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                      <strong>Room Number:</strong> {contract.roomNumber}
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                      <strong>Room Type:</strong> {contract.roomTypeName}
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                      <strong>Building:</strong> {contract.buildingName}
+                    </Typography>
+                  </Grid>
 
-                        <TableCell align="right">
-                          <IconButton onClick={handleOpenDetails}>
-                            <Iconify icon="eva:eye-outline" />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                      <UserContractModal
-                        open={openDetails}
-                        onClose={handleCloseDetails}
-                        contract={contract}
-                        // onStatusChange={(newStatus) => handleStatusChange(row.id, newStatus)}
-                      />
-                    </>
-                  ))}
-                </TableBody>
-              </Table>
-            </Scrollbar>
-          </TableContainer>
-        </Card>
+                  {/* Second Column */}
+                  <Grid item xs={12} md={6}>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                      <strong>Approver:</strong>{" "}
+                      {contract.approverFullName || "N/A"}
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong>Status:</strong>{" "}
+                      <ContractStatusTag status={contract.status} />
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </Box>
+
+              {/* Contract Extensions */}
+              <Typography variant="h6" gutterBottom>
+                Contract Extensions
+              </Typography>
+              {contract.contractExtensions &&
+              contract.contractExtensions.length > 0 ? (
+                contract.contractExtensions.map((extension, index) => (
+                  <Box
+                    key={extension.contractExtensionId}
+                    sx={{
+                      mb: 2,
+                      p: 2,
+                      bgcolor: "background.paper",
+                      borderRadius: 2,
+                      boxShadow: 1,
+                      border: "1px solid",
+                      borderColor: "divider",
+                    }}
+                  >
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} md={6}>
+                        <Typography variant="body2" sx={{ mb: 1 }}>
+                          <b>Submission Date:</b>{" "}
+                          {fDate(extension.submissionDate, "dd/MM/yyyy")}
+                        </Typography>
+                        <Typography variant="body2">
+                          <b>Status:</b>{" "}
+                          <ContractStatusTag status={extension.status} />
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} md={6}>
+                        <Typography variant="body2" sx={{ mb: 1 }}>
+                          <b>Start Date:</b>{" "}
+                          {fDate(extension.startDate, "dd/MM/yyyy")}
+                        </Typography>
+                        <Typography variant="body2" sx={{ mb: 1 }}>
+                          <b>End Date:</b>{" "}
+                          {fDate(extension.endDate, "dd/MM/yyyy")}
+                        </Typography>
+                        
+                      </Grid>
+                    </Grid>
+                  </Box>
+                ))
+              ) : (
+                <Typography variant="body2" color="text.secondary">
+                  No extensions available.
+                </Typography>
+              )}
+            </AccordionDetails>
+          </Accordion>
+        ))}
       </Container>
+
+      <ContractExtensionModal
+        open={openContractExtension}
+        onClose={handleCloseContractExtension}
+        onSubmit={handleSubmitContractExtension}
+        initialData={{
+          startDate: new Date(),
+          endDate: new Date(),
+        }}
+      />
     </>
   );
 }
-
-// ----------------------------------------------------------------------

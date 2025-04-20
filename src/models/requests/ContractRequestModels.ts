@@ -5,3 +5,8 @@ export interface GetBatchContractRequestModel {
 export interface ApproveOrRejectContractRequestModel {
     isAccepted: boolean;
 }
+
+export interface ContractExtensionCreateRequestModel {
+    startDate: string;
+    endDate: string;
+}

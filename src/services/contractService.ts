@@ -5,6 +5,7 @@ import { privateAxios } from "../libs/axios";
 import { ContractResponseModel } from "../models/responses/ContractResponseModels";
 import {
   ApproveOrRejectContractRequestModel,
+  ContractExtensionCreateRequestModel,
   GetBatchContractRequestModel,
 } from "../models/requests/ContractRequestModels";
 
@@ -66,9 +67,24 @@ const terminateContract = async (contractId: string) => {
   }
 };
 
+const createContractExtension = async (payload: ContractExtensionCreateRequestModel) => {
+  try {
+    const url = API_URL.CONTRACT_EXTENSION.CREATE;
+    const response = await privateAxios.post(url, payload);
+    if (response.status === HttpStatusCode.Created) {
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
+
 export const contractService = {
   getBatchContracts: getBatchContracts,
   approveOrRejectContract: approveOrRejectContract,
   activeContract: activeContract,
   terminateContract: terminateContract,
+  createContractExtension: createContractExtension,
 };

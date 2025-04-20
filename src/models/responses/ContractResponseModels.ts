@@ -22,6 +22,7 @@ export interface ContractResponseModel {
   insuranceCardNumber: string;
   registeredHospital: string;
   expirationDate: Date;
+  contractExtensions: ContractExtensionExtendContractResponseModel[];
 //   createdByCreator: string;
 //   lastUpdatedByUpdater: string;
 //   createdDateUtc: string;
@@ -29,4 +30,12 @@ export interface ContractResponseModel {
 //   createdBy: string;
 //   lastUpdatedBy: string;
 //   isDeleted: boolean;
+}
+
+export interface ContractExtensionExtendContractResponseModel {
+  contractExtensionId: string;
+  submissionDate: Date;
+  startDate: Date;
+  endDate: Date;
+  status: string;
 }

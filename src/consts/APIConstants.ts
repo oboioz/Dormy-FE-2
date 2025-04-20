@@ -125,4 +125,14 @@ export const API_URL = {
     GET_CREATE_INITIAL_DATA: "invoice/create-initial-data",
     GET_ROOMs_FOR_CREATE_INITIAL_DATA: "invoice/create-initial-data/rooms",
   },
+  CONTRACT_EXTENSION: {
+    GET_BATCH: "contract-extension/batch",
+    GET_SINGLE: "contract-extension/id/",
+    CREATE: "contract-extension",
+    UPDATE: "contract-extension",
+    ACCEPT_OR_REJECT: "contract-extension/id/{id}/approve-or-reject",
+    ACTIVE: "contract-extension/id/{id}/active",
+    TERMINATE: "contract-extension/id/{id}/terminate",
+    EXPIRED: "contract-extension/id/{id}/expired",
+  },
 };
