@@ -1,6 +1,8 @@
 import { Stack, Button, Typography, Box } from "@mui/material";
+import { useAuthContext } from "../../../auth/JwtContext";
 
 export default function NavDocs() {
+  const { user } = useAuthContext();
   return (
     <Stack
       spacing={3}
@@ -17,18 +19,18 @@ export default function NavDocs() {
 
       <div>
         <Typography gutterBottom variant="subtitle1">
-          Tan Le
+          {user.name}
         </Typography>
 
         <Typography
           variant="body2"
           sx={{ color: "text.secondary", whiteSpace: "pre-line" }}
         >
-          Tan Le
+          {user.name}
         </Typography>
       </div>
 
-      <Button variant="contained">Tan Le</Button>
+      <Button variant="contained">{user.name}</Button>
     </Stack>
   );
 }

@@ -135,4 +135,8 @@ export const API_URL = {
     TERMINATE: "contract-extension/id/{id}/terminate",
     EXPIRED: "contract-extension/id/{id}/expired",
   },
+  NOTIFICATION: {
+    GET: "notification",
+    READ: "notification/read/id/",
+  },
 };

@@ -1,89 +1,25 @@
-// @mui
 import { Container, Grid } from "@mui/material";
-// utils
-// routes
 import { PATH_USER } from "../../routes/paths";
-// @types
-// components
 import { Helmet } from "react-helmet-async";
-import { INotification } from "../../@types/notification";
 import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
 import { useSettingsContext } from "../../components/settings";
 import { SkeletonPostItem } from "../../components/skeleton";
 import NotificationPostCard from "../../sections/@dashboard/notifications/NotificationPostCard";
-// sections
-
-// ----------------------------------------------------------------------
-
-const mockNotifications: any[] = [
-  {
-    notificationID: 1,
-    content: "Your payment has been successfully processed.",
-    date: "2024-09-10T08:30:00Z",
-    title: "Payment Confirmation",
-    description: "Your dormitory fee for September has been paid.",
-    isRead: false,
-    userID: 101,
-    adminID: 1,
-  },
-  {
-    notificationID: 2,
-    content: "Maintenance work scheduled for your building.",
-    date: "2024-09-12T14:00:00Z",
-    title: "Maintenance Notice",
-    description: "Water supply will be interrupted from 2 PM to 5 PM.",
-    isRead: true,
-    userID: 102,
-    adminID: 2,
-  },
-  {
-    notificationID: 3,
-    content: "New room assignments have been released.",
-    date: "2024-09-15T10:00:00Z",
-    title: "Room Allocation Update",
-    description: "Check the portal to view your new room assignment.",
-    isRead: false,
-    userID: 103,
-    adminID: 1,
-  },
-  {
-    notificationID: 4,
-    content: "Your repair request has been approved.",
-    date: "2024-09-18T16:45:00Z",
-    title: "Repair Request Status",
-    description: "The repair request for your AC has been approved.",
-    isRead: true,
-    userID: 104,
-    adminID: 3,
-  },
-  {
-    notificationID: 5,
-    content: "Fire drill scheduled for this weekend.",
-    date: "2024-09-20T12:00:00Z",
-    title: "Safety Alert",
-    description: "A mandatory fire drill will be conducted on Sunday.",
-    isRead: false,
-    userID: 105,
-    adminID: 2,
-  },
-  {
-    notificationID: 6,
-    content: "Upcoming dormitory event: Cultural Night.",
-    date: "2024-09-22T18:30:00Z",
-    title: "Event Invitation",
-    description: "Join us for a night of performances and food.",
-    isRead: false,
-    userID: 106,
-    adminID: 1,
-  },
-];
-
-// ----------------------------------------------------------------------
+import { useEffect, useState } from "react";
+import { INotification } from "../../models/responses/NotificationModels";
+import { httpClient } from "../../services";
+import { useAuthContext } from "../../auth/JwtContext";
+import { UserRole } from "../../models/enums/DormyEnums";
+import { NotificationTypeEnum } from "../../models/enums/NotificationTypeEnum";
+import { toast } from "react-toastify";
 
 export default function NotificationsPage() {
   const { themeStretch } = useSettingsContext();
+  const { user } = useAuthContext();
+  const isAdmin = user.role === UserRole.ADMIN;
 
   // const [posts, setPosts] = useState([]);
+  const [notifications, setNotifications] = useState<INotification[]>();
 
   // const getAllPosts = useCallback(async () => {
   //   try {
@@ -104,7 +40,34 @@ export default function NotificationsPage() {
 
   // setPosts(mockNotifications);
 
-  const posts = mockNotifications;
+  const fetchNotifications = async () => {
+    var notifications = await httpClient.notificationService.getNotifications();
+    if (!isAdmin) {
+      notifications = notifications.filter((x) =>
+        [
+          NotificationTypeEnum.CONTRACT_ACTIVATION.toString(),
+          NotificationTypeEnum.VIOLATION_CREATION.toString(),
+          NotificationTypeEnum.REQUEST_STATUS_CHANGE.toString(),
+          NotificationTypeEnum.PARKING_REQUEST_STATUS_CHANGE.toString(),
+        ].includes(x.notificationType)
+      );
+    }
+    setNotifications(notifications);
+  };
+
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
+
+  const readNotification = async (id: string) => {
+    var response = await httpClient.notificationService.readNotifications(id);
+    if (response) {
+      toast.success("Read");
+      fetchNotifications();
+    } else {
+      toast.error("An error has occurred, please try again later");
+    }
+  };
 
   return (
     <>
@@ -141,10 +104,13 @@ export default function NotificationsPage() {
         />
 
         <Grid container spacing={3}>
-          {(!posts.length ? [...Array(12)] : posts).map((post, index) =>
-            post ? (
-              <Grid key={post.id} item xs={12} sm={6} md={3}>
-                <NotificationPostCard post={post} index={index} />
+          {notifications?.map((notification, index) =>
+            notification ? (
+              <Grid key={notification.id} item xs={12} sm={6} md={3}>
+                <NotificationPostCard
+                  notification={notification}
+                  readNotification={() => readNotification(notification.id)}
+                />
               </Grid>
             ) : (
               <SkeletonPostItem key={index} />
@@ -155,5 +121,3 @@ export default function NotificationsPage() {
     </>
   );
 }
-
-// ----------------------------------------------------------------------
