@@ -79,7 +79,7 @@ export default function WorkplaceTableRow({
     setOpenEditModal(false);
   };
 
-  const handleEditRoomType = (updatedWorkplace: WorkplaceModel) => {
+  const handleEditWorkplace = (updatedWorkplace: WorkplaceModel) => {
     onEditRow(updatedWorkplace);
     handleCloseEditModal();
   };
@@ -172,7 +172,7 @@ export default function WorkplaceTableRow({
       <WorkplaceCreateEditModal
         open={openEditModal}
         onClose={handleCloseEditModal}
-        onSubmit={handleEditRoomType}
+        onSubmit={handleEditWorkplace}
         initialData={row}
       />
     </>
