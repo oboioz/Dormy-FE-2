@@ -140,4 +140,12 @@ export const API_URL = {
     GET: "notification",
     READ: "notification/read/id/",
   },
+  SETTING: {
+    CREATE: "setting",
+    UPDATE: "setting",
+    GET_SINGLE: "setting/keyname/",
+    GET_ALL: "setting/all",
+    GET_ALL_DATATYPES: "setting/all-datatypes",
+    TURN_ON_OFF: "setting/turn-on-off"
+  }
 };
