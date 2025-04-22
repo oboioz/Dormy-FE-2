@@ -1,5 +1,6 @@
 // @mui
 import {
+  Button,
   Card,
   Container,
   Table,
@@ -25,82 +26,123 @@ import { TableHeadCustom } from "../../components/table";
 import { PATH_ADMIN } from "../../routes/paths";
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
+import { useEffect, useState } from "react";
+import { httpClient } from "../../services";
+import { SettingResponseModel } from "../../models/responses/SettingResponseModels";
+import SystemSettingsTableRow from "../../sections/@dashboard/admin/setting/SystemSettingsTableRow";
+import { SettingCreateUpdateRequestModel, SettingTurnOnOffRequestModel } from "../../models/requests/SettingRequestModels";
+import { toast } from "react-toastify";
+import { useAuthContext } from "../../auth/JwtContext";
+import Iconify from "../../components/iconify";
+import SettingCreateEditModal from "../../sections/@dashboard/admin/setting/SettingCreateEditModal";
 // sections
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: "id", label: "Request ID", align: "left" },
-  { id: "parameter", label: "Parameter", align: "center" },
-  { id: "settings", label: "Settings", align: "left" },
+  { id: "keyName", label: "Keyname", align: "left" },
+  { id: "value", label: "Value", align: "center" },
+  { id: "dataType", label: "Data type", align: "center" },
+  { id: "isApplied", label: "isApplied", align: "center" },
+  { id: "action", label: "", align: "left" },
 ];
-
-type FormValuesProps = {
-  newRegisterStartDate: Date | null;
-  newRegisterEndDate: Date | null;
-  extendContractStartDate: Date | null;
-  extendContractEndDate: Date | null;
-  garageAvailable: boolean;
-};
-
-const defaultValues = {
-  newRegisterStartDate: new Date(),
-  newRegisterEndDate: null,
-  extendContractStartDate: new Date(),
-  extendContractEndDate: null,
-  garageAvailable: false,
-};
-
-const FormSchema = Yup.object().shape({
-  newRegisterStartDate: Yup.date()
-    .nullable()
-    .required("Start date is required"),
-  newRegisterEndDate: Yup.date()
-    .required("End date is required")
-    .nullable()
-    .min(
-      Yup.ref("newRegisterStartDate"),
-      "End date must be later than start date"
-    ),
-
-  extendContractStartDate: Yup.date()
-    .nullable()
-    .required("Start date is required"),
-  extendContractEndDate: Yup.date()
-    .required("End date is required")
-    .nullable()
-    .min(
-      Yup.ref("extendContractStartDate"),
-      "End date must be later than start date"
-    ),
-
-  garageAvailable: Yup.boolean().oneOf([true], "Switch is required"),
-});
 
 // ----------------------------------------------------------------------
 
 export default function SystemSettingsPage() {
   useAuthGuard(UserRole.ADMIN);
-  const methods = useForm<FormValuesProps>({
-    resolver: yupResolver(FormSchema) as any,
-    defaultValues,
-  });
-
-  const {
-    watch,
-    reset,
-    control,
-    setValue,
-    handleSubmit,
-    formState: { isSubmitting },
-  } = methods;
 
   const { themeStretch } = useSettingsContext();
+  const [openCreateModal, setOpenCreateModal] = useState<boolean>(false);
+  const [settings, setSettings] = useState<SettingResponseModel[]>([]);
 
-  const onSubmit = async (data: FormValuesProps) => {
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    console.log("DATA", data);
-    reset();
+  const { user } = useAuthContext();
+
+  const fetchAllSettings = async () => {
+    var response = await httpClient.settingService.getAllSettings();
+    setSettings(response);
+  };
+
+  useEffect(() => {
+    fetchAllSettings();
+  }, []);
+
+  const handleOpenCreateModal = () => {
+    setOpenCreateModal(true);
+  };
+
+  const handleCloseCreateModal = () => {
+    setOpenCreateModal(false);
+  };
+
+  const handleEditSetting = async (updatedSetting: SettingResponseModel) => {
+    try {
+      const payload: SettingCreateUpdateRequestModel = {
+        keyName: updatedSetting.keyName,
+        dataType: updatedSetting.dataType,
+        value: updatedSetting.value,
+      };
+      const response = await httpClient.settingService.updateSettingByKeyName(
+        payload
+      );
+      if (response) {
+        toast.success("Setting was updated successfully!");
+        setSettings((prevSettings) =>
+          prevSettings.map((setting) =>
+            setting.keyName === updatedSetting.keyName ? updatedSetting : setting
+          )
+        );
+        handleCloseCreateModal();
+      }
+    } catch (error) {
+      toast.error("An error occurred while saving the setting.");
+    }
+  };
+
+  const handleCreateSetting = async (
+    formData: SettingCreateUpdateRequestModel
+  ) => {
+    try {
+      const response = await httpClient.settingService.createNewSetting(
+        formData
+      );
+      if (response) {
+        toast.success("Setting was created successfully!");
+        const addSetting: SettingResponseModel = {
+          id: response[0],
+          keyName: formData.keyName,
+          dataType: formData.dataType,
+          value: formData.value,
+          isApplied: false,
+          createdByCreator: user.name,
+          createdDateUtc: new Date().toDateString(),
+        };
+        setSettings((prevSettings) => [...prevSettings, addSetting]);
+        handleCloseCreateModal();
+      }
+    } catch (error) {
+      toast.error("An error occurred while creating the setting.");
+    }
+  };
+
+  const handleToggleAppliedSetting = async (keyName: string, isApplied: boolean) => {
+    try {
+      const payload: SettingTurnOnOffRequestModel = {
+        keyName: keyName,
+        isApplied: isApplied,
+      };
+      const response = await httpClient.settingService.turnOnOffSetting(payload);
+      if (response) {
+        toast.success("Setting was updated successfully!");
+        setSettings((prev) =>
+          prev.map((setting) =>
+            setting.keyName === keyName ? { ...setting, isApplied } : setting
+          )
+        );
+      }
+    } catch (error) {
+      toast.error("An error occurred while saving the setting.");
+    }
   };
 
   return (
@@ -118,149 +160,41 @@ export default function SystemSettingsPage() {
             { name: "System Settings" },
           ]}
           action={
-            // <Button
-            //   size="small"
-            //   variant="contained"
-            //   onClick={handleSubmit}
-            //   startIcon={<Iconify icon="eva:plus-fill" />}
-            // >
-            //   Add new address
-            // </Button>
-            <LoadingButton
-              fullWidth
-              type="submit"
+            <Button
               variant="contained"
-              loading={isSubmitting}
+              startIcon={<Iconify icon="eva:plus-fill" />}
+              onClick={handleOpenCreateModal}
             >
-              Confirm Changes
-            </LoadingButton>
+              Add new setting
+            </Button>
           }
         />
 
         <Card>
-          <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-            <TableContainer sx={{ position: "relative", overflow: "unset" }}>
-              <Scrollbar>
-                <Table size={"medium"} sx={{ minWidth: 800 }}>
-                  <TableHeadCustom
-                    headLabel={TABLE_HEAD}
-                    // rowCount={tableData.length}
-                  />
-
-                  <TableBody>
-                    <TableRow>
-                      <TableCell>1</TableCell>
-                      <TableCell>New Registration Start Date</TableCell>
-                      <TableCell>
-                        <Controller
-                          name="newRegisterStartDate"
-                          control={control}
-                          render={({ field, fieldState: { error } }) => (
-                            <DatePicker
-                              {...field}
-                              inputFormat="dd/MM/yyyy"
-                              renderInput={(params) => (
-                                <TextField
-                                  fullWidth
-                                  {...params}
-                                  error={!!error}
-                                  helperText={error?.message}
-                                />
-                              )}
-                            />
-                          )}
-                        />
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>2</TableCell>
-                      <TableCell>New Registration End Date</TableCell>
-                      <TableCell>
-                        <Controller
-                          name="newRegisterEndDate"
-                          control={control}
-                          render={({ field, fieldState: { error } }) => (
-                            <DatePicker
-                              {...field}
-                              inputFormat="dd/MM/yyyy"
-                              renderInput={(params) => (
-                                <TextField
-                                  fullWidth
-                                  {...params}
-                                  error={!!error}
-                                  helperText={error?.message}
-                                />
-                              )}
-                            />
-                          )}
-                        />
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>3</TableCell>
-                      <TableCell>Extend Contract Start Date</TableCell>
-                      <TableCell>
-                        <Controller
-                          name="extendContractStartDate"
-                          control={control}
-                          render={({ field, fieldState: { error } }) => (
-                            <DatePicker
-                              {...field}
-                              inputFormat="dd/MM/yyyy"
-                              renderInput={(params) => (
-                                <TextField
-                                  fullWidth
-                                  {...params}
-                                  error={!!error}
-                                  helperText={error?.message}
-                                />
-                              )}
-                            />
-                          )}
-                        />
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>4</TableCell>
-                      <TableCell>Extend Contract End Date</TableCell>
-                      <TableCell>
-                        <Controller
-                          name="extendContractEndDate"
-                          control={control}
-                          render={({ field, fieldState: { error } }) => (
-                            <DatePicker
-                              {...field}
-                              inputFormat="dd/MM/yyyy"
-                              renderInput={(params) => (
-                                <TextField
-                                  fullWidth
-                                  {...params}
-                                  error={!!error}
-                                  helperText={error?.message}
-                                />
-                              )}
-                            />
-                          )}
-                        />
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>5</TableCell>
-                      <TableCell>Garage Registration</TableCell>
-                      <TableCell>
-                        <RHFSwitch
-                          name="switch"
-                          label={"Garage Registration"}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </Scrollbar>
-            </TableContainer>
-          </FormProvider>
+          <TableContainer sx={{ position: "relative", overflow: "unset" }}>
+            <Scrollbar>
+              <Table size={"medium"} sx={{ minWidth: 800 }}>
+                <TableHeadCustom headLabel={TABLE_HEAD} />
+                <TableBody>
+                  {settings?.map((setting) => (
+                    <SystemSettingsTableRow
+                      key={setting.id}
+                      setting={setting}
+                      onEditRow={(setting) => handleEditSetting(setting)}
+                      onToggleApplied={handleToggleAppliedSetting}
+                    />
+                  ))}
+                </TableBody>
+              </Table>
+            </Scrollbar>
+          </TableContainer>
         </Card>
       </Container>
+      <SettingCreateEditModal
+        open={openCreateModal}
+        onClose={handleCloseCreateModal}
+        onSubmit={handleCreateSetting}
+      />
     </>
   );
 }
