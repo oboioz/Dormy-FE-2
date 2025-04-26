@@ -31,8 +31,14 @@ export interface InvoiceItemResponseModel {
   newIndicator: number;
 }
 
+export interface InvoiceUserResponseModel {
+  userId: string;
+  userName: string;
+}
+
 export interface DetailInvoiceResponseModel extends InvoiceResponseModel {
   invoiceItems: InvoiceItemResponseModel[];
+  invoiceUsers: InvoiceUserResponseModel[];
 }
 
 export interface RoomRecipients {

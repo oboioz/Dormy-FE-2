@@ -1,12 +1,14 @@
+import { SxProps, Theme } from "@mui/material";
 import Label from "../../components/label";
 import { InvoiceStatusDescriptions, InvoiceStatusEnum } from "../../models/enums/InvoiceStatusEnum";
 import { EnumUtils } from "../../utils/EnumUtils";
 
 type InvoiceStatusTagProps = {
   status: string;
+  sx?: SxProps<Theme>;
 };
 
-export default function InvoiceStatusTag({ status }: InvoiceStatusTagProps) {
+export default function InvoiceStatusTag({ status, sx }: InvoiceStatusTagProps) {
   const getColor = (status: string) => {
     switch (status) {
         case InvoiceStatusEnum.PAID:
@@ -27,7 +29,7 @@ export default function InvoiceStatusTag({ status }: InvoiceStatusTagProps) {
   const enumValue = EnumUtils.convertToEnum(InvoiceStatusEnum, status);
 
   return (
-    <Label variant="soft" color={getColor(enumValue)}>
+    <Label variant="soft" color={getColor(enumValue)} sx={sx}>
       {EnumUtils.getEnumDescription(InvoiceStatusDescriptions, enumValue)}
     </Label>
   );
