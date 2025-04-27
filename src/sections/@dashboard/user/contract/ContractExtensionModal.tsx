@@ -13,6 +13,8 @@ import { RHFDatePicker } from "../../../../components/hook-form/RHFDatePicker";
 import { useEffect, useState } from "react";
 import ConfirmDialog from "../../../../components/confirm-dialog";
 import { toast } from "react-toastify";
+import { PATH_USER } from "../../../../routes/paths";
+import { useNavigate } from "react-router-dom";
 
 type ContractExtensionModalProps = {
   open: boolean;
@@ -35,6 +37,7 @@ export default function ContractExtensionModal({
   });
 
   const { handleSubmit, reset } = methods;
+  const navigate = useNavigate();
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [formData, setFormData] = useState<{
@@ -62,6 +65,7 @@ export default function ContractExtensionModal({
       try {
         onSubmit(formData); // Notify parent component
         onClose(); // Close the modal
+        navigate(PATH_USER.contract);
       } catch (error) {
         toast.error("Failed to extend the contract.");
       } finally {
