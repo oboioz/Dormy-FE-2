@@ -63,6 +63,10 @@ export const PATH_ADMIN = {
   overnight: path(ROOTS_ADMIN, "/overnight"),
   request: path(ROOTS_ADMIN, "/request"),
   register: path(ROOTS_ADMIN, "/registration"),
+  contract: {
+    list: path(ROOTS_ADMIN, "/contractlist"),
+    detail: (contractId: string) => path(ROOTS_ADMIN, `/contract/${contractId}`),
+  },
 
   invoice: {
     monthly: path(ROOTS_ADMIN, "/invoice/room-service-monthly"),

@@ -17,6 +17,7 @@ const ICONS = {
   workplace: createIcon("mdi:office-building"),
   dormitory: createIcon("mdi:home-group"),
   roomType: createIcon("mdi:bed"),
+  contract: createIcon("mdi:clipboard-list"),
   registration: createIcon("mdi:clipboard-check"),
   overnight: createIcon("mdi:moon-waning-crescent"),
   garage: createIcon("mdi:garage"),
@@ -83,6 +84,17 @@ const adminNavConfig = [
         // roles: ['admin'],
       },
       {
+        title: "Registration",
+        path: PATH_ADMIN.register,
+        icon: ICONS.registration,
+        // roles: ['admin'],
+      },
+      {
+        title: "Contract",
+        path: PATH_ADMIN.contract.list,
+        icon: ICONS.contract,
+      },
+      {
         title: "Dormitory",
         path: PATH_ADMIN.dormitory.root,
         icon: ICONS.dormitory,
@@ -93,12 +105,6 @@ const adminNavConfig = [
           { title: "Room Types", path: PATH_ADMIN.dormitory.roomType },
           { title: "Room Services", path: PATH_ADMIN.dormitory.roomService },
         ],
-      },
-      {
-        title: "Registration",
-        path: PATH_ADMIN.register,
-        icon: ICONS.registration,
-        // roles: ['admin'],
       },
       {
         title: "Invoice",

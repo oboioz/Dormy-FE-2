@@ -69,6 +69,8 @@ export const WorkplaceListPage = Loadable(lazy(() => import('../pages/admin/Work
 export const WorkplaceFormPage = Loadable(lazy(() => import('../pages/admin/WorkplaceFormPage')));
 
 export const RegistrationListPage = Loadable(lazy(() => import('../pages/admin/RegistrationListPage')));
+export const ContractDetailPage = Loadable(lazy(() => import('../pages/admin/ContractDetailPage')));
+export const ContractAdminListPage = Loadable(lazy(() => import('../pages/admin/ContractAdminListPage')));
 
 export const RoomTypePage = Loadable(lazy(() => import('../pages/admin/RoomTypePage')));
 export const RoomTypeFormPage = Loadable(lazy(() => import('../pages/admin/RoomTypeFormPage')));

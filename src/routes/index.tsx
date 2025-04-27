@@ -57,6 +57,8 @@ import {
   InvoiceMonthlyListPage,
   InvoiceContractListPage,
   UserInvoiceContractListPage,
+  ContractDetailPage,
+  ContractAdminListPage,
 } from "./elements";
 
 export default function Router() {
@@ -128,6 +130,8 @@ export default function Router() {
         // { path: 'workplaceform', element: (<WorkplaceFormPage />), },
 
         { path: "registration", element: <RegistrationListPage /> },
+        { path: "contractlist", element: <ContractAdminListPage /> },
+        { path: "contract/:contractId", element: <ContractDetailPage /> },
 
         { path: "overnight", element: <OvernightRequestPage /> },
         { path: "request", element: <RequestListingPage /> },
