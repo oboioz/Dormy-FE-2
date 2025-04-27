@@ -205,16 +205,12 @@ export default function ContractListPage() {
                     <Typography variant="body2" sx={{ mb: 1 }}>
                       <strong>Room Type:</strong> {contract.roomTypeName}
                     </Typography>
-                    <Typography variant="body2" sx={{ mb: 1 }}>
-                      <strong>Building:</strong> {contract.buildingName}
-                    </Typography>
                   </Grid>
 
                   {/* Second Column */}
                   <Grid item xs={12} md={6}>
                     <Typography variant="body2" sx={{ mb: 1 }}>
-                      <strong>Approver:</strong>{" "}
-                      {contract.approverFullName || "N/A"}
+                      <strong>Building:</strong> {contract.buildingName}
                     </Typography>
                     <Typography variant="body2">
                       <strong>Status:</strong>{" "}
@@ -249,21 +245,27 @@ export default function ContractListPage() {
                           <b>Submission Date:</b>{" "}
                           {fDate(extension.submissionDate, "dd/MM/yyyy")}
                         </Typography>
+                        <Typography variant="body2" sx={{ mb: 1 }}>
+                          <strong>Contract period:</strong>{" "}
+                          {fDate(extension.startDate, "dd/MM/yyyy")}
+                          {" - "}
+                          {fDate(extension.endDate, "dd/MM/yyyy")}
+                        </Typography>
+                        <Typography variant="body2" sx={{ mb: 1 }}>
+                          <strong>Room Number:</strong> {extension.roomNumber}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} md={6}>
                         <Typography variant="body2">
                           <b>Status:</b>{" "}
                           <ContractStatusTag status={extension.status} />
                         </Typography>
-                      </Grid>
-                      <Grid item xs={12} md={6}>
                         <Typography variant="body2" sx={{ mb: 1 }}>
-                          <b>Start Date:</b>{" "}
-                          {fDate(extension.startDate, "dd/MM/yyyy")}
+                          <strong>Approver:</strong>{" "}
+                          {extension.approverId
+                            ? extension.approverFullName
+                            : "N/A"}
                         </Typography>
-                        <Typography variant="body2" sx={{ mb: 1 }}>
-                          <b>End Date:</b>{" "}
-                          {fDate(extension.endDate, "dd/MM/yyyy")}
-                        </Typography>
-                        
                       </Grid>
                     </Grid>
                   </Box>
