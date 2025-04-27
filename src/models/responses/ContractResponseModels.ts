@@ -1,15 +1,26 @@
+export interface ContractExtensionExtendContractResponseModel {
+  contractExtensionId: string;
+  orderNo: number;
+  submissionDate: string; // ISO format date string
+  startDate: string;
+  endDate: string;
+  status: string;
+  invoiceId?: string | null;
+  approverId?: string | null;
+  approverFullName: string;
+  roomId?: string | null;
+  roomNumber?: number | null;
+}
+
 export interface ContractResponseModel {
   id: string;
-  submissionDate: Date;
-  startDate: Date;
-  endDate: Date;
+  submissionDate: string;
+  startDate: string;
+  endDate: string;
   status: string;
-  invoiceId: string;
   numberExtension: number;
   userId: string;
   userFullname: string;
-  approverId: string;
-  approverFullName: string;
   roomId: string;
   roomNumber: number;
   roomTypeId: string;
@@ -17,25 +28,29 @@ export interface ContractResponseModel {
   price: number;
   buildingId: string;
   buildingName: string;
-  workplaceId: string;
+  workplaceId?: string | null;
   workplaceName: string;
   insuranceCardNumber: string;
   registeredHospital: string;
-  expirationDate: Date;
+  expirationDate: string;
   contractExtensions: ContractExtensionExtendContractResponseModel[];
-//   createdByCreator: string;
-//   lastUpdatedByUpdater: string;
-//   createdDateUtc: string;
-//   lastUpdatedDateUtc: string;
-//   createdBy: string;
-//   lastUpdatedBy: string;
-//   isDeleted: boolean;
 }
 
-export interface ContractExtensionExtendContractResponseModel {
-  contractExtensionId: string;
-  submissionDate: Date;
-  startDate: Date;
-  endDate: Date;
+export interface ContractBatchResponseModel {
+  id: string;
+  submissionDate: string;
+  startDate: string;
+  endDate: string;
   status: string;
+  numberExtension: number;
+  userId: string;
+  userFullname: string;
+  roomId: string;
+  roomNumber: number;
+  roomTypeId: string;
+  roomTypeName: string;
+  price: number;
+  buildingId: string;
+  buildingName: string;
 }
+

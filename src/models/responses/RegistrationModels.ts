@@ -23,3 +23,34 @@ export interface IGetInitialRegistrationDataModel {
     listWorkplaces: WorkplaceOptionModel[];
     listRoomTypes: RoomTypeOptionModel[];
 }
+
+export interface RegistrationAccommodationContractResponseModel {
+    contractId: string;
+    submissionDate: string;
+    startDate: string;
+    endDate: string;
+    status: string;
+    numberExtension: number;
+}
+  
+export interface RegistrationAccommodationResponseModel {
+    contractExtensionId: string;
+    orderNo: number;
+    submissionDate: string;
+    startDate: string;
+    endDate: string;
+    status: string;
+    userId: string;
+    userFullname: string;
+    roomId: string;
+    roomNumber: number;
+    roomTypeId: string;
+    roomTypeName: string;
+    buildingId: string;
+    buildingName: string;
+    workplaceName: string;
+    insuranceCardNumber: string;
+    registeredHospital: string;
+    expirationDate: string;
+    contractInformation: RegistrationAccommodationContractResponseModel;
+}

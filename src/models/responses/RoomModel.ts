@@ -35,3 +35,24 @@ export interface IRoomUpdate {
   roomTypeId: string;
   floorNumber: number;
 }
+
+export interface RoomServiceSummaryResponseModel {
+  id: string;
+  roomServiceName: string;
+  unit: string;
+  cost: number;
+  roomServiceType: string;
+  isServiceIndicatorUsed: boolean;
+}
+
+export interface RoomSummaryResponseModel {
+  id: string;
+  roomNumber: number;
+  floorNumber: number;
+  roomTypeId: string;
+  roomTypeName: string;
+  price: number;
+  buildingId: string;
+  buildingName: string;
+  roomServices: RoomServiceSummaryResponseModel[];
+}
