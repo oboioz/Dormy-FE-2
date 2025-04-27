@@ -16,9 +16,10 @@ const getBatchContracts = async (payload: GetBatchContractRequestModel) => {
     if (response.status === HttpStatusCode.Ok) {
       return response.data.result as ContractResponseModel[];
     }
-    return undefined;
+    return [];
   } catch (err) {
     console.log(err);
+    return [];
   }
 };
 
@@ -81,10 +82,24 @@ const createContractExtension = async (payload: ContractExtensionCreateRequestMo
   }
 };
 
+const getContractById = async (contractId: string) => {
+  try {
+    var response = await privateAxios.get(API_URL.CONTRACT.GET_SINGLE + contractId);
+    if (response.status === HttpStatusCode.Ok) {
+      return response.data.result as ContractResponseModel;
+    }
+    return undefined;
+  } catch (err) {
+    console.log(err);
+    return undefined;
+  }
+};
+
 export const contractService = {
   getBatchContracts: getBatchContracts,
   approveOrRejectContract: approveOrRejectContract,
   activeContract: activeContract,
   terminateContract: terminateContract,
   createContractExtension: createContractExtension,
+  getContractById: getContractById,
 };

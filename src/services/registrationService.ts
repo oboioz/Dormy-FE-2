@@ -1,8 +1,9 @@
 import { HttpStatusCode } from "axios";
 import { API_URL } from "../consts/APIConstants";
-import { publicAxios } from "../libs/axios";
-import { IGetInitialRegistrationDataModel, IRegistrationInformationCreationModel } from "../models/responses/RegistrationModels";
+import { privateAxios, publicAxios } from "../libs/axios";
+import { IGetInitialRegistrationDataModel, IRegistrationInformationCreationModel, RegistrationAccommodationResponseModel } from "../models/responses/RegistrationModels";
 import { ISearchBuildingAndRoomRequestModel } from "../models/requests/RegistrationRequestModels";
+import { RoomSummaryResponseModel } from "../models/responses/RoomModel";
 
 const registerAccommodation = async (payload: IRegistrationInformationCreationModel) => {
   try {
@@ -41,8 +42,36 @@ const searchBuildingsAndRoomsByGenderAndRoomType = async (payload: ISearchBuildi
   }
 };
 
+const getRegistrationAccommodationBatch = async () => {
+  try {
+    var response = await privateAxios.get(API_URL.REGISTRATION.GET_BATCH);
+    if (response.status === HttpStatusCode.Ok) {
+      return response.data.result as RegistrationAccommodationResponseModel[];
+    }
+    return [];
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+};
+
+const getRoomSumaryById = async (roomId: string) => {
+  try {
+    var response = await publicAxios.get(API_URL.REGISTRATION.GET_ROOM_SUMARY + roomId);
+    if (response.status === HttpStatusCode.Ok) {
+      return response.data.result as RoomSummaryResponseModel;
+    }
+    return undefined;
+  } catch (err) {
+    console.log(err);
+    return undefined;
+  }
+};
+
 export const registrationService = {
     registerAccommodation: registerAccommodation,
     getInitialRegistrationData: getInitialRegistrationData,
     searchBuildingsAndRoomsByGenderAndRoomType: searchBuildingsAndRoomsByGenderAndRoomType,
+    getRegistrationAccommodationBatch: getRegistrationAccommodationBatch,
+    getRoomSumaryById: getRoomSumaryById,
 };
