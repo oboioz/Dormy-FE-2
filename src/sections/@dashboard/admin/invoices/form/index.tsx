@@ -15,6 +15,7 @@ import { httpClient } from "../../../../../services";
 import { toast } from "react-toastify";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { DateTimeUtils } from "../../../../../utils/DateTimeUtils";
+import { PATH_ADMIN } from "../../../../../routes/paths";
 
 // ----------------------------------------------------------------------
 
@@ -124,7 +125,7 @@ export default function InvoiceNewEditForm({ isEdit, currentInvoice }: Props) {
       const response = await httpClient.invoiceService.createInvoice(payload);
       if (response) {
         toast.success("Invoice created successfully!");
-        reset();
+        navigate(PATH_ADMIN.invoice.monthly);
       }
       else {
         toast.error("Failed to create invoice.");
