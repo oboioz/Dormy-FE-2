@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Grid,
@@ -18,6 +18,9 @@ import { IRegistrationInformationCreationModel } from "../../models/responses/Re
 import { HttpStatusCode } from "axios";
 import { toast } from "react-toastify";
 import { DateTimeUtils } from "../../utils/DateTimeUtils";
+import { RoomSummaryResponseModel } from "../../models/responses/RoomModel";
+import { fDate } from "../../utils/formatTime";
+import { fCurrency } from "../../utils/formatNumber";
 
 type Props = {
   generalInformation: IRegistrationFormState;
@@ -49,6 +52,17 @@ export default function RegistrationConfirm({
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isConfirmed, setIsConfirmed] = useState(false);
+  const [roomInformation, setRoomInformation] = useState<RoomSummaryResponseModel>();
+
+  const fetchRoomSumaryData = async (roomId: string) => {
+    const response = await httpClient.registrationService.getRoomSumaryById(roomId);
+
+    setRoomInformation(response);
+  };
+
+  useEffect(() => {
+    fetchRoomSumaryData(roomState.roomId);
+  }, [roomState.roomId]);
 
   const validateForm = () => {
     const errors: Record<string, string> = {};
@@ -103,6 +117,7 @@ export default function RegistrationConfirm({
 
     if (response == undefined || response.status !== HttpStatusCode.Created) {
       toast.error("An error has occurred, please try again later");
+      setIsLoading(false);
       return;
     }
 
@@ -164,11 +179,7 @@ export default function RegistrationConfirm({
             <Typography variant="body1">
               <strong>Date of Birth:</strong>{" "}
               {userState?.dateOfBirth
-                ? new Intl.DateTimeFormat("en-GB", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                  }).format(new Date(userState.dateOfBirth))
+                ? fDate(userState.dateOfBirth, "dd/MM/yyyy")
                 : "N/A"}
             </Typography>
           </Grid>
@@ -192,11 +203,7 @@ export default function RegistrationConfirm({
             <Typography variant="body1">
               <strong>Expiration Date:</strong>{" "}
               {healthInsuranceState?.expirationDate
-                ? new Intl.DateTimeFormat("en-GB", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                  }).format(new Date(healthInsuranceState.expirationDate))
+                ? fDate(healthInsuranceState.expirationDate, "dd/MM/yyyy")
                 : "N/A"}
             </Typography>
           </Grid>
@@ -227,10 +234,10 @@ export default function RegistrationConfirm({
         </Grid>
       </Box>
 
-      {/* Room Information */}
+      {/* Contract Information */}
       <Box sx={{ border: "1px solid #ddd", borderRadius: 2, p: 3, mb: 2 }}>
         <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
-          Room Information
+          Contract Information
         </Typography>
         <Divider sx={{ mb: 2 }} />
         <Grid container spacing={2}>
@@ -238,11 +245,7 @@ export default function RegistrationConfirm({
             <Typography variant="body1">
               <strong>Start date:</strong>{" "}
               {startDate
-                ? new Intl.DateTimeFormat("en-GB", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                  }).format(new Date(startDate))
+                ? fDate(startDate, "dd/MM/yyyy")
                 : "N/A"}
             </Typography>
           </Grid>
@@ -250,12 +253,32 @@ export default function RegistrationConfirm({
             <Typography variant="body1">
               <strong>End date:</strong>{" "}
               {endDate
-                ? new Intl.DateTimeFormat("en-GB", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                  }).format(new Date(endDate))
+                ? fDate(endDate, "dd/MM/yyyy")
                 : "N/A"}
+            </Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <Typography variant="body1">
+              <strong>Room number:</strong>{" "}
+              {roomInformation?.roomNumber}
+            </Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <Typography variant="body1">
+              <strong>Building:</strong>{" "}
+              {roomInformation?.buildingName}
+            </Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <Typography variant="body1">
+              <strong>Room type:</strong>{" "}
+              {roomInformation?.roomTypeName}
+            </Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <Typography variant="body1">
+              <strong>Price:</strong>{" "}
+              {fCurrency(roomInformation?.price)}
             </Typography>
           </Grid>
         </Grid>
