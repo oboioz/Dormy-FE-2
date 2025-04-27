@@ -27,23 +27,20 @@ import {
 import { PATH_ADMIN } from "../../routes/paths";
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
-import { ContractResponseModel } from "../../models/responses/ContractResponseModels";
 import { httpClient } from "../../services";
-import { GetBatchContractRequestModel } from "../../models/requests/ContractRequestModels";
 import { toast } from "react-toastify";
-import ContractRow from "../../sections/@dashboard/admin/venue/ContractRow";
+import { RegistrationAccommodationResponseModel } from "../../models/responses/RegistrationModels";
+import RegistrationRow from "../../sections/@dashboard/admin/venue/RegistrationRow";
 // sections
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: "startDate", label: "Start date", align: "left" },
-  { id: "endDate", label: "End date", align: "left" },
+  { id: "contractPeriod", label: "Contract period", align: "left" },
   { id: "userFullname", label: "Tenant", align: "left" },
   { id: "roomNumber", label: "Room", align: "center" },
   { id: "buildingName", label: "Building", align: "center" },
   { id: "roomTypeName", label: "Room Type", align: "left" },
-  { id: "approverFullName", label: "Approver", align: "left" },
   { id: "status", label: "Status", align: "left" },
   { id: "action", label: "", align: "left" },
 ];
@@ -67,7 +64,7 @@ export default function RegistrationListPage() {
 
   const navigate = useNavigate();
 
-  const [tableData, setTableData] = useState<ContractResponseModel[]>([]);
+  const [tableData, setTableData] = useState<RegistrationAccommodationResponseModel[]>([]);
 
   const dataInPage = tableData.slice(
     page * rowsPerPage,
@@ -78,25 +75,14 @@ export default function RegistrationListPage() {
 
   const isNotFound = !tableData.length;
 
-  const fetchContractsData = async () => {
-    const payload: GetBatchContractRequestModel = {
-      ids: [],
-    };
-    const response = await httpClient.contractService.getBatchContracts(
-      payload
-    );
+  const fetchContractExtensionsData = async () => {
+    const response = await httpClient.registrationService.getRegistrationAccommodationBatch();
 
-    if (response) {
-      console.log("response", response);
-      setTableData(response);
-    } else {
-      setTableData([]);
-      toast.error("Failed to fetch data");
-    }
+    setTableData(response);
   };
 
   useEffect(() => {
-    fetchContractsData();
+    fetchContractExtensionsData();
   }, []);
 
   const handleOpenConfirm = () => {
@@ -107,21 +93,21 @@ export default function RegistrationListPage() {
     setOpenConfirm(false);
   };
 
-  const handleEditRow = (id: string) => {
-    // navigate(PATH_DASHBOARD.user.edit(paramCase(id)));
-  };
+  // const handleEditRow = (id: string) => {
+  //   // navigate(PATH_DASHBOARD.user.edit(paramCase(id)));
+  // };
 
-  const handleDeleteRow = (id: string) => {
-    const deleteRow = tableData.filter((row) => row.id !== id);
-    setSelected([]);
-    setTableData(deleteRow);
+  // const handleDeleteRow = (id: string) => {
+  //   const deleteRow = tableData.filter((row) => row.id !== id);
+  //   setSelected([]);
+  //   setTableData(deleteRow);
 
-    if (page > 0) {
-      if (dataInPage.length < 2) {
-        setPage(page - 1);
-      }
-    }
-  };
+  //   if (page > 0) {
+  //     if (dataInPage.length < 2) {
+  //       setPage(page - 1);
+  //     }
+  //   }
+  // };
 
   return (
     <>
@@ -160,7 +146,7 @@ export default function RegistrationListPage() {
                   onSelectAllRows={(checked) =>
                     onSelectAllRows(
                       checked,
-                      tableData.map((row) => row.id)
+                      tableData.map((row) => row.contractExtensionId)
                     )
                   }
 
@@ -171,14 +157,12 @@ export default function RegistrationListPage() {
                   {tableData
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row) => (
-                      <ContractRow
-                        key={row.id}
-                        row={row}
-                        setContracts={setTableData}
-                        selected={selected.includes(row.id)}
-                        onSelectRow={() => onSelectRow(row.id)}
-                        // onEditRow={() => handleEditRow(row.id)}
-                        // onDeleteRow={() => handleDeleteRow(row.id)}
+                      <RegistrationRow
+                        key={row.contractExtensionId}
+                        registration={row}
+                        // setContracts={setTableData}
+                        selected={selected.includes(row.contractExtensionId)}
+                        onSelectRow={() => onSelectRow(row.contractExtensionId)}
                       />
                     ))}
 
@@ -193,30 +177,6 @@ export default function RegistrationListPage() {
           </TableContainer>
         </Card>
       </Container>
-
-      <ConfirmDialog
-        open={openConfirm}
-        onClose={handleCloseConfirm}
-        title="Delete"
-        content={
-          <>
-            Are you sure want to delete <strong> {selected.length} </strong>{" "}
-            items?
-          </>
-        }
-        action={
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => {
-              // handleDeleteRows(selected);
-              handleCloseConfirm();
-            }}
-          >
-            Delete
-          </Button>
-        }
-      />
     </>
   );
 }
