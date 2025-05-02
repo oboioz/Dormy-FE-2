@@ -334,8 +334,8 @@ export default function InvoiceContractListPage() {
                 total={getLengthByStatus(InvoiceStatusEnum.DRAFT.toString())}
                 percent={getPercentByStatus(InvoiceStatusEnum.DRAFT.toString())}
                 price={getTotalPriceByStatus(InvoiceStatusEnum.DRAFT.toString())}
-                icon="eva:checkmark-circle-2-fill"
-                color={theme.palette.success.main}
+                icon="mdi:receipt"
+                color={theme.palette.grey[500]}
               />
 
               <InvoiceAnalytic
@@ -361,8 +361,8 @@ export default function InvoiceContractListPage() {
                 total={getLengthByStatus(InvoiceStatusEnum.OVERDUE.toString())}
                 percent={getPercentByStatus(InvoiceStatusEnum.OVERDUE.toString())}
                 price={getTotalPriceByStatus(InvoiceStatusEnum.OVERDUE.toString())}
-                icon="eva:clock-fill"
-                color={theme.palette.warning.main}
+                icon="eva:bell-fill"
+                color={theme.palette.error.main}
               />
 
               {/* <InvoiceAnalytic
