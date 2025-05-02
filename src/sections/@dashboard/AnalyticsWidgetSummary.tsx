@@ -55,7 +55,7 @@ export default function AnalyticsWidgetSummary({
         }}
       />
 
-      <Typography variant="h3">{fShortenNumber(total)}</Typography>
+      <Typography variant="h3">{total}</Typography>
 
       <Typography variant="subtitle2" sx={{ opacity: 0.64 }}>
         {title}
