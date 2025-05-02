@@ -126,6 +126,7 @@ export const API_URL = {
     GET_BATCH: "invoice/batch",
     GET_SINGLE: "invoice/id/",
     GET_CREATE_INITIAL_DATA: "invoice/create-initial-data",
+    GET_EDIT_INITIAL_DATA: "invoice/edit-initial-data/invoiceId/",
     GET_ROOMs_FOR_CREATE_INITIAL_DATA: "invoice/create-initial-data/rooms",
   },
   CONTRACT_EXTENSION: {

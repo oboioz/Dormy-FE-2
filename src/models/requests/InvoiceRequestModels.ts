@@ -13,6 +13,10 @@ export interface CreateInvoiceRequestModel {
     invoiceItems: CreateInvoiceItemRequestModel[];
 }
 
+export interface EditInvoiceRequestModel extends CreateInvoiceRequestModel {
+    id: string;
+}
+
 export interface CreateInvoiceItemRequestModel {
     roomServiceId: string | null;
     roomServiceName: string | null;

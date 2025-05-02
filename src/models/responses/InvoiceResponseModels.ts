@@ -52,10 +52,17 @@ export interface GetInitialInvoiceCreationResponseModel {
   month: number;
   year: number;
   roomId: string;
+  invoiceId?: string;
+  invoiceName?: string;
+  dueDate?: Date;
+  type?: string;
+  status?: string;
   roomServices: GetInitialInvoiceItemCreationResponseModel[];
+  invoiceItems: GetInitialInvoiceItemCreationResponseModel[];
 }
 
 export interface GetInitialInvoiceItemCreationResponseModel {
+  invoiceItemId: string;
   roomServiceId: string;
   roomServiceName: string;
   roomServiceType: string;
