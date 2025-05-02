@@ -44,8 +44,8 @@ export default function EditOvernightAbsenceModal({
     if (initialData) {
       reset({
         reason: initialData.reason,
-        startDateTime: initialData.startDateTime,
-        endDateTime: initialData.endDateTime,
+        startDateTime: new Date(initialData.startDateTime),
+        endDateTime: new Date(initialData.endDateTime),
       });
     }
   }, [initialData, reset]);
