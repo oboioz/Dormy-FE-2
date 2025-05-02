@@ -10,22 +10,24 @@ import { PATH_ADMIN } from "../../routes/paths";
 import InvoiceNewEditForm from "../../sections/@dashboard/admin/invoices/form";
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
+import { useParams } from "react-router-dom";
 
 // ----------------------------------------------------------------------
 
-export default function InvoiceCreatePage() {
+export default function InvoiceEditPage() {
   useAuthGuard(UserRole.ADMIN);
   const { themeStretch } = useSettingsContext();
+  const { invoiceId } = useParams();
 
   return (
     <>
       <Helmet>
-        <title> Invoices: Create a new invoice | Dormy</title>
+        <title> Invoices: Edit invoice | Dormy</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
-          heading="Create a new invoice"
+          heading="Edit invoice"
           links={[
             {
               name: "Dashboard",
@@ -40,12 +42,12 @@ export default function InvoiceCreatePage() {
               href: PATH_ADMIN.invoice.monthly,
             },
             {
-              name: "New invoice",
+              name: "Edit invoice",
             },
           ]}
         />
 
-        <InvoiceNewEditForm isEdit={false}/>
+        <InvoiceNewEditForm isEdit={true} invoiceId={invoiceId}/>
       </Container>
     </>
   );

@@ -9,7 +9,7 @@ import InvoiceNewEditAddress from "./InvoiceNewEditAddress";
 import InvoiceNewEditDetails from "./InvoiceNewEditDetails";
 import InvoiceNewEditStatusDate from "./InvoiceNewEditStatusDate";
 import { GetInitialInvoiceItemCreationResponseModel, RoomRecipients } from "../../../../../models/responses/InvoiceResponseModels";
-import { CreateInvoiceRequestModel } from "../../../../../models/requests/InvoiceRequestModels";
+import { CreateInvoiceRequestModel, EditInvoiceRequestModel } from "../../../../../models/requests/InvoiceRequestModels";
 import { getMonth, getYear } from "date-fns";
 import { httpClient } from "../../../../../services";
 import { toast } from "react-toastify";
@@ -31,11 +31,12 @@ interface FormValuesProps extends IFormValuesProps {
 }
 
 type Props = {
-  isEdit?: boolean;
+  isEdit: boolean;
   currentInvoice?: FormValuesProps;
+  invoiceId?: string;
 };
 
-export default function InvoiceNewEditForm({ isEdit, currentInvoice }: Props) {
+export default function InvoiceNewEditForm({ isEdit, currentInvoice, invoiceId }: Props) {
   const navigate = useNavigate();
 
   const [loadingSave, setLoadingSave] = useState(false);
@@ -45,6 +46,9 @@ export default function InvoiceNewEditForm({ isEdit, currentInvoice }: Props) {
   const [items, setItems] = useState<
     GetInitialInvoiceItemCreationResponseModel[]
   >([]);
+  const [roomId, setRoomId] = useState<string | null>(null);
+  const [dueDate, setDueDate] = useState<Date | null>(null);
+  const [invoiceMonthYear, setInvoiceMonthYear] = useState<Date | null>(null);
 
   const NewUserSchema = Yup.object().shape({
     invoiceMonthYear: Yup.date()
@@ -55,6 +59,21 @@ export default function InvoiceNewEditForm({ isEdit, currentInvoice }: Props) {
     invoiceTo: Yup.mixed().nullable().required("Invoice to is required"),
   });
 
+  const fetchgetInitialInvoiceEdit = async (invoiceId: string) => {
+    const response = await httpClient.invoiceService.getInitialInvoiceEdit(invoiceId);
+
+    if (response) {
+      setItems(response.invoiceItems);
+      setRoomId(response.roomId);
+      setDueDate(new Date(response.dueDate));
+      setInvoiceMonthYear(
+        new Date(response.year, response.month - 1, 1)
+      );
+    } else {
+      toast.error("Failed to fetch data");
+    }
+  };
+  
   const defaultValues = useMemo(
     () => ({
       dueDate: currentInvoice?.dueDate || null,
@@ -90,14 +109,16 @@ export default function InvoiceNewEditForm({ isEdit, currentInvoice }: Props) {
   //   const values = watch();
 
   useEffect(() => {
-    if (isEdit && currentInvoice) {
-      reset(defaultValues);
+    if (isEdit && invoiceId) {
+      // reset(defaultValues);
+      fetchgetInitialInvoiceEdit(invoiceId);
+      console.log("roomId-hoangtk5:", roomId);
     }
     if (!isEdit) {
       reset(defaultValues);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isEdit, currentInvoice]);
+  }, [isEdit, invoiceId]);
 
   const handleCreateInvoice = async (data: FormValuesProps) => {
     setLoadingSend(true);
@@ -124,7 +145,7 @@ export default function InvoiceNewEditForm({ isEdit, currentInvoice }: Props) {
 
       const response = await httpClient.invoiceService.createInvoice(payload);
       if (response) {
-        toast.success("Invoice created successfully!");
+        toast.success("Invoice was created successfully!");
         navigate(PATH_ADMIN.invoice.monthly);
       }
       else {
@@ -142,14 +163,67 @@ export default function InvoiceNewEditForm({ isEdit, currentInvoice }: Props) {
     }
   };
 
+  const handleEditInvoice = async (data: FormValuesProps) => {
+    setLoadingSend(true);
+    try {
+      // Build the payload
+      const payload: EditInvoiceRequestModel = {
+        id: invoiceId || "", // Ensure invoiceId is a string
+        dueDate: DateTimeUtils.toStringWithDefaultTime(data.dueDate),
+        month: data.invoiceMonthYear
+          ? getMonth(data.invoiceMonthYear) + 1
+          : null,
+        year: data.invoiceMonthYear ? getYear(data.invoiceMonthYear) : null,
+        type: "ROOM_SERVICE_MONTHLY", // Replace with the actual type if needed
+        roomId: data.invoiceTo?.roomId || "", // Ensure roomId is a string
+        invoiceItems: items.map((item) => ({
+          roomServiceId: item.roomServiceId,
+          roomServiceName: item.roomServiceId ? "" : item.roomServiceName,
+          cost: item.roomServiceId ? null : item.cost,
+          unit: item.roomServiceId ? "" : item.unit,
+          quantity: item.quantity,
+          oldIndicator: item.oldIndicator,
+          newIndicator: item.newIndicator,
+        })),
+      };
+
+      const response = await httpClient.invoiceService.updateInvoice(payload);
+      if (response) {
+        toast.success("Invoice was updated successfully!");
+        navigate(PATH_ADMIN.invoice.monthly);
+      }
+      else {
+        toast.error("Failed to update invoice.");
+      }
+  
+      // console.log("Payload:", JSON.stringify(payload, null, 2));
+      setLoadingSend(false);
+  
+      // Uncomment this to navigate after successful creation
+      // navigate(PATH_DASHBOARD.invoice.list);
+    } catch (error) {
+      toast.error("Failed to update invoice: " + error);
+      setLoadingSend(false);
+    }
+  };
+
+  const handleSubmitInvoice = async (data: FormValuesProps) => {
+    if (isEdit) {
+      await handleEditInvoice(data);
+    } else {
+      await handleCreateInvoice(data);
+    }
+  }
+
   return (
     <FormProvider methods={methods}>
       <Card>
-        <InvoiceNewEditAddress />
+        <InvoiceNewEditAddress isEdit={isEdit} roomId={roomId}/>
 
-        <InvoiceNewEditStatusDate />
+        <InvoiceNewEditStatusDate isEdit={isEdit} invoiceMonthYear={invoiceMonthYear} dueDate={dueDate}/>
 
         <InvoiceNewEditDetails
+          isEdit={isEdit}
           items={items}
           setItems={setItems}
         />
@@ -165,7 +239,7 @@ export default function InvoiceNewEditForm({ isEdit, currentInvoice }: Props) {
           size="large"
           variant="contained"
           loading={loadingSend && isSubmitting}
-          onClick={handleSubmit(handleCreateInvoice)}
+          onClick={handleSubmit(handleSubmitInvoice)}
         >
           {isEdit ? "Update" : "Create"}
         </LoadingButton>

@@ -1,21 +1,38 @@
-import { Controller, useFormContext } from "react-hook-form";
+import { useEffect } from "react";
+import { useFormContext, Controller } from "react-hook-form";
 // @mui
 import { Stack, TextField } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { RHFTextField } from "../../../../../components/hook-form";
 import { startOfMonth, subMonths } from "date-fns";
 
-export default function InvoiceNewEditStatusDate() {
-  const { control, watch } = useFormContext();
+type Props = {
+  isEdit: boolean;
+  invoiceMonthYear?: Date | null;
+  dueDate?: Date | null;
+};
 
-  const values = watch();
-  
-  // Calculate minimum month/year for invoiceMonthYear
+export default function InvoiceNewEditStatusDate({
+  isEdit,
+  invoiceMonthYear,
+  dueDate,
+}: Props) {
+  const { control, setValue } = useFormContext();
+
   const minInvoiceMonthYear = subMonths(new Date(), 3);
-
-  // Get the current date for dueDate
   const currentDate = new Date();
+
+  // Set initial values when isEdit = true
+  useEffect(() => {
+    if (isEdit) {
+      if (invoiceMonthYear) {
+        setValue("invoiceMonthYear", invoiceMonthYear);
+      }
+      if (dueDate) {
+        setValue("dueDate", dueDate);
+      }
+    }
+  }, [isEdit, invoiceMonthYear, dueDate, setValue]);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>

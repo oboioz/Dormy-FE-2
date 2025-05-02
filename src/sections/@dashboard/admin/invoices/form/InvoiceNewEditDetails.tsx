@@ -19,11 +19,12 @@ import { getMonth, getYear } from "date-fns";
 import { useFormContext } from "react-hook-form";
 
 export type InvoiceNewEditDetailsProps = {
+  isEdit: boolean;
   items: GetInitialInvoiceItemCreationResponseModel[];
   setItems: React.Dispatch<React.SetStateAction<GetInitialInvoiceItemCreationResponseModel[]>>;
 }
 
-export default function InvoiceNewEditDetails({items, setItems} : InvoiceNewEditDetailsProps) {
+export default function InvoiceNewEditDetails({isEdit, items, setItems} : InvoiceNewEditDetailsProps) {
   // const [items, setItems] = useState<
   //   GetInitialInvoiceItemCreationResponseModel[]
   // >([]);
@@ -35,7 +36,7 @@ export default function InvoiceNewEditDetails({items, setItems} : InvoiceNewEdit
   const values = watch();
 
   useEffect(() => {
-    const totalOnRow = items.map((item) => {
+    const totalOnRow = items?.map((item) => {
       const quantity = item.quantity || 0; // Default to 0 if undefined
       const cost = item.cost || 0; // Default to 0 if undefined
       return quantity * cost;
@@ -46,7 +47,7 @@ export default function InvoiceNewEditDetails({items, setItems} : InvoiceNewEdit
     const calculatedTotalPrice =
       sum(totalOnRow) - (discount || 0) + (taxes || 0); // Default discount and taxes to 0
     setTotalPrice(calculatedTotalPrice);
-  }, [items, discount, taxes]);
+  }, [isEdit, items, discount, taxes]);
 
   const fetchgetInitialInvoiceCreation = async () => {
     const payload: GetInitialInvoiceCreationRequestModel = {
@@ -66,12 +67,10 @@ export default function InvoiceNewEditDetails({items, setItems} : InvoiceNewEdit
   };
 
   useEffect(() => {
-    if (values?.invoiceTo?.roomId && values?.invoiceMonthYear) {
+    if (!isEdit && values?.invoiceTo?.roomId && values?.invoiceMonthYear) {
       fetchgetInitialInvoiceCreation();
-    } else {
-      // resetField("items");
     }
-  }, [values?.invoiceTo?.roomId, values?.invoiceMonthYear]);
+  }, [isEdit, values?.invoiceTo?.roomId, values?.invoiceMonthYear]);
 
   const handleChange = <
     K extends keyof GetInitialInvoiceItemCreationResponseModel
@@ -112,7 +111,7 @@ export default function InvoiceNewEditDetails({items, setItems} : InvoiceNewEdit
         divider={<Divider flexItem sx={{ borderStyle: "dashed" }} />}
         spacing={3}
       >
-        {items.map((item, index) => (
+        {items?.map((item, index) => (
           <Stack key={index} spacing={1}>
             {/* First Line: Service Name, Unit, Cost */}
             <Grid container spacing={2} sx={{ width: 1, marginLeft: 0.1 }}>

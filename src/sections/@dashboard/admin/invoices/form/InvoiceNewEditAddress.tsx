@@ -12,8 +12,12 @@ import { toast } from "react-toastify";
 import { httpClient } from "../../../../../services";
 
 // ----------------------------------------------------------------------
+type Props = {
+  isEdit: boolean;
+  roomId?: string;
+};
 
-export default function InvoiceNewEditAddress() {
+export default function InvoiceNewEditAddress({isEdit, roomId}: Props) {
   const {
     watch,
     setValue,
@@ -44,6 +48,18 @@ export default function InvoiceNewEditAddress() {
 
     if (response) {
       setRoomRecipients(response);
+      if (isEdit) {
+        console.log("roomId:", roomId);
+        const selectedRoom = response.find((room) => room.roomId === roomId);
+        console.log("selectedRoom:", selectedRoom);
+        if (selectedRoom) {
+          setValue("invoiceTo", selectedRoom);
+        } else {
+          setValue("invoiceTo", null);
+        }
+      } else {
+        setValue("invoiceTo", null);
+      }
     } else {
       setRoomRecipients([]);
       toast.error("Failed to fetch data");
@@ -52,7 +68,7 @@ export default function InvoiceNewEditAddress() {
 
   useEffect(() => {
     fetchRoomsDataForCreateInvoice();
-  }, []);
+  }, [roomId]);
 
   return (
     <Stack
@@ -93,6 +109,7 @@ export default function InvoiceNewEditAddress() {
             size="small"
             startIcon={<Iconify icon={"eva:edit-fill"} />}
             onClick={handleOpenTo}
+            // disabled={isEdit}
           >
             Change
           </Button>
