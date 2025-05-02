@@ -59,6 +59,7 @@ import {
   UserInvoiceContractListPage,
   ContractDetailPage,
   ContractAdminListPage,
+  InvoiceEditPage,
 } from "./elements";
 
 export default function Router() {
@@ -146,6 +147,7 @@ export default function Router() {
         { path: "invoice/contract", element: <InvoiceContractListPage /> },
 
         { path: "invoicecreate", element: <InvoiceCreatePage /> },
+        { path: "invoice-edit/:invoiceId", element: <InvoiceEditPage /> },
 
         { path: "parkingspot", element: <VehicleGaragePage /> },
         { path: "vehiclelist", element: <VehicleListPage /> },

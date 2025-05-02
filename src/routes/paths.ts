@@ -72,6 +72,7 @@ export const PATH_ADMIN = {
     monthly: path(ROOTS_ADMIN, "/invoice/room-service-monthly"),
     contract: path(ROOTS_ADMIN, "/invoice/contract"),
     create: path(ROOTS_ADMIN, "/invoicecreate"),
+    edit: (invoiceId: string) => path(ROOTS_ADMIN, `/invoice-edit/${invoiceId}`),
   },
 
   notification: {
