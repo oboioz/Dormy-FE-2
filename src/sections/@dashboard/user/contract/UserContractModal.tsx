@@ -111,9 +111,9 @@ export default function UserContractModal({
                             <strong>Building:</strong> {contract.buildingName}
                         </Typography>
 
-                        <Typography variant="body2">
-                            <strong>Approver:</strong> {contract.approverFullName || "N/A"}
-                        </Typography>
+                        {/* <Typography variant="body2">
+                            <strong>Approver:</strong> {contract.approverFullName || "N/A"} */}
+                        {/* </Typography> */}
                         <Typography variant="body2">
                             <strong>Status:</strong>{" "}
                             <ContractStatusTag status={contract.status}/>
