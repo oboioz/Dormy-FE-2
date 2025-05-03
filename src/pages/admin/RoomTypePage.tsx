@@ -32,7 +32,10 @@ import RoomTypeRow from "../../sections/@dashboard/admin/venue/RoomTypeRow";
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
 import { roomTypeService } from "../../services/roomTypeService";
-import { IRoomType, IRoomTypeCreate } from "../../models/responses/RoomTypeModels";
+import {
+  IRoomType,
+  IRoomTypeCreate,
+} from "../../models/responses/RoomTypeModels";
 import { httpClient } from "../../services";
 import { toast } from "react-toastify";
 import CreateEditRoomTypeModal from "../../sections/@dashboard/admin/venue/CreateEditRoomTypeModal";
@@ -90,7 +93,9 @@ export default function RoomTypePage() {
 
   const handleCreateOrUpdateRoomType = async (formData: IRoomTypeCreate) => {
     try {
-      const response = await httpClient.roomTypeService.createRoomType(formData);
+      const response = await httpClient.roomTypeService.createRoomType(
+        formData
+      );
       if (response) {
         toast.success("Room type was created successfully!");
         const addRoomType: IRoomType = {
@@ -99,8 +104,8 @@ export default function RoomTypePage() {
           description: formData.description,
           capacity: formData.capacity,
           price: formData.price,
-          roomServices: [],     
-        } 
+          roomServices: [],
+        };
         setRoomTypes((prevRoomTypes) => [...prevRoomTypes, addRoomType]);
         // fetchRoomTypes();
         handleCloseCreateModal();
@@ -233,17 +238,17 @@ export default function RoomTypePage() {
               </Table>
             </Scrollbar>
           </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={roomTypes.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
         </Card>
       </Container>
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={roomTypes.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
       <ConfirmDialog
         open={openConfirm}
         onClose={handleCloseConfirm}
