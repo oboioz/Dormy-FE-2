@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        VITE_BASE_API_URL: http://dormy2025.com/api/
+        VITE_BASE_API_URL: http://98.81.83.13/api/
     ports:
       - 80:80
     environment:
