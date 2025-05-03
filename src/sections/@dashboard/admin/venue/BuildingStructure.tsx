@@ -147,12 +147,12 @@ function BuildingCard({ building }: BuildingCardProps) {
 
         <Iconify
           icon={
-            genderRestriction === "FEMALE" ? "mdi:human-female" : "mdi:human-male"
+            genderRestriction === "MALE" ? "mdi:human-female" : "mdi:human-male"
           }
           sx={{
             width: 64,
             height: 64,
-            color: genderRestriction === "FEMALE" ? "pink" : "blue", // Updated colors
+            color: genderRestriction === "MALE" ? "pink" : "blue", // Updated colors
           }}
         />
 
