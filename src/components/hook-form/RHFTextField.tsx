@@ -17,6 +17,8 @@ export default function RHFTextField({
   rows,
   rules,
   disabled,
+  type,
+  InputProps,
 }: Props) {
   const {
     control,
@@ -43,6 +45,8 @@ export default function RHFTextField({
           rows={rows}
           error={!!errors[name]}
           helperText={errors[name]?.message?.toString() || ""} // Ensure helperText is a string
+          type={type}
+          InputProps={InputProps}
         />
       )}
     />
