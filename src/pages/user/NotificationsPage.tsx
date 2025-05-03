@@ -106,7 +106,7 @@ export default function NotificationsPage() {
         <Grid container spacing={3}>
           {notifications?.map((notification, index) =>
             notification ? (
-              <Grid key={notification.id} item xs={12} sm={6} md={3}>
+              <Grid key={notification.id} item xs={12} sm={6} md={4}>
                 <NotificationPostCard
                   notification={notification}
                   readNotification={() => readNotification(notification.id)}

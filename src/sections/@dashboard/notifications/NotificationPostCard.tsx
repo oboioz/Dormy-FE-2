@@ -96,12 +96,24 @@ export default function NotificationPostCard({
         <Link
           target="_blank"
           rel="noopener noreferrer"
-          color="inherit"
+          color="blue"
           component={RouterLink}
           to={actionURL}
+          sx={{
+            display: "flex", // Use inline-flex to align items horizontally
+            textDecoration: "none", // Remove underline
+            gap: 0.5, // Add spacing between the icon and text
+          }}
         >
-          <TextMaxLine variant={"subtitle2"} line={2} persistent>
-            {title}
+          <Iconify
+            icon="mdi:link-variant" // Replace with your desired icon
+            sx={{
+              fontSize: 20, // Adjust icon size
+              color: "inherit", // Matches the link color
+            }}
+          />
+          <TextMaxLine variant="subtitle2" line={2} persistent>
+            View {title}
           </TextMaxLine>
         </Link>
 
