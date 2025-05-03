@@ -12,8 +12,8 @@ export default function Login() {
       <Typography variant="h4">Sign in to Dormy</Typography>
 
       <Alert severity="info" sx={{ mb: 3 }}>
-        Use email : <strong>demo@dormy.cc</strong> / password :
-        <strong> demo1234</strong>
+        Your username is <strong>phone number</strong> which you provide for us.
+        Your default password bases on <strong>date of birth</strong> and follows by format them into a string (like <strong>03May2025</strong>)
       </Alert>
 
       <AuthLoginForm />

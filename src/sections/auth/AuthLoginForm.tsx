@@ -33,7 +33,8 @@ export default function AuthLoginForm() {
   const { signIn } = useAuthContext();
   const navigate = useNavigate();
 
-  const [isUser, setIsUser] = useState<boolean>(false);
+  // const [isUser, setIsUser] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const LoginSchema = Yup.object().shape({
@@ -111,7 +112,7 @@ export default function AuthLoginForm() {
   };
 
   const onSubmit = async (data: FormValuesProps) => {
-    if (isUser) {
+    if (!isAdmin) {
       await userSignIn(data);
     } else {
       await adminSignIn(data);
@@ -161,15 +162,17 @@ export default function AuthLoginForm() {
             }}
             label={
               <Typography variant="body1" fontWeight={"bold"}>
-                I'm Customer
+                I'm an admin
               </Typography>
             }
             labelPlacement="start"
             control={
               <Checkbox
                 color="primary"
-                checked={isUser}
-                onChange={(evt) => setIsUser(evt.target.checked)}
+                // checked={isUser}
+                // onChange={(evt) => setIsUser(evt.target.checked)}
+                checked={isAdmin}
+                onChange={(evt) => setIsAdmin(evt.target.checked)}
               />
             }
           />
