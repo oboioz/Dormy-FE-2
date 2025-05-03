@@ -1,5 +1,8 @@
 export const API_URL = {
   BASE_URL: import.meta.env.VITE_BASE_API_URL,
+  AUTH: {
+    FORGOT_PASSWORD: "auth/forgot-password",
+  },
   ADMIN: {
     SIGN_IN: "auth/admin/sign-in",
     GET_DASHBOARD: "admin/dashboard",
@@ -150,6 +153,6 @@ export const API_URL = {
     GET_SINGLE: "setting/keyname/",
     GET_ALL: "setting/all",
     GET_ALL_DATATYPES: "setting/all-datatypes",
-    TURN_ON_OFF: "setting/turn-on-off"
-  }
+    TURN_ON_OFF: "setting/turn-on-off",
+  },
 };

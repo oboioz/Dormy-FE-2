@@ -33,7 +33,7 @@ export default function AdminProfilePage() {
       value: "change_password",
       label: "Change password",
       icon: <Iconify icon="ic:round-vpn-key" />,
-      component: <AccountChangePassword />,
+      component: <AccountChangePassword isAdmin={true} />,
     },
   ];
 

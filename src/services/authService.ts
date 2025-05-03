@@ -1,5 +1,8 @@
 import { HttpStatusCode } from "axios";
-import { SignInModel } from "../models/requests/SignInModel";
+import {
+  ForgotPasswordModel,
+  SignInModel,
+} from "../models/requests/SignInModel";
 import { API_URL } from "../consts/APIConstants";
 import {
   AdminSignInResponse,
@@ -112,6 +115,20 @@ const changeUserPassword = async (payload: IChangePassword) => {
   }
 };
 
+const forgotPassword = async (payload: ForgotPasswordModel) => {
+  try {
+    var response = await publicAxios.post(
+      API_URL.AUTH.FORGOT_PASSWORD,
+      payload
+    );
+    console.log(response.data);
+    return response.status;
+  } catch (err) {
+    console.log(err);
+    return err.status;
+  }
+};
+
 export const authService = {
   adminSignIn,
   userSignIn,
@@ -120,4 +137,5 @@ export const authService = {
   changeAdminPassword,
   changeUserPassword,
   getAllAdmins,
+  forgotPassword,
 };

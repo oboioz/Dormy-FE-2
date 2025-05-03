@@ -25,8 +25,12 @@ import { UserStatusEnum } from "../../../../models/enums/UserStatusEnum";
 // ----------------------------------------------------------------------
 
 type FormValuesProps = IUserAccountChangePassword;
+export interface IChangePasswordProps {
+  isAdmin?: boolean;
+}
 
-export default function AccountChangePassword() {
+export default function AccountChangePassword(props: IChangePasswordProps) {
+  const { isAdmin } = props;
   const { user } = useAuthContext();
 
   const ChangePassWordSchema = Yup.object().shape({
@@ -62,16 +66,30 @@ export default function AccountChangePassword() {
     newPwd: string,
     oldPwd: string
   ) => {
-    var response = await httpClient.authService.changeUserPassword({
-      id: id,
-      newPassword: newPwd,
-      oldPassword: oldPwd,
-    });
-    if (response === true) {
-      toast.success("Updated");
-      window.location.reload();
+    if (isAdmin) {
+      var response = await httpClient.authService.changeAdminPassword({
+        id: id,
+        newPassword: newPwd,
+        oldPassword: oldPwd,
+      });
+      if (response === true) {
+        toast.success("Updated");
+        window.location.reload();
+      } else {
+        toast.error(response);
+      }
     } else {
-      toast.error(response);
+      var response = await httpClient.authService.changeUserPassword({
+        id: id,
+        newPassword: newPwd,
+        oldPassword: oldPwd,
+      });
+      if (response === true) {
+        toast.success("Updated");
+        window.location.reload();
+      } else {
+        toast.error(response);
+      }
     }
   };
 
