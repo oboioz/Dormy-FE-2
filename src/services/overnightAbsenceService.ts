@@ -8,6 +8,7 @@ import {
   GetBatchOvernightAbsenceRequestModel,
   UpdateOvernightAbsenceRequestModel,
 } from "../models/requests/OvernightAbsenceRequestModels";
+import { StringChain } from "lodash";
 
 // Overnight Absence
 const getAllUserOvernightAbsences = async () => {
@@ -95,10 +96,25 @@ const approveOrRejectOvernightAbsence = async (
   }
 };
 
+const cancelOvernightAbsence = async (id: string) => {
+  try {
+    const url = API_URL.OVERNIGHT_ABSENCE.CANCEL.replace("{id}", id);
+    const response = await privateAxios.put(url);
+    if (response.status === HttpStatusCode.Accepted) {
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
+
 export const overnightAbsenceService = {
   getAllUserOvernightAbsences: getAllUserOvernightAbsences,
   createOvernightAbsence: createOvernightAbsence,
   updateOvernightAbsence: updateOvernightAbsence,
   getBatchOvernightAbsences: getBatchOvernightAbsences,
   approveOrRejectOvernightAbsence: approveOrRejectOvernightAbsence,
+  cancelOvernightAbsence: cancelOvernightAbsence,
 };

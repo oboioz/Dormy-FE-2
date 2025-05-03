@@ -68,6 +68,7 @@ export const API_URL = {
     CREATE: "overnight-absence",
     UPDATE: "overnight-absence",
     APPROVE_REJECT: "overnight-absence/id/{id}/approve-or-reject",
+    CANCEL: "overnight-absence/id/{id}/cancel",
   },
   REQUEST: {
     CREATE: "request",

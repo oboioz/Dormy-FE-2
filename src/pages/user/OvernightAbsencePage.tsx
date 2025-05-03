@@ -37,7 +37,11 @@ import { toast } from "react-toastify";
 import EditOvernightAbsenceModal from "../../sections/@dashboard/user/request/EditOvernightAbsenceModal";
 import { DateTimeUtils } from "../../utils/DateTimeUtils";
 import OvernightAbsenceStatusTag from "../../sections/tag/OvernightAbsenceStatusTag";
-import { CreateOvernightAbsenceRequestModel, UpdateOvernightAbsenceRequestModel } from "../../models/requests/OvernightAbsenceRequestModels";
+import {
+  CreateOvernightAbsenceRequestModel,
+  UpdateOvernightAbsenceRequestModel,
+} from "../../models/requests/OvernightAbsenceRequestModels";
+import ConfirmDialog from "../../components/confirm-dialog";
 
 // ----------------------------------------------------------------------
 
@@ -54,7 +58,7 @@ const TABLE_HEAD = [
   { id: "endDateTime", label: "End date", align: "left" },
   { id: "reason", label: "Reason", align: "left" },
   { id: "status", label: "Status", align: "left" },
-  { id: "approver", label: "Approver", align: "left" },
+  { id: "approver", label: "Approver", align: "center" },
   { id: "action", label: "", align: "left" },
 ];
 
@@ -68,6 +72,7 @@ export default function OvernightAbsencePage() {
   const [overnightAbsences, setOvernightAbsences] = useState<
     OvernightAbsenceResponseModel[]
   >([]);
+  const [openConfirm, setOpenConfirm] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [editData, setEditData] =
@@ -90,6 +95,14 @@ export default function OvernightAbsencePage() {
     setOpenModal(false);
   };
 
+  const handleOpenConfirm = () => {
+    setOpenConfirm(true);
+  };
+
+  const handleCloseConfirm = () => {
+    setOpenConfirm(false);
+  };
+
   const handleSubmit = async (formData: {
     startDateTime: Date;
     endDateTime: Date;
@@ -98,9 +111,13 @@ export default function OvernightAbsencePage() {
     try {
       const payoad: CreateOvernightAbsenceRequestModel = {
         reason: formData.reason,
-        startDateTime: DateTimeUtils.toStringWithDefaultTime(formData.startDateTime),
-        endDateTime: DateTimeUtils.toStringWithDefaultTime(formData.endDateTime),
-      }
+        startDateTime: DateTimeUtils.toStringWithDefaultTime(
+          formData.startDateTime
+        ),
+        endDateTime: DateTimeUtils.toStringWithDefaultTime(
+          formData.endDateTime
+        ),
+      };
       await httpClient.overnightAbsenceService.createOvernightAbsence(payoad);
       fetchOvernightAbsences(); // Refresh the table data
       handleCloseModal(); // Close the modal
@@ -133,16 +150,22 @@ export default function OvernightAbsencePage() {
       const payload: UpdateOvernightAbsenceRequestModel = {
         id: editData.id,
         reason: formData.reason,
-        startDateTime: DateTimeUtils.toStringWithDefaultTime(formData.startDateTime),
-        endDateTime: DateTimeUtils.toStringWithDefaultTime(formData.endDateTime),
-      }
+        startDateTime: DateTimeUtils.toStringWithDefaultTime(
+          formData.startDateTime
+        ),
+        endDateTime: DateTimeUtils.toStringWithDefaultTime(
+          formData.endDateTime
+        ),
+      };
       console.log("payload: ", payload);
-      const response = await httpClient.overnightAbsenceService.updateOvernightAbsence(payload);
+      const response =
+        await httpClient.overnightAbsenceService.updateOvernightAbsence(
+          payload
+        );
       if (response) {
         toast.success("Update overnight absence successfully");
         fetchOvernightAbsences(); // Refresh the table data
-      }
-      else {
+      } else {
         toast.error("Failed to update overnight absence.");
       }
       handleCloseEditModal(); // Close the modal
@@ -150,6 +173,21 @@ export default function OvernightAbsencePage() {
       toast.error("Failed to update overnight absence:" + error);
     }
   };
+
+  const handleCancelOvernightAbsence = async (id: string) => {
+    try {
+      const response = await httpClient.overnightAbsenceService.cancelOvernightAbsence(id);
+      if (response) {
+        toast.success("Cancel overnight absence successfully");
+        fetchOvernightAbsences(); // Refresh the table data
+      } else {
+        toast.error("Failed to cancel overnight absence.");
+      }
+      handleCloseConfirm(); // Close the modal
+    } catch (error) {
+      toast.error("Failed to cancel overnight absence:" + error);
+    }
+  }
 
   return (
     <>
@@ -228,20 +266,55 @@ export default function OvernightAbsencePage() {
                       </TableCell>
                       <TableCell align="left">{row.reason}</TableCell>
                       <TableCell align="left">
-                        <OvernightAbsenceStatusTag status={row.status}/>
+                        <OvernightAbsenceStatusTag status={row.status} />
                       </TableCell>
-                      <TableCell align="left">{row.reason}</TableCell>
+                      <TableCell align="center">{row.approverId === null ? "--" : row.approverFullName}</TableCell>
                       <TableCell align="center">
                         {row.status == "SUBMITTED" && (
                           <Button
-                          size="small"
-                          variant="outlined"
-                          onClick={() => handleEdit(row)}
+                            size="small"
+                            variant="outlined"
+                            onClick={() => handleEdit(row)}
                           >
                             Edit
                           </Button>
                         )}
+                        {(row.status == "SUBMITTED" ||
+                          row.status == "APPROVED") && (
+                          <Button
+                            size="small"
+                            variant="outlined"
+                            onClick={handleOpenConfirm}
+                            sx={{ ml: 1 }}
+                            color="error"
+                          >
+                            Cancel
+                          </Button>
+                        )}
                       </TableCell>
+                      <ConfirmDialog
+                        open={openConfirm}
+                        onClose={handleCloseConfirm}
+                        title="Delete"
+                        content={
+                          <>
+                            Are you sure want to cancel <strong> </strong>{" "}
+                            items?
+                          </>
+                        }
+                        action={
+                          <Button
+                            variant="contained"
+                            color="error"
+                            onClick={() => {
+                              handleCancelOvernightAbsence(row.id);
+                              handleCloseConfirm();
+                            }}
+                          >
+                            Confirm cancel
+                          </Button>
+                        }
+                      />
                     </TableRow>
                   ))}
                 </TableBody>
