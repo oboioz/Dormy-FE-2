@@ -29,7 +29,11 @@ import GarageListRow from "../../sections/@dashboard/admin/garage/GarageListRow"
 import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
 import { httpClient } from "../../services";
-import { IParkingSpot, IParkingSpotCreateModel, IParkingSpotUpdateModel } from "../../models/responses/ParkingSpotModels";
+import {
+  IParkingSpot,
+  IParkingSpotCreateModel,
+  IParkingSpotUpdateModel,
+} from "../../models/responses/ParkingSpotModels";
 import { toast } from "react-toastify";
 import ParkingSpotCreateEditModal from "../../sections/@dashboard/admin/garage/ParkingSpotCreateEditModal";
 
@@ -145,13 +149,17 @@ export default function VehicleGaragePage() {
         id: updatedParkingSpot.id,
         parkingSpotName: updatedParkingSpot.parkingSpotName,
         capacitySpots: updatedParkingSpot.capacitySpots,
-    }
-      const response = await httpClient.parkingSpotService.updateParkingSpot(payload);
+      };
+      const response = await httpClient.parkingSpotService.updateParkingSpot(
+        payload
+      );
       if (response) {
         toast.success("Parking spot was updated successfully!");
         setTableData((prevParkingSpots) =>
           prevParkingSpots.map((parkingSpot) =>
-            parkingSpot.id === updatedParkingSpot.id ? updatedParkingSpot : parkingSpot
+            parkingSpot.id === updatedParkingSpot.id
+              ? updatedParkingSpot
+              : parkingSpot
           )
         );
         handleCloseCreateModal();
@@ -163,7 +171,9 @@ export default function VehicleGaragePage() {
 
   const handleCreateParkingSpot = async (formData: IParkingSpotCreateModel) => {
     try {
-      const response = await httpClient.parkingSpotService.createParkingSpot(formData);
+      const response = await httpClient.parkingSpotService.createParkingSpot(
+        formData
+      );
       if (response) {
         toast.success("Parking spot was created successfully!");
         const addParkingSpot: IParkingSpot = {
@@ -173,8 +183,11 @@ export default function VehicleGaragePage() {
           currentQuantity: 0,
           status: "AVAILABLE",
           vehicles: [],
-        } 
-        setTableData((prevParkingSpots) => [...prevParkingSpots, addParkingSpot]);
+        };
+        setTableData((prevParkingSpots) => [
+          ...prevParkingSpots,
+          addParkingSpot,
+        ]);
         handleCloseCreateModal();
       }
     } catch (error) {
@@ -273,10 +286,10 @@ export default function VehicleGaragePage() {
       <ConfirmDialog
         open={openConfirm}
         onClose={handleCloseConfirm}
-        title="Delete"
+        title="Deactivate Parking Spot"
         content={
           <>
-            Are you sure want to delete <strong> {selected.length} </strong>{" "}
+            Are you sure want to deactivate <strong> {selected.length} </strong>{" "}
             items?
           </>
         }
@@ -289,7 +302,7 @@ export default function VehicleGaragePage() {
               handleCloseConfirm();
             }}
           >
-            Delete
+            Deactivate
           </Button>
         }
       />

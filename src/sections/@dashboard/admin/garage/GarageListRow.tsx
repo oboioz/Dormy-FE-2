@@ -22,7 +22,10 @@ import ConfirmDialog from "../../../../components/confirm-dialog";
 import Iconify from "../../../../components/iconify";
 import Label from "../../../../components/label";
 import MenuPopover from "../../../../components/menu-popover";
-import { IParkingSpot, IParkingSpotUpdateModel } from "../../../../models/responses/ParkingSpotModels";
+import {
+  IParkingSpot,
+  IParkingSpotUpdateModel,
+} from "../../../../models/responses/ParkingSpotModels";
 import { httpClient } from "../../../../services";
 import { toast } from "react-toastify";
 import {
@@ -122,8 +125,10 @@ export default function GarageListRow({
       id: id,
       parkingSpotName: parkingSpotEditName,
       capacitySpots: capacity,
-    }
-    var response = await httpClient.parkingSpotService.updateParkingSpot(payload);
+    };
+    var response = await httpClient.parkingSpotService.updateParkingSpot(
+      payload
+    );
 
     if (response) {
       toast.success("Update success");
@@ -138,11 +143,11 @@ export default function GarageListRow({
   const handleDelete = async (id: string) => {
     var response = await httpClient.parkingSpotService.softDelete(id);
     if (response) {
-      toast.success("Delete success");
+      toast.success("Deactivate success");
       handleCloseConfirm();
       window.location.reload();
     } else {
-      toast.error("Delete failed");
+      toast.error("Deactivate failed");
       handleCloseConfirm();
     }
   };
@@ -168,7 +173,9 @@ export default function GarageListRow({
           </Typography>
         </TableCell>
 
-        <TableCell align="center" sx={{ fontSize: "1rem" }}>{capacitySpots}</TableCell>
+        <TableCell align="center" sx={{ fontSize: "1rem" }}>
+          {capacitySpots}
+        </TableCell>
 
         <TableCell align="center" sx={{ fontSize: "1rem" }}>
           {currentQuantity}
@@ -177,7 +184,7 @@ export default function GarageListRow({
         </TableCell>
 
         <TableCell align="left">
-          <ParkingSpotStatusTag status={status}/>
+          <ParkingSpotStatusTag status={status} />
         </TableCell>
 
         <TableCell align="right">
@@ -224,23 +231,23 @@ export default function GarageListRow({
           }}
           sx={{ color: "error.main" }}
         >
-          <Iconify icon="eva:trash-2-outline" />
-          Delete
+          <Iconify icon="mdi:cancel" />
+          Deactivate
         </MenuItem>
       </MenuPopover>
 
       <ConfirmDialog
         open={openConfirm}
         onClose={handleCloseConfirm}
-        title="Delete"
-        content="Are you sure want to delete?"
+        title="Deactivate"
+        content="Are you sure want to deactivate?"
         action={
           <Button
             variant="contained"
             color="error"
             onClick={() => handleDelete(id)}
           >
-            Delete
+            Deactivate
           </Button>
         }
       />
