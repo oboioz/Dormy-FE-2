@@ -60,6 +60,7 @@ import {
   ContractDetailPage,
   ContractAdminListPage,
   InvoiceEditPage,
+  ContractCreatePage,
 } from "./elements";
 
 export default function Router() {
@@ -92,6 +93,7 @@ export default function Router() {
       children: [
         { path: "profile", element: <UserProfilePage /> },
         { path: "contract", element: <ContractListPage /> },
+        { path: "contractcreate", element: <ContractCreatePage /> },
         { path: "roomdetails", element: <RoomDetailsPage /> },
         { path: "overnight", element: <OvernightAbsencePage /> },
         { path: "vehicle", element: <MyVehiclePage /> },

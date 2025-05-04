@@ -26,6 +26,7 @@ export const PATH_USER = {
   profile: path(ROOTS_USER, "/profile"),
 
   contract: path(ROOTS_USER, "/contract"),
+  createContract: path(ROOTS_USER, "/contractcreate"),
   roomDetails: path(ROOTS_USER, "/roomdetails"),
 
   overnight: path(ROOTS_USER, "/overnight"),

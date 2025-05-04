@@ -22,6 +22,7 @@ export const ResetPasswordPage = Loadable(lazy(() => import('../pages/auth/Reset
 // USER
 export const UserProfilePage = Loadable(lazy(() => import('../pages/user/UserProfilePage')));
 export const ContractListPage = Loadable(lazy(() => import('../pages/user/ContractListPage')));
+export const ContractCreatePage = Loadable(lazy(() => import('../pages/user/ContractCreatePage')));
 export const RoomDetailsPage = Loadable(lazy(() => import('../pages/user/RoomDetailsPage')));
 
 
