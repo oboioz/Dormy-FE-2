@@ -2,12 +2,14 @@ import { HttpStatusCode } from "axios";
 import { API_URL } from "../consts/APIConstants";
 import { GuardianModel } from "../models/responses/GuardianModels";
 import { privateAxios } from "../libs/axios";
-import { ContractResponseModel } from "../models/responses/ContractResponseModels";
+import { ContractResponseModel, InitialCreateEntendContractDataResponseModel } from "../models/responses/ContractResponseModels";
 import {
   ApproveOrRejectContractRequestModel,
   ContractExtensionCreateRequestModel,
+  ContractRequestModel,
   GetBatchContractRequestModel,
 } from "../models/requests/ContractRequestModels";
+import { RoomTypeOptionModel } from "../models/responses/RoomTypeModels";
 
 // Contract
 const getBatchContracts = async (payload: GetBatchContractRequestModel) => {
@@ -95,6 +97,45 @@ const getContractById = async (contractId: string) => {
   }
 };
 
+const getAllRoomTypesData = async () => {
+  try {
+    var response = await privateAxios.get(API_URL.CONTRACT.GET_ALL_ROOMTYPES);
+    if (response.status === HttpStatusCode.Ok) {
+      return response.data.result as RoomTypeOptionModel[];
+    }
+    return [];
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
+};
+
+const getInitialCreateExtendContractData = async () => {
+  try {
+    var response = await privateAxios.get(API_URL.CONTRACT.GET_INITIAL_CREATE_EXTEND_CONTRACT);
+    if (response.status === HttpStatusCode.Ok) {
+      return response.data.result as InitialCreateEntendContractDataResponseModel;
+    }
+    return undefined;
+  } catch (err) {
+    console.log(err);
+    return undefined;
+  }
+};
+
+const createNewContract = async (payload: ContractRequestModel) => {
+  try {
+    var response = await privateAxios.post(API_URL.CONTRACT.CREATE, payload);
+    if (response.status === HttpStatusCode.Created) {
+      return response.data.result;
+    }
+    return undefined;
+  } catch (err) {
+    console.log(err);
+    return undefined;
+  }
+};
+
 export const contractService = {
   getBatchContracts: getBatchContracts,
   approveOrRejectContract: approveOrRejectContract,
@@ -102,4 +143,7 @@ export const contractService = {
   terminateContract: terminateContract,
   createContractExtension: createContractExtension,
   getContractById: getContractById,
+  getAllRoomTypesData: getAllRoomTypesData,
+  getInitialCreateExtendContractData: getInitialCreateExtendContractData,
+  createNewContract: createNewContract,
 };

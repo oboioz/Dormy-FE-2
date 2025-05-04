@@ -37,6 +37,7 @@ import { fDate } from "../../utils/formatTime";
 import { DateTimeUtils } from "../../utils/DateTimeUtils";
 import ContractStatusTag from "../../sections/tag/ContractStatusTag";
 import ContractExtensionModal from "../../sections/@dashboard/user/contract/ContractExtensionModal";
+import { useNavigate } from "react-router-dom";
 
 const TABLE_HEAD = [
   { id: "startDate", label: "Start date", align: "left" },
@@ -52,6 +53,7 @@ const TABLE_HEAD = [
 
 export default function ContractListPage() {
   useAuthGuard(UserRole.CUSTOMER);
+  const navigate = useNavigate();
   const [contracts, setContracts] = useState<ContractResponseModel[]>([]);
   const [openContractExtension, setOpenContractExtension] =
     useState<boolean>(false);
@@ -120,13 +122,24 @@ export default function ContractListPage() {
             { name: "Contract" },
           ]}
           action={
-            <Button
-              variant="contained"
-              startIcon={<Iconify icon="eva:plus-fill" />}
-              onClick={handleOpenContractExtension}
-            >
-              Extend Contract
-            </Button>
+            <>
+              <Button
+                variant="contained"
+                startIcon={<Iconify icon="eva:plus-fill" />}
+                onClick={handleOpenContractExtension}
+                sx={{ mr: 2 }}
+              >
+                Extend Contract
+              </Button>
+              <Button
+                variant="contained"
+                color="success"
+                startIcon={<Iconify icon="eva:plus-fill" />}
+                onClick={() => navigate(PATH_USER.createContract)}
+              >
+                Create Contract
+              </Button>
+            </>
           }
         />
 
