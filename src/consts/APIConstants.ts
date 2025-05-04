@@ -90,6 +90,8 @@ export const API_URL = {
     ACTIVE: "contract/id/{id}/active",
     TERMINATE: "contract/id/{id}/terminate",
     EXPIRED: "contract/id/{id}/expired",
+    GET_ALL_ROOMTYPES: "contract/all-room-types",
+    GET_INITIAL_CREATE_EXTEND_CONTRACT: "contract/initial-create-contract-data",
   },
   PARKING_REQUEST: {
     GET_BATCH: "parking-request/batch",

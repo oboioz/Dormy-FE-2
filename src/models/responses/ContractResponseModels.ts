@@ -1,3 +1,5 @@
+import { RoomTypeOptionModel } from "./RoomTypeModels";
+
 export interface ContractExtensionExtendContractResponseModel {
   contractExtensionId: string;
   orderNo: number;
@@ -54,3 +56,27 @@ export interface ContractBatchResponseModel {
   buildingName: string;
 }
 
+export interface InformationOfTheLatestContract {
+  contractId: string;
+  startDate: string;          
+  endDate: string;             
+  status: string;
+  numberExtension: number;
+  roomId: string;
+  roomNumber: number;
+  buildingId: string;
+  buildingName: string;
+  roomTypeId: string;
+  roomTypeName: string;
+  price: number;
+}
+
+export interface UserInformation {
+  gender: string;
+}
+
+export interface InitialCreateEntendContractDataResponseModel {
+  userInformation: UserInformation;
+  contractInformation?: InformationOfTheLatestContract; // nullable
+  listRoomTypes?: RoomTypeOptionModel[];   // nullable
+}
