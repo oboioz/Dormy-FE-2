@@ -77,7 +77,7 @@ export default function WorkplaceForm({ workplaceInformation }: Props) {
       ...data,
       id: workplaceId,
     } as WorkplaceUpdateModel);
-    if (response === true) {
+    if (response == '') {
       toast.success("Update workplace success");
       navigate(PATH_ADMIN.workplace.list);
     } else {
