@@ -9,6 +9,7 @@ export interface ApproveOrRejectContractRequestModel {
 export interface ContractExtensionCreateRequestModel {
     startDate: string;
     endDate: string;
+    roomId: string;
 }
 
 export interface ContractRequestModel {

@@ -80,36 +80,36 @@ export default function ContractListPage() {
     fetchContractsData();
   }, []);
 
-  const handleOpenContractExtension = () => {
-    setOpenContractExtension(true);
-  };
+  // const handleOpenContractExtension = () => {
+  //   setOpenContractExtension(true);
+  // };
 
-  const handleCloseContractExtension = () => {
-    setOpenContractExtension(false);
-  };
+  // const handleCloseContractExtension = () => {
+  //   setOpenContractExtension(false);
+  // };
 
-  const handleSubmitContractExtension = async (data: {
-    startDate: Date;
-    endDate: Date;
-  }) => {
-    try {
-      const payload: ContractExtensionCreateRequestModel = {
-        startDate: DateTimeUtils.toStringWithDefaultTime(data.startDate),
-        endDate: DateTimeUtils.toStringWithDefaultTime(data.endDate),
-      };
-      const response = await httpClient.contractService.createContractExtension(
-        payload
-      );
-      if (response) {
-        toast.success("Extend contract successfully.");
-      } else {
-        toast.error("Failed to extend contract.");
-      }
-    } catch (error) {
-      toast.error("Failed to extend contract:" + error);
-    }
-    handleCloseContractExtension();
-  };
+  // const handleSubmitContractExtension = async (data: {
+  //   startDate: Date;
+  //   endDate: Date;
+  // }) => {
+  //   try {
+  //     const payload: ContractExtensionCreateRequestModel = {
+  //       startDate: DateTimeUtils.toStringWithDefaultTime(data.startDate),
+  //       endDate: DateTimeUtils.toStringWithDefaultTime(data.endDate),
+  //     };
+  //     const response = await httpClient.contractService.createContractExtension(
+  //       payload
+  //     );
+  //     if (response) {
+  //       toast.success("Extend contract successfully.");
+  //     } else {
+  //       toast.error("Failed to extend contract.");
+  //     }
+  //   } catch (error) {
+  //     toast.error("Failed to extend contract:" + error);
+  //   }
+  //   handleCloseContractExtension();
+  // };
 
   return (
     <>
@@ -126,7 +126,8 @@ export default function ContractListPage() {
               <Button
                 variant="contained"
                 startIcon={<Iconify icon="eva:plus-fill" />}
-                onClick={handleOpenContractExtension}
+                // onClick={handleOpenContractExtension}
+                onClick={() => navigate(PATH_USER.extendContract)}
                 sx={{ mr: 2 }}
               >
                 Extend Contract
@@ -213,7 +214,8 @@ export default function ContractListPage() {
                   {/* First Column */}
                   <Grid item xs={12} md={6}>
                     <Typography variant="body2" sx={{ mb: 1 }}>
-                      <strong>Room Number:</strong> {contract.roomNumber}
+                      <strong>Room Number:</strong> 
+                      {contract.roomNumber}
                     </Typography>
                     <Typography variant="body2" sx={{ mb: 1 }}>
                       <strong>Room Type:</strong> {contract.roomTypeName}
@@ -265,7 +267,10 @@ export default function ContractListPage() {
                           {fDate(extension.endDate, "dd/MM/yyyy")}
                         </Typography>
                         <Typography variant="body2" sx={{ mb: 1 }}>
-                          <strong>Room Number:</strong> {extension.roomNumber}
+                          <strong>Room Number: </strong> 
+                          {extension.roomNumber}{" - "}
+                          <strong>Building: </strong> 
+                          {extension.buildingName}
                         </Typography>
                       </Grid>
                       <Grid item xs={12} md={6}>
@@ -278,6 +283,10 @@ export default function ContractListPage() {
                           {extension.approverId
                             ? extension.approverFullName
                             : "N/A"}
+                        </Typography>
+                        <Typography variant="body2" sx={{ mb: 1 }}>
+                          <strong>Room Type: </strong> 
+                          {extension.roomTypeName}
                         </Typography>
                       </Grid>
                     </Grid>
@@ -293,7 +302,7 @@ export default function ContractListPage() {
         ))}
       </Container>
 
-      <ContractExtensionModal
+      {/* <ContractExtensionModal
         open={openContractExtension}
         onClose={handleCloseContractExtension}
         onSubmit={handleSubmitContractExtension}
@@ -301,7 +310,7 @@ export default function ContractListPage() {
           startDate: new Date(),
           endDate: new Date(),
         }}
-      />
+      /> */}
     </>
   );
 }

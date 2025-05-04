@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Container,
   Grid,
@@ -28,9 +29,10 @@ import {
   UserInformation,
 } from "../../models/responses/ContractResponseModels";
 import { fCurrency } from "../../utils/formatNumber";
-import { ContractRequestModel } from "../../models/requests/ContractRequestModels";
-import { useAuthContext } from "../../auth/JwtContext";
+import { ContractExtensionCreateRequestModel } from "../../models/requests/ContractRequestModels";
 import { toast } from "react-toastify";
+import { fDate } from "../../utils/formatTime";
+import ContractStatusTag from "../../sections/tag/ContractStatusTag";
 
 type FormValuesProps = {
   gender: string;
@@ -55,9 +57,8 @@ const UpdateSchema = Yup.object().shape({
     .min(Yup.ref("startDate"), "End date must be after the start date"),
 });
 
-export default function ContractCreatePage() {
+export default function ContractExtensionCreatePage() {
   useAuthGuard(UserRole.CUSTOMER);
-  const { user } = useAuthContext();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [isCurrentRoomUsed, setIsCurrentRoomUsed] = useState<boolean>(true);
@@ -79,13 +80,7 @@ export default function ContractCreatePage() {
     resolver: yupResolver(UpdateSchema) as any,
   });
 
-  const {
-    watch,
-    reset,
-    control,
-    setValue,
-    handleSubmit,
-  } = methods;
+  const { watch, reset, control, setValue, handleSubmit } = methods;
 
   const gender = userInformation?.gender; //watch("gender"); // Watch for changes in gender
   const roomTypeId = watch("roomTypeId"); // Watch for changes in roomTypeId
@@ -94,16 +89,17 @@ export default function ContractCreatePage() {
   const onSubmit = async (data: FormValuesProps) => {
     setIsLoading(true);
 
-    const payload: ContractRequestModel = {
+    const payload: ContractExtensionCreateRequestModel = {
       startDate: DateTimeUtils.toStringWithDefaultTime(data.startDate),
       endDate: DateTimeUtils.toStringWithDefaultTime(data.endDate),
       roomId: data.roomId,
-      userId: user.id,
     };
 
-    const response = await httpClient.contractService.createNewContract(payload);
+    const response = await httpClient.contractService.createContractExtension(
+      payload
+    );
     if (response) {
-      toast.success("Create contract successfully!");
+      toast.success("Extend contract successfully!");
       navigate(PATH_USER.contract);
     }
     setIsLoading(false);
@@ -120,7 +116,7 @@ export default function ContractCreatePage() {
   };
 
   useEffect(() => {
-    setValue('gender', userInformation?.gender);
+    setValue("gender", userInformation?.gender);
     getInitialCreateExtendContractData();
   }, [isCurrentRoomUsed]);
 
@@ -172,9 +168,55 @@ export default function ContractCreatePage() {
 
   return (
     <>
-      <Typography variant="h4" sx={{ fontWeight: "bold", mb: 5 }} align="center">
-        Register accommodation for new school year
+      <Typography
+        variant="h4"
+        sx={{ fontWeight: "bold", mb: 2 }}
+        align="center"
+      >
+        Extend for contract
       </Typography>
+      <Box
+        key={contractInformation?.contractId}
+        sx={{
+          ml: 14,
+          mr: 14,
+          mb: 2,
+          p: 2,
+          bgcolor: "background.paper",
+          borderRadius: 2,
+          boxShadow: 1,
+          border: "1px solid",
+          borderColor: "divider",
+          
+        }}
+      >
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={6}>
+            <Typography variant="body2" sx={{ mb: 1 }}>
+              <strong>Contract period:</strong>{" "}
+              {fDate(contractInformation?.startDate, "dd/MM/yyyy")}
+              {" - "}
+              {fDate(contractInformation?.endDate, "dd/MM/yyyy")}
+            </Typography>
+            <Typography variant="body2" sx={{ mb: 1 }}>
+              <strong>Room Number: </strong>
+              {contractInformation?.roomNumber}
+              {" - "}
+              <strong>Building: </strong>
+              {contractInformation?.buildingName}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Typography variant="body2">
+              <b>Status:</b> <ContractStatusTag status={contractInformation?.status} />
+            </Typography>
+            <Typography variant="body2" sx={{ mb: 1 }}>
+              <strong>Room Type: </strong>
+              {contractInformation?.roomTypeName}
+            </Typography>
+          </Grid>
+        </Grid>
+      </Box>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
         <Grid
           container
@@ -196,7 +238,10 @@ export default function ContractCreatePage() {
                     minDate={
                       contractInformation?.endDate
                         ? new Date(
-                            Math.max(new Date().getTime(), new Date(contractInformation.endDate).getTime())
+                            Math.max(
+                              new Date().getTime(),
+                              new Date(contractInformation.endDate).getTime()
+                            )
                           )
                         : new Date()
                     }
@@ -350,7 +395,7 @@ export default function ContractCreatePage() {
                 size="large"
                 disabled={isLoading}
               >
-                {isLoading ? "Loading..." : "Create contract"}{" "}
+                {isLoading ? "Loading..." : "Extend contract"}{" "}
               </Button>
             </Stack>
           </Container>

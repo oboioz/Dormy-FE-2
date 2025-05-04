@@ -12,6 +12,10 @@ export interface ContractExtensionExtendContractResponseModel {
   approverFullName: string;
   roomId?: string | null;
   roomNumber?: number | null;
+  roomTypeId?: string | null;
+  roomTypeName?: string | null;
+  buildingId?: string | null;
+  buildingName?: string | null;
 }
 
 export interface ContractResponseModel {
