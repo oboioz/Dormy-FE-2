@@ -63,7 +63,7 @@ const updateWorkplace = async (payload: WorkplaceUpdateModel) => {
   try {
     var response = await privateAxios.put(API_URL.WORKPLACE.UPDATE, payload);
     if (response.status === HttpStatusCode.Accepted) {
-      return true;
+      return '';
     } else {
       return response.data.errorMessage as string;
     }

@@ -163,7 +163,7 @@ export default function WorkplaceListPage() {
       const response = await httpClient.workplaceService.updateWorkplace(
         payload
       );
-      if (response) {
+      if (response == "") {
         toast.success("Workplace was updated successfully!");
         setWorkplaces((prevWorkplaces) =>
           prevWorkplaces.map((Workplace) =>
@@ -171,6 +171,8 @@ export default function WorkplaceListPage() {
           )
         );
         handleCloseCreateModal();
+      } else {
+        toast.error(response as string);
       }
     } catch (error) {
       toast.error("An error occurred while saving the workplace.");
