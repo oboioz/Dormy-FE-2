@@ -27,6 +27,7 @@ export const PATH_USER = {
 
   contract: path(ROOTS_USER, "/contract"),
   createContract: path(ROOTS_USER, "/contractcreate"),
+  extendContract: path(ROOTS_USER, "/contractextend"),
   roomDetails: path(ROOTS_USER, "/roomdetails"),
 
   overnight: path(ROOTS_USER, "/overnight"),

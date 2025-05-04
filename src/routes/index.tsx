@@ -61,6 +61,7 @@ import {
   ContractAdminListPage,
   InvoiceEditPage,
   ContractCreatePage,
+  ContractExtensionCreatePage,
 } from "./elements";
 
 export default function Router() {
@@ -94,6 +95,7 @@ export default function Router() {
         { path: "profile", element: <UserProfilePage /> },
         { path: "contract", element: <ContractListPage /> },
         { path: "contractcreate", element: <ContractCreatePage /> },
+        { path: "contractextend", element: <ContractExtensionCreatePage /> },
         { path: "roomdetails", element: <RoomDetailsPage /> },
         { path: "overnight", element: <OvernightAbsencePage /> },
         { path: "vehicle", element: <MyVehiclePage /> },
