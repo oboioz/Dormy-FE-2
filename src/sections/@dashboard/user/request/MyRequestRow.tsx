@@ -9,10 +9,10 @@ import {
   Typography,
 } from "@mui/material";
 import Iconify from "../../../../components/iconify";
-import Label from "../../../../components/label";
 import MenuPopover from "../../../../components/menu-popover";
 import { IRequest } from "../../../../models/responses/RequestModel";
 import ConfirmDialog from "../../../../components/confirm-dialog";
+import RequestStatusTag from "../../../tag/RequestStatusTag";
 
 type Props = {
   row: IRequest;
@@ -51,7 +51,6 @@ export default function MyRequestRow({
 
   const handleCloseConfirm = () => {
     setOpenConfirm(false);
-    onCancelRow();
   };
 
   const handleOpenPopover = (event: React.MouseEvent<HTMLElement>) => {
@@ -94,23 +93,7 @@ export default function MyRequestRow({
         <TableCell align="left">{description}</TableCell>
 
         <TableCell align="left">
-          <Label
-            variant="soft"
-            color={
-              status === "SUBMITTED"
-                ? "warning"
-                : status === "REJECTED"
-                ? "error"
-                : status === "APPROVED"
-                ? "success"
-                : status === "CANCELED"
-                ? "default"
-                : undefined
-            }
-            sx={{ textTransform: "capitalize" }}
-          >
-            {status}
-          </Label>
+          <RequestStatusTag status={status} />
         </TableCell>
 
         <TableCell align="left">
@@ -154,15 +137,22 @@ export default function MyRequestRow({
       <ConfirmDialog
         open={openConfirm}
         onClose={handleCloseConfirm}
-        title="Cancel"
-        content="Are you sure want to cancel?"
+        title="Cancel Request"
+        content={
+          <>
+            Are you sure want to <strong>cancel</strong> this request?
+          </>
+        }
         action={
           <Button
             variant="contained"
             color="error"
-            onClick={() => handleCloseConfirm()}
+            onClick={() => {
+              onCancelRow();
+              handleCloseConfirm();
+            }}
           >
-            Cancel
+            Confirm cancel
           </Button>
         }
       />
