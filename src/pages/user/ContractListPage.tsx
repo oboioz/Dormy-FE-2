@@ -38,6 +38,8 @@ import { DateTimeUtils } from "../../utils/DateTimeUtils";
 import ContractStatusTag from "../../sections/tag/ContractStatusTag";
 import ContractExtensionModal from "../../sections/@dashboard/user/contract/ContractExtensionModal";
 import { useNavigate } from "react-router-dom";
+import { ContractStatusEnum } from "../../models/enums/ContractStatusEnum";
+import ConfirmDialog from "../../components/confirm-dialog";
 
 const TABLE_HEAD = [
   { id: "startDate", label: "Start date", align: "left" },
@@ -54,6 +56,7 @@ const TABLE_HEAD = [
 export default function ContractListPage() {
   useAuthGuard(UserRole.CUSTOMER);
   const navigate = useNavigate();
+  const [openConfirmTerminateContract, setOpenConfirmTerminateContract] = useState(false);
   const [contracts, setContracts] = useState<ContractResponseModel[]>([]);
   const [openContractExtension, setOpenContractExtension] =
     useState<boolean>(false);
@@ -79,6 +82,28 @@ export default function ContractListPage() {
   useEffect(() => {
     fetchContractsData();
   }, []);
+
+  const handleOpenConfirmTerminateContract = () => {
+    setOpenConfirmTerminateContract(true);
+  };
+
+  const handleCloseConfirmTerminateContract = () => {
+    setOpenConfirmTerminateContract(false);
+  };
+
+  const handleTerminateContract = async (id: string) => {
+    try {
+      const response = await httpClient.contractService.terminateContract(id);
+      if (response) {
+        toast.success("Terminate contract successfully.");
+      } else {
+        toast.error("Failed to terminate contract.");
+      }
+      navigate(PATH_USER.contract);
+    } catch (error) {
+      toast.error("Failed to terminate contract: " + error);
+    }
+  }
 
   // const handleOpenContractExtension = () => {
   //   setOpenContractExtension(true);
@@ -214,25 +239,61 @@ export default function ContractListPage() {
                   {/* First Column */}
                   <Grid item xs={12} md={6}>
                     <Typography variant="body2" sx={{ mb: 1 }}>
-                      <strong>Room Number:</strong> 
+                      <strong>Room Number: </strong>
                       {contract.roomNumber}
                     </Typography>
                     <Typography variant="body2" sx={{ mb: 1 }}>
-                      <strong>Room Type:</strong> {contract.roomTypeName}
+                      <strong>Room Type: </strong> {contract.roomTypeName}
                     </Typography>
                   </Grid>
 
                   {/* Second Column */}
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12} md={3}>
                     <Typography variant="body2" sx={{ mb: 1 }}>
-                      <strong>Building:</strong> {contract.buildingName}
+                      <strong>Building: </strong> {contract.buildingName}
                     </Typography>
                     <Typography variant="body2">
                       <strong>Status:</strong>{" "}
                       <ContractStatusTag status={contract.status} />
                     </Typography>
                   </Grid>
+                  {(contract.status === ContractStatusEnum.ACTIVE ||
+                    contract.status === ContractStatusEnum.EXTENDED ||
+                    contract.status === ContractStatusEnum.EXPIRED) && (
+                    <Grid item xs={12} md={3} sx={{ textAlign: "right" }}>
+                      <Button
+                        variant="contained"
+                        startIcon={<Iconify icon="eva:trash-2-outline" />}
+                        color="error"
+                        onClick={handleOpenConfirmTerminateContract}
+                      >
+                        Terminate Contract
+                      </Button>
+                    </Grid>
+                  )}
                 </Grid>
+                <ConfirmDialog
+                  open={openConfirmTerminateContract}
+                  onClose={handleCloseConfirmTerminateContract}
+                  title="Terminate Contract"
+                  content={
+                    <>
+                      Are you sure want to <strong>terminate</strong> this contract ?
+                    </>
+                  }
+                  action={
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={() => {
+                        handleTerminateContract(contract.id);
+                        handleCloseConfirmTerminateContract();
+                      }}
+                    >
+                      Confirm terminate
+                    </Button>
+                  }
+                />
               </Box>
 
               {/* Contract Extensions */}
@@ -267,9 +328,10 @@ export default function ContractListPage() {
                           {fDate(extension.endDate, "dd/MM/yyyy")}
                         </Typography>
                         <Typography variant="body2" sx={{ mb: 1 }}>
-                          <strong>Room Number: </strong> 
-                          {extension.roomNumber}{" - "}
-                          <strong>Building: </strong> 
+                          <strong>Room Number: </strong>
+                          {extension.roomNumber}
+                          {" - "}
+                          <strong>Building: </strong>
                           {extension.buildingName}
                         </Typography>
                       </Grid>
@@ -285,7 +347,7 @@ export default function ContractListPage() {
                             : "N/A"}
                         </Typography>
                         <Typography variant="body2" sx={{ mb: 1 }}>
-                          <strong>Room Type: </strong> 
+                          <strong>Room Type: </strong>
                           {extension.roomTypeName}
                         </Typography>
                       </Grid>
