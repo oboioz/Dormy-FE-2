@@ -2,6 +2,7 @@
 import {
   Card,
   Container,
+  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -35,6 +36,8 @@ import { toast } from "react-toastify";
 import { httpClient } from "../../services";
 import { formatCurrency } from "../../utils/currencyUtils";
 import InvoiceStatusTag from "../../sections/tag/InvoiceStatusTag";
+import UserViewDetailInvoiceModal from "../../sections/@dashboard/user/invoice/UserViewDetailInvoiceModal";
+import Iconify from "../../components/iconify";
 // sections
 
 // ----------------------------------------------------------------------
@@ -64,6 +67,14 @@ export default function UserInvoiceMonthlyListPage() {
   } = useTable({ defaultOrderBy: "createDate" });
 
   const [tableData, setTableData] = useState<InvoiceResponseModel[]>([]);
+  const [openViewDetail, setOpenViewDetail] = useState(false);
+
+  const handleOpenViewDetail = () => {
+    setOpenViewDetail(true);
+  };
+  const handleCloseViewDetail = () => {
+    setOpenViewDetail(false);
+  };
 
   const fetchInvoicesData = async () => {
     const payload: GetBatchInvoiceRequestModel = {
@@ -145,13 +156,19 @@ export default function UserInvoiceMonthlyListPage() {
                       </TableCell>
 
                       <TableCell align="right">
-                        {/* <IconButton
-                          color={openPopover ? "inherit" : "default"}
-                          onClick={handleOpenPopover}
+                        <IconButton
+                          onClick={() => {
+                            handleOpenViewDetail();
+                          }}
                         >
-                          <Iconify icon="eva:more-vertical-fill" />
-                        </IconButton> */}
+                          <Iconify icon="eva:eye-outline" />
+                        </IconButton>
                       </TableCell>
+                      <UserViewDetailInvoiceModal
+                        open={openViewDetail}
+                        onClose={() => setOpenViewDetail(false)}
+                        invoiceId={invoice.id}
+                      />
                     </TableRow>
                   ))}
                 </TableBody>

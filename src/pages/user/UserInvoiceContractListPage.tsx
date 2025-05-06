@@ -2,6 +2,7 @@
 import {
   Card,
   Container,
+  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -34,6 +35,8 @@ import { toast } from "react-toastify";
 import { httpClient } from "../../services";
 import { formatCurrency } from "../../utils/currencyUtils";
 import InvoiceStatusTag from "../../sections/tag/InvoiceStatusTag";
+import Iconify from "../../components/iconify";
+import UserViewDetailInvoiceModal from "../../sections/@dashboard/user/invoice/UserViewDetailInvoiceModal";
 // sections
 
 // ----------------------------------------------------------------------
@@ -54,6 +57,14 @@ export default function UserInvoiceContractListPage() {
   const { themeStretch } = useSettingsContext();
 
   const [tableData, setTableData] = useState<InvoiceResponseModel[]>([]);
+  const [openViewDetail, setOpenViewDetail] = useState(false);
+  
+    const handleOpenViewDetail = () => {
+      setOpenViewDetail(true);
+    };
+    const handleCloseViewDetail = () => {
+      setOpenViewDetail(false);
+    };
 
   const {
     page,
@@ -138,6 +149,20 @@ export default function UserInvoiceContractListPage() {
                       <TableCell align="left">
                         <InvoiceStatusTag status={invoice.status} />
                       </TableCell>
+                      <TableCell align="right">
+                        <IconButton
+                          onClick={() => {
+                            handleOpenViewDetail();
+                          }}
+                        >
+                          <Iconify icon="eva:eye-outline" />
+                        </IconButton>
+                      </TableCell>
+                      <UserViewDetailInvoiceModal
+                        open={openViewDetail}
+                        onClose={() => setOpenViewDetail(false)}
+                        invoiceId={invoice.id}
+                      />
                     </TableRow>
                   ))}
                 </TableBody>
