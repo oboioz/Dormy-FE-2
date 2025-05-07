@@ -7,7 +7,7 @@ const userGetProfile = async (id: string) => {
   try {
     var response = await privateAxios.get(API_URL.USER.GET_PROFILE + id);
     if (response.status === HttpStatusCode.Ok) {
-      return response.data.result as Profile;
+      return response.data.result as UserProfileResponseModel;
     }
     return undefined;
   } catch (err) {

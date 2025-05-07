@@ -5,11 +5,13 @@ import FormProvider, {
 } from "../../../../../components/hook-form";
 import { useAuthContext } from "../../../../../auth/JwtContext";
 import { useEffect, useState } from "react";
-import { Profile } from "../../../../../models/responses/UserModel";
+import { Profile, UserProfileDetailInformationResponseModel, UserProfileGuardianResponseModel, UserProfileWorkplaceResponseModel } from "../../../../../models/responses/UserModel";
 // import { httpClient } from "../../../../../utils/axios";
 import { WorkplaceModel } from "../../../../../models/responses/WorkplaceModels";
 import { GuardianModel } from "../../../../../models/responses/GuardianModels";
 import { httpClient } from "../../../../../services";
+import { getGenderDescription } from "../../../../../models/enums/GenderEnum";
+import { fDate } from "../../../../../utils/formatTime";
 
 type Guardian = {
   name: string;
@@ -39,27 +41,23 @@ type FormValuesProps = {
 export default function ProfileInformation() {
   var { user } = useAuthContext();
 
-  const [profile, setProfile] = useState<Profile>();
-  const [workplace, setWorkplace] = useState<WorkplaceModel>();
-  const [guardians, setGuardians] = useState<GuardianModel[]>();
+  const [profile, setProfile] = useState<UserProfileDetailInformationResponseModel>();
+  const [workplace, setWorkplace] = useState<UserProfileWorkplaceResponseModel>();
+  const [guardians, setGuardians] = useState<UserProfileGuardianResponseModel[]>();
 
   const setUserData = (
-    profile: Profile | undefined,
-    workplace: WorkplaceModel | undefined,
-    guardians: GuardianModel[]
+    profile: UserProfileDetailInformationResponseModel | undefined,
+    workplace: UserProfileWorkplaceResponseModel | undefined,
+    guardians: UserProfileGuardianResponseModel[]
   ) => {
     setValue("firstName", profile?.firstName || "--");
     setValue("lastName", profile?.lastName || "--");
-    setValue("gender", profile?.gender.toLocaleUpperCase() || "N/A");
+    setValue("gender", profile?.gender ? getGenderDescription(profile?.gender) : "--");
     setValue(
       "dateOfBirth",
       profile?.dateOfBirth
-        ? new Date(profile.dateOfBirth).toLocaleDateString("en-us", {
-            month: "2-digit",
-            day: "2-digit",
-            year: "numeric",
-          })
-        : "N/A"
+        ? fDate(profile?.dateOfBirth, "dd/MM/yyyy")
+        : "--/--/--"
     );
     setValue("address", "--");
     setValue("NIC", profile?.nationalIdNumber || "--");
@@ -87,34 +85,36 @@ export default function ProfileInformation() {
     if (user) {
       var response = await httpClient.userService.userGetProfile(user?.id);
       if (response) {
-        setProfile(response);
+        setProfile(response.user);
+        setGuardians(response.guardians);
+        setWorkplace(response.workplace);
       }
     }
   };
 
-  const fetchWorkplace = async () => {
-    if (user) {
-      var response = await httpClient.workplaceService.getUserWorkplace();
-      if (response) {
-        setWorkplace(response);
-      }
-    }
-  };
+  // const fetchWorkplace = async () => {
+  //   if (user) {
+  //     var response = await httpClient.workplaceService.getUserWorkplace();
+  //     if (response) {
+  //       setWorkplace(response);
+  //     }
+  //   }
+  // };
 
-  const fetchGuardian = async () => {
-    if (user) {
-      var response = await httpClient.guardianService.getUserGuardian();
-      if (response) {
-        console.log("GUARDIAN", response);
-        setGuardians(response);
-      }
-    }
-  };
+  // const fetchGuardian = async () => {
+  //   if (user) {
+  //     var response = await httpClient.guardianService.getUserGuardian();
+  //     if (response) {
+  //       console.log("GUARDIAN", response);
+  //       setGuardians(response);
+  //     }
+  //   }
+  // };
 
   useEffect(() => {
     fetchProfile();
-    fetchWorkplace();
-    fetchGuardian();
+    // fetchWorkplace();
+    // fetchGuardian();
   }, []);
 
   const defaultValues = {

@@ -96,7 +96,7 @@ export default function GeneralInformationForm({
   const defaultValues: FormValuesProps = {
     firstName: generalInformation.userState.firstName,
     lastName: generalInformation.userState.lastName,
-    gender: generalInformation.userState.gender,
+    gender: generalInformation?.roomState?.gender,
     dateOfBirth: generalInformation.userState.dateOfBirth,
     email: generalInformation.userState.email,
     phoneNumber: generalInformation.userState.phoneNumber,
@@ -280,7 +280,7 @@ export default function GeneralInformationForm({
 
               <Grid container spacing={1}>
                 <Grid item xs={12} md={6}>
-                  <RHFSelect name="gender" label="Gender">
+                  <RHFSelect name="gender" label="Gender" disabled={true}>
                     {/* <MenuItem value="">None</MenuItem>
                     <Divider sx={{ borderStyle: "dashed" }} /> */}
                     {genderEnums?.map((option) => (
