@@ -145,7 +145,7 @@ export default function ViewDetailInvoiceModal({
       case InvoiceStatusEnum.UNPAID:
         return "Export invoice";
       case InvoiceStatusEnum.PAID:
-        return "Pay invoice";
+        return "Confirm to pay invoice";
       case InvoiceStatusEnum.CANCELLED:
         return "Cancel invoice";
       default:
@@ -318,6 +318,14 @@ export default function ViewDetailInvoiceModal({
                 {buildActionForConfirmDialog(InvoiceStatusEnum.CANCELLED)}
               </Button>
             </>
+          ) : invoice?.status === "UNPAID" ? (
+            <Button
+              onClick={() => handleOpenConfirm(InvoiceStatusEnum.PAID)}
+              variant="contained"
+              color="success"
+            >
+              {buildActionForConfirmDialog(InvoiceStatusEnum.PAID)}
+            </Button>
           ) : null}
           <Button onClick={onClose} variant="contained">
             Close
