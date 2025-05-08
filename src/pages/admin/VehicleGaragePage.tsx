@@ -42,6 +42,7 @@ const TABLE_HEAD = [
   { id: "capacitySpots", label: "Capacity", align: "center" },
   { id: "currentQuantity", label: "Occupied", align: "center" },
   { id: "status", label: "Status", align: "left" },
+  { id: "createinvoice", label: "Action", align: "center" },
   { id: "" },
 ];
 

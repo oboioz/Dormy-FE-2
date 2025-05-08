@@ -34,6 +34,8 @@ import {
   TableNoData,
 } from "../../../../components/table";
 import ParkingSpotStatusTag from "../../../tag/ParkingSpotStatusTag";
+import { useNavigate } from "react-router-dom";
+import { PATH_ADMIN } from "../../../../routes/paths";
 
 type Props = {
   row: IParkingSpot;
@@ -59,9 +61,11 @@ export default function GarageListRow({
     id,
   } = row;
 
+  const navigate = useNavigate();
   const isDisableEdit = currentQuantity > 0 || isDeleted;
 
   const [openConfirm, setOpenConfirm] = useState(false);
+  const [openConfirmCreateParkingInvoice, setOpenConfirmCreateParkingInvoice] = useState(false);
   const [openPopover, setOpenPopover] = useState<HTMLElement | null>(null);
   const [openDetailModal, setOpenDetailModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
@@ -80,6 +84,14 @@ export default function GarageListRow({
 
   const handleCloseConfirm = () => {
     setOpenConfirm(false);
+  };
+
+  const handleOpenConfirmCreateParkingInvoice = () => {
+    setOpenConfirmCreateParkingInvoice(true);
+  };
+
+  const handleCloseConfirmCreateParkingInvoice = () => {
+    setOpenConfirmCreateParkingInvoice(false);
   };
 
   const handleOpenPopover = (event: React.MouseEvent<HTMLElement>) => {
@@ -152,6 +164,18 @@ export default function GarageListRow({
     }
   };
 
+  const handleCreateBatchParkingInvoices = async (parkingSpotId: string) => {
+    var response = await httpClient.parkingSpotService.createParkingSpotInvoiceForAllUsers(parkingSpotId);
+    if (response) {
+      toast.success("Create batch parking invoices successfully!");
+      handleCloseConfirmCreateParkingInvoice();
+      navigate(PATH_ADMIN.invoice.parkingFee);
+    } else {
+      toast.error("Create batch parking invoices failed");
+      handleCloseConfirmCreateParkingInvoice();
+    }
+  };
+
   return (
     <>
       <TableRow hover selected={selected} sx={{ opacity: isDeleted ? 0.5 : 1 }}>
@@ -185,6 +209,17 @@ export default function GarageListRow({
 
         <TableCell align="left">
           <ParkingSpotStatusTag status={status} />
+        </TableCell>
+
+        <TableCell align="center">
+          <Button
+            color="warning"
+            variant="contained"
+            // startIcon={<Iconify icon="eva:plus-fill" />}
+            onClick={handleOpenConfirmCreateParkingInvoice}
+          >
+            Create parking invoice
+          </Button>
         </TableCell>
 
         <TableCell align="right">
@@ -248,6 +283,22 @@ export default function GarageListRow({
             onClick={() => handleDelete(id)}
           >
             Deactivate
+          </Button>
+        }
+      />
+
+      <ConfirmDialog
+        open={openConfirmCreateParkingInvoice}
+        onClose={handleCloseConfirmCreateParkingInvoice}
+        title="Confirm to create batch parking invoices"
+        content="Are you sure want to create batch parking invoices?"
+        action={
+          <Button
+            variant="contained"
+            color="warning"
+            onClick={() => handleCreateBatchParkingInvoices(id)}
+          >
+            Create batch parking invoices
           </Button>
         }
       />

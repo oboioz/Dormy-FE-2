@@ -118,6 +118,7 @@ export const API_URL = {
     UPDATE_STATUS: "parking-spot/update/status",
     GET_SINGLE: "parking-spot/id/",
     SOFT_DELETE: "parking-spot/id/{id}/soft-delete",
+    CREATE_BATCH_INVOICES: "parking-spot/id/{id}/create-invoices",
   },
   VIOLATION: {
     GET_BATCH: "violation/batch",

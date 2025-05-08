@@ -102,6 +102,21 @@ const softDelete = async (id: string) => {
   }
 };
 
+const createParkingSpotInvoiceForAllUsers = async (parkingSpotId: string) => {
+  try {
+    const response = await privateAxios.post(
+      API_URL.PARKING_SPOT.CREATE_BATCH_INVOICES.replace("{id}", parkingSpotId)
+    );
+    if (response.status === HttpStatusCode.Created) {
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
+
 export const parkingSpotService = {
   getParkingSpotBatch,
   getParkingSpotSingle,
@@ -109,4 +124,5 @@ export const parkingSpotService = {
   createParkingSpot,
   updateParkingSpot,
   softDelete,
+  createParkingSpotInvoiceForAllUsers,
 };

@@ -114,6 +114,7 @@ const adminNavConfig = [
         children: [
           { title: "Monthly invoice", path: PATH_ADMIN.invoice.monthly },
           { title: "Contract invoice", path: PATH_ADMIN.invoice.contract },
+          { title: "Parking fee invoice", path: PATH_ADMIN.invoice.parkingFee },
         ],
       },
       {

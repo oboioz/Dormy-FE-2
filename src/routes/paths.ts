@@ -73,6 +73,7 @@ export const PATH_ADMIN = {
   invoice: {
     monthly: path(ROOTS_ADMIN, "/invoice/room-service-monthly"),
     contract: path(ROOTS_ADMIN, "/invoice/contract"),
+    parkingFee: path(ROOTS_ADMIN, "/invoice/parking-fee"),
     create: path(ROOTS_ADMIN, "/invoicecreate"),
     edit: (invoiceId: string) => path(ROOTS_ADMIN, `/invoice-edit/${invoiceId}`),
   },
