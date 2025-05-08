@@ -13,11 +13,13 @@ import {
   Typography,
 } from "@mui/material";
 // components
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link as RouterLink } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useAuthGuard } from "../../auth/AuthGuard";
+import ConfirmDialog from "../../components/confirm-dialog";
 import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
 import Iconify from "../../components/iconify";
-import Label from "../../components/label";
 import Scrollbar from "../../components/scrollbar";
 import { useSettingsContext } from "../../components/settings";
 import {
@@ -25,23 +27,19 @@ import {
   TablePaginationCustom,
   useTable,
 } from "../../components/table";
-import { PATH_USER } from "../../routes/paths";
-import { fDate, fDateTime } from "../../utils/formatTime";
-import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
-import { OvernightAbsenceResponseModel } from "../../models/responses/OvernightAbsenceResponseModels";
-import { useEffect, useState } from "react";
-import { httpClient } from "../../services";
-import CreateOvernightAbsenceModal from "../../sections/@dashboard/user/request/CreateOvernightAbsenceForm";
-import { toast } from "react-toastify";
-import EditOvernightAbsenceModal from "../../sections/@dashboard/user/request/EditOvernightAbsenceModal";
-import { DateTimeUtils } from "../../utils/DateTimeUtils";
-import OvernightAbsenceStatusTag from "../../sections/tag/OvernightAbsenceStatusTag";
 import {
   CreateOvernightAbsenceRequestModel,
   UpdateOvernightAbsenceRequestModel,
 } from "../../models/requests/OvernightAbsenceRequestModels";
-import ConfirmDialog from "../../components/confirm-dialog";
+import { OvernightAbsenceResponseModel } from "../../models/responses/OvernightAbsenceResponseModels";
+import { PATH_USER } from "../../routes/paths";
+import CreateOvernightAbsenceModal from "../../sections/@dashboard/user/request/CreateOvernightAbsenceForm";
+import EditOvernightAbsenceModal from "../../sections/@dashboard/user/request/EditOvernightAbsenceModal";
+import OvernightAbsenceStatusTag from "../../sections/tag/OvernightAbsenceStatusTag";
+import { httpClient } from "../../services";
+import { DateTimeUtils } from "../../utils/DateTimeUtils";
+import { fDate } from "../../utils/formatTime";
 
 // ----------------------------------------------------------------------
 
@@ -224,22 +222,22 @@ export default function OvernightAbsencePage() {
           </Typography>
 
           <Stack alignItems="flex-start" spacing={1} sx={{ mt: 2 }}>
-            <Stack direction="row">
-              <StyledIcon icon="ic:round-circle" />
+            <Stack direction="row" spacing={1}>
+              <Typography variant="body2">• </Typography>
               <Typography variant="body2">
                 Attention: You must submit before 6:00 PM
               </Typography>
             </Stack>
 
-            <Stack direction="row">
-              <StyledIcon icon="ic:round-circle" />
+            <Stack direction="row" spacing={1}>
+              <Typography variant="body2">• </Typography>
               <Typography variant="body2">
                 Every request will be processed within 24 hours
               </Typography>
             </Stack>
 
-            <Stack direction="row">
-              <StyledIcon icon="ic:round-circle" />
+            <Stack direction="row" spacing={1}>
+              <Typography variant="body2">• </Typography>
               <Typography variant="body2">
                 You can only submit 3 times a month
               </Typography>
@@ -253,7 +251,7 @@ export default function OvernightAbsencePage() {
               <Table size={"medium"} sx={{ minWidth: 800 }}>
                 <TableHeadCustom
                   headLabel={TABLE_HEAD}
-                  // rowCount={tableData.length}
+                // rowCount={tableData.length}
                 />
                 <TableBody>
                   {overnightAbsences.map((row) => (
@@ -281,16 +279,16 @@ export default function OvernightAbsencePage() {
                         )}
                         {(row.status == "SUBMITTED" ||
                           row.status == "APPROVED") && (
-                          <Button
-                            size="small"
-                            variant="outlined"
-                            onClick={handleOpenConfirm}
-                            sx={{ ml: 1 }}
-                            color="error"
-                          >
-                            Cancel
-                          </Button>
-                        )}
+                            <Button
+                              size="small"
+                              variant="outlined"
+                              onClick={handleOpenConfirm}
+                              sx={{ ml: 1 }}
+                              color="error"
+                            >
+                              Cancel
+                            </Button>
+                          )}
                       </TableCell>
                       <ConfirmDialog
                         open={openConfirm}
