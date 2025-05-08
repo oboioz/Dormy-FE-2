@@ -24,12 +24,14 @@ export default function RoomDetailsPage() {
       return;
     }
     var profile = await httpClient.userService.userGetProfile(userId);
-    if (profile?.roomId) {
-      var roomDetail = await httpClient.roomService.getRoomById(profile.roomId);
+    if (profile.contract.roomId) {
+      var roomDetail = await httpClient.roomService.getRoomById(
+        profile.contract.roomId
+      );
       if (roomDetail) {
         setRoom({
           ...roomDetail,
-          users: roomDetail.users//.filter((x) => x.userId !== userId),
+          users: roomDetail.users, //.filter((x) => x.userId !== userId),
         });
       }
     }

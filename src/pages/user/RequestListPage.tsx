@@ -78,8 +78,8 @@ export default function RequestListPage() {
 
   const fetchProfile = async () => {
     var profile = await httpClient.userService.userGetProfile(user?.id);
-    if (profile?.roomId) {
-      setCurrentRoomId(profile.roomId || null);
+    if (profile?.contract.roomId) {
+      setCurrentRoomId(profile.contract.roomId || null);
     }
   };
 
