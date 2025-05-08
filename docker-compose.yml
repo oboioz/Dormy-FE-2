@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        VITE_BASE_API_URL: http://98.81.83.13/api/
+        VITE_BASE_API_URL: http://54.226.72.48/api/
     ports:
       - 80:80
     environment:
