@@ -1,4 +1,12 @@
-import { Grid, Typography, Card, Stack, Divider, Link, Box } from "@mui/material";
+import {
+  Grid,
+  Typography,
+  Card,
+  Stack,
+  Divider,
+  Link,
+  Box,
+} from "@mui/material";
 import { IRoom } from "../../models/responses/RoomModel";
 import Iconify from "../../components/iconify";
 import { useNavigate } from "react-router-dom";
@@ -77,7 +85,8 @@ export default function RoomDetail({ room }: Props) {
               <Stack spacing={1}>
                 {roomServices.map((service) => (
                   <Typography key={service.id} variant="body2">
-                    - {service.roomServiceName}: {service.cost.toLocaleString()} VND/
+                    - {service.roomServiceName}: {service.cost.toLocaleString()}{" "}
+                    VND/
                     <b>{service.unit}</b>
                   </Typography>
                 ))}
@@ -115,7 +124,11 @@ export default function RoomDetail({ room }: Props) {
                       <Grid item xs={12} sm={6}>
                         <Stack spacing={1}>
                           {/* User Name */}
-                          <Stack direction="row" alignItems="center" spacing={1}>
+                          <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing={1}
+                          >
                             <Iconify
                               icon="eva:person-outline"
                               sx={{ color: "primary.main" }}
@@ -126,7 +139,11 @@ export default function RoomDetail({ room }: Props) {
                           </Stack>
 
                           {/* Email */}
-                          <Stack direction="row" alignItems="center" spacing={1}>
+                          <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing={1}
+                          >
                             <Iconify
                               icon="eva:email-outline"
                               sx={{ color: "primary.main" }}
@@ -137,7 +154,11 @@ export default function RoomDetail({ room }: Props) {
                           </Stack>
 
                           {/* Phone */}
-                          <Stack direction="row" alignItems="center" spacing={1}>
+                          <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing={1}
+                          >
                             <Iconify
                               icon="eva:phone-outline"
                               sx={{ color: "primary.main" }}
@@ -148,7 +169,11 @@ export default function RoomDetail({ room }: Props) {
                           </Stack>
 
                           {/* Gender */}
-                          <Stack direction="row" alignItems="center" spacing={1}>
+                          <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing={1}
+                          >
                             <Iconify
                               icon={
                                 user.gender === "MALE"
@@ -165,7 +190,11 @@ export default function RoomDetail({ room }: Props) {
                           </Stack>
 
                           {/* Status */}
-                          <Stack direction="row" alignItems="center" spacing={1}>
+                          <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing={1}
+                          >
                             <Iconify
                               icon="eva:checkmark-circle-outline"
                               sx={{
@@ -187,7 +216,11 @@ export default function RoomDetail({ room }: Props) {
                       <Grid item xs={12} sm={6}>
                         <Stack spacing={1}>
                           {/* Contract ID */}
-                          <Stack direction="row" alignItems="center" spacing={1}>
+                          <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing={1}
+                          >
                             <Iconify
                               icon="eva:file-text-outline"
                               sx={{ color: "primary.main" }}
@@ -196,7 +229,13 @@ export default function RoomDetail({ room }: Props) {
                               variant="body2"
                               target="_blank"
                               rel="noopener noreferrer"
-                              href={`/contract/${user.contractId}`}
+                              onClick={() =>
+                                window.open(
+                                  `/admin/contract/${user.contractId}`,
+                                  "_blank"
+                                )
+                              }
+                              // href={`admin/contract/${user.contractId}`}
                               sx={{
                                 color: "primary.main",
                                 textDecoration: "underline",
@@ -207,7 +246,11 @@ export default function RoomDetail({ room }: Props) {
                           </Stack>
 
                           {/* Contract Status */}
-                          <Stack direction="row" alignItems="center" spacing={1}>
+                          <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing={1}
+                          >
                             <Iconify
                               icon="eva:alert-circle-outline"
                               sx={{
@@ -219,12 +262,17 @@ export default function RoomDetail({ room }: Props) {
                               }}
                             />
                             <Typography variant="body2">
-                              Contract Status: <ContractStatusTag status={user.contractStatus}/>
+                              Contract Status:{" "}
+                              <ContractStatusTag status={user.contractStatus} />
                             </Typography>
                           </Stack>
 
                           {/* Contract Start Date */}
-                          <Stack direction="row" alignItems="center" spacing={1}>
+                          <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing={1}
+                          >
                             <Iconify
                               icon="eva:calendar-outline"
                               sx={{ color: "primary.main" }}
@@ -238,16 +286,18 @@ export default function RoomDetail({ room }: Props) {
                           </Stack>
 
                           {/* Contract End Date */}
-                          <Stack direction="row" alignItems="center" spacing={1}>
+                          <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing={1}
+                          >
                             <Iconify
                               icon="eva:calendar-outline"
                               sx={{ color: "primary.main" }}
                             />
                             <Typography variant="body2">
                               End Date:{" "}
-                              <b>
-                                {fDate(user.contractEndDate, "dd/MM/yyyy")}
-                              </b>
+                              <b>{fDate(user.contractEndDate, "dd/MM/yyyy")}</b>
                             </Typography>
                           </Stack>
                         </Stack>
@@ -257,7 +307,11 @@ export default function RoomDetail({ room }: Props) {
                 </Grid>
               ))
             ) : (
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 3, ml: 3 }}>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 3, ml: 3 }}
+              >
                 No users in this room.
               </Typography>
             )}

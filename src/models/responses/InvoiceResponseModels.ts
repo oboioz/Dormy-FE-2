@@ -11,6 +11,7 @@ export interface InvoiceResponseModel {
   contractId: string;
   roomId: string;
   roomName: string;
+  userFullname: string;
   createdByCreator: string;
   lastUpdatedByUpdater: string;
   createdDateUtc: string;

@@ -69,7 +69,7 @@ const TABLE_HEAD = [
   { id: "month_year", label: "Month/Year", align: "left" },
   { id: "dueDate", label: "Due date", align: "left" },
   { id: "amountAfterPromotion", label: "Amount", align: "center" },
-  { id: "roomName", label: "Room name", align: "left" },
+  { id: "roomName", label: "Room name", align: "center" },
   { id: "status", label: "Status", align: "left" },
   { id: "action", label: "", align: "center" },
 ];

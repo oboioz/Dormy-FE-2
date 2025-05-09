@@ -105,6 +105,9 @@ export default function InvoiceTableRow({
         <TableCell align="right">
           {fCurrency(invoice.amountAfterPromotion)}
         </TableCell>
+        {invoice.type === "PARKING_INVOICE" && (
+          <TableCell align="left">{invoice.userFullname}</TableCell>
+        )}
         <TableCell align="center">{invoice.roomName}</TableCell>
 
         <TableCell align="left">
