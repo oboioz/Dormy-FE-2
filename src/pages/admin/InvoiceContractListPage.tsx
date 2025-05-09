@@ -67,7 +67,7 @@ const SERVICE_OPTIONS = [
 const TABLE_HEAD = [
   { id: "invoiceName", label: "Invoice name", align: "left" },
   { id: "dueDate", label: "Due date", align: "left" },
-  { id: "amountAfterPromotion", label: "Amount", align: "left" },
+  { id: "amountAfterPromotion", label: "Amount", align: "center" },
   { id: "roomName", label: "Room name", align: "left" },
   { id: "status", label: "Status", align: "left" },
   { id: "action", label: "", align: "center" },
