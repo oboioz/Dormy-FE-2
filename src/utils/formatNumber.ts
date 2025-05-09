@@ -8,13 +8,15 @@ export function fNumber(number: InputValue) {
   return numeral(number).format();
 }
 
-export function fCurrency(number: InputValue, haveCurrency = false) {
-  let format = number ? numeral(number).format('0,0.00') : '';  
-  if (haveCurrency) {
-    format = number ? numeral(number).format('$0,0.00') : '';
-  }
+export function fCurrency(number: InputValue, haveCurrency = false): string {
+  const validNumber = Number(number);
+  if (isNaN(validNumber)) return '';
 
-  return result(format, '.00');
+  const format = haveCurrency
+    ? numeral(validNumber).format('$0,0')
+    : numeral(validNumber).format('0,0');
+
+  return format;
 }
 
 export function fPercent(number: InputValue) {
