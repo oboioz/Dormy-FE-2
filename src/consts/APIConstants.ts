@@ -91,7 +91,8 @@ export const API_URL = {
     TERMINATE: "contract/id/{id}/terminate",
     EXPIRED: "contract/id/{id}/expired",
     GET_ALL_ROOMTYPES: "contract/all-room-types",
-    GET_INITIAL_CREATE_EXTEND_CONTRACT: "contract/initial-create-contract-data",
+    GET_INITIAL_CREATE_CONTRACT: "contract/initial-create-contract-data",
+    GET_INITIAL_EXTEND_CONTRACT: "contract/id/{id}/initial-extend-contract-data",
   },
   PARKING_REQUEST: {
     GET_BATCH: "parking-request/batch",

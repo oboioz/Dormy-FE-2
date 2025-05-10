@@ -19,7 +19,7 @@ import { formatCurrency } from "../../utils/currencyUtils";
 import { useEffect, useState } from "react";
 import { httpClient } from "../../services";
 import { ISearchBuildingAndRoomRequestModel } from "../../models/requests/RegistrationRequestModels";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { PATH_USER } from "../../routes/paths";
 import { DateTimeUtils } from "../../utils/DateTimeUtils";
 import { useAuthGuard } from "../../auth/AuthGuard";
@@ -60,6 +60,8 @@ const UpdateSchema = Yup.object().shape({
 export default function ContractExtensionCreatePage() {
   useAuthGuard(UserRole.CUSTOMER);
   const navigate = useNavigate();
+  const { contractId } = useParams();
+
   const [isLoading, setIsLoading] = useState(false);
   const [isCurrentRoomUsed, setIsCurrentRoomUsed] = useState<boolean>(true);
   const [contractInformation, setContractInformation] =
@@ -105,9 +107,9 @@ export default function ContractExtensionCreatePage() {
     setIsLoading(false);
   };
 
-  const getInitialCreateExtendContractData = async () => {
+  const getInitialExtendContractData = async (contractId: string) => {
     const response =
-      await httpClient.contractService.getInitialCreateExtendContractData();
+      await httpClient.contractService.getInitialExtendContractData(contractId);
     if (response) {
       setRoomTypeOptions(response.listRoomTypes);
       setContractInformation(response.contractInformation);
@@ -117,8 +119,8 @@ export default function ContractExtensionCreatePage() {
 
   useEffect(() => {
     setValue("gender", userInformation?.gender);
-    getInitialCreateExtendContractData();
-  }, [isCurrentRoomUsed]);
+    getInitialExtendContractData(contractId);
+  }, [isCurrentRoomUsed, contractId]);
 
   const searchBuildingsAndRoomsByGenderAndRoomType = async (
     payload: ISearchBuildingAndRoomRequestModel

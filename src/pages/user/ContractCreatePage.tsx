@@ -109,9 +109,9 @@ export default function ContractCreatePage() {
     setIsLoading(false);
   };
 
-  const getInitialCreateExtendContractData = async () => {
+  const getInitialCreateContractData = async () => {
     const response =
-      await httpClient.contractService.getInitialCreateExtendContractData();
+      await httpClient.contractService.getInitialCreateContractData();
     if (response) {
       setRoomTypeOptions(response.listRoomTypes);
       setContractInformation(response.contractInformation);
@@ -121,7 +121,7 @@ export default function ContractCreatePage() {
 
   useEffect(() => {
     setValue('gender', userInformation?.gender);
-    getInitialCreateExtendContractData();
+    getInitialCreateContractData();
   }, [isCurrentRoomUsed]);
 
   const searchBuildingsAndRoomsByGenderAndRoomType = async (

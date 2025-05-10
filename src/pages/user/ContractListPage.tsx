@@ -56,7 +56,8 @@ const TABLE_HEAD = [
 export default function ContractListPage() {
   useAuthGuard(UserRole.CUSTOMER);
   const navigate = useNavigate();
-  const [openConfirmTerminateContract, setOpenConfirmTerminateContract] = useState(false);
+  const [openConfirmTerminateContract, setOpenConfirmTerminateContract] =
+    useState(false);
   const [contracts, setContracts] = useState<ContractResponseModel[]>([]);
   const [openContractExtension, setOpenContractExtension] =
     useState<boolean>(false);
@@ -103,7 +104,7 @@ export default function ContractListPage() {
     } catch (error) {
       toast.error("Failed to terminate contract: " + error);
     }
-  }
+  };
 
   // const handleOpenContractExtension = () => {
   //   setOpenContractExtension(true);
@@ -148,7 +149,7 @@ export default function ContractListPage() {
           ]}
           action={
             <>
-              <Button
+              {/* <Button
                 variant="contained"
                 startIcon={<Iconify icon="eva:plus-fill" />}
                 // onClick={handleOpenContractExtension}
@@ -156,7 +157,7 @@ export default function ContractListPage() {
                 sx={{ mr: 2 }}
               >
                 Extend Contract
-              </Button>
+              </Button> */}
               <Button
                 variant="contained"
                 color="success"
@@ -235,6 +236,46 @@ export default function ContractListPage() {
                     </Typography>
                   </Grid>
                 </Grid>
+                <Grid container spacing={3}>
+                  {/* First Column */}
+                  <Grid item xs={12} md={6}></Grid>
+                  {/* Second Column - Buttons */}
+                  <Grid
+                    item
+                    xs={12}
+                    md={6}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-end", // Align buttons to the right
+                      alignItems: "center", // Vertically align buttons
+                      gap: 2, // Add spacing between buttons
+                    }}
+                  >
+                    {(contract.status === ContractStatusEnum.ACTIVE ||
+                      contract.status === ContractStatusEnum.EXTENDED ||
+                      contract.status === ContractStatusEnum.EXPIRED) && (
+                      <Button
+                        variant="contained"
+                        startIcon={<Iconify icon="eva:plus-fill" />}
+                        onClick={() => navigate(PATH_USER.extendContract(contract.id))}
+                      >
+                        Extend Contract
+                      </Button>
+                    )}
+                    {(contract.status === ContractStatusEnum.ACTIVE ||
+                      contract.status === ContractStatusEnum.EXTENDED ||
+                      contract.status === ContractStatusEnum.EXPIRED) && (
+                      <Button
+                        variant="contained"
+                        color="error"
+                        startIcon={<Iconify icon="eva:trash-2-outline" />}
+                        onClick={handleOpenConfirmTerminateContract}
+                      >
+                        Terminate Contract
+                      </Button>
+                    )}
+                  </Grid>
+                </Grid>
                 <Grid container spacing={3} sx={{ mt: 1 }}>
                   {/* First Column */}
                   <Grid item xs={12} md={6}>
@@ -246,7 +287,6 @@ export default function ContractListPage() {
                       <strong>Room Type: </strong> {contract.roomTypeName}
                     </Typography>
                   </Grid>
-
                   {/* Second Column */}
                   <Grid item xs={12} md={3}>
                     <Typography variant="body2" sx={{ mb: 1 }}>
@@ -257,7 +297,7 @@ export default function ContractListPage() {
                       <ContractStatusTag status={contract.status} />
                     </Typography>
                   </Grid>
-                  {(contract.status === ContractStatusEnum.ACTIVE ||
+                  {/* {(contract.status === ContractStatusEnum.ACTIVE ||
                     contract.status === ContractStatusEnum.EXTENDED ||
                     contract.status === ContractStatusEnum.EXPIRED) && (
                     <Grid item xs={12} md={3} sx={{ textAlign: "right" }}>
@@ -267,10 +307,19 @@ export default function ContractListPage() {
                         color="error"
                         onClick={handleOpenConfirmTerminateContract}
                       >
+                        Extend Contract
+                      </Button>
+                      <Button
+                        variant="contained"
+                        startIcon={<Iconify icon="eva:trash-2-outline" />}
+                        color="error"
+                        onClick={handleOpenConfirmTerminateContract}
+                        sx={{ mt: 2 }}
+                      >
                         Terminate Contract
                       </Button>
                     </Grid>
-                  )}
+                  )} */}
                 </Grid>
                 <ConfirmDialog
                   open={openConfirmTerminateContract}
@@ -278,7 +327,8 @@ export default function ContractListPage() {
                   title="Terminate Contract"
                   content={
                     <>
-                      Are you sure want to <strong>terminate</strong> this contract ?
+                      Are you sure want to <strong>terminate</strong> this
+                      contract ?
                     </>
                   }
                   action={

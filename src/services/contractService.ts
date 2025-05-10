@@ -110,9 +110,23 @@ const getAllRoomTypesData = async () => {
   }
 };
 
-const getInitialCreateExtendContractData = async () => {
+const getInitialCreateContractData = async () => {
   try {
-    var response = await privateAxios.get(API_URL.CONTRACT.GET_INITIAL_CREATE_EXTEND_CONTRACT);
+    var response = await privateAxios.get(API_URL.CONTRACT.GET_INITIAL_CREATE_CONTRACT);
+    if (response.status === HttpStatusCode.Ok) {
+      return response.data.result as InitialCreateEntendContractDataResponseModel;
+    }
+    return undefined;
+  } catch (err) {
+    console.log(err);
+    return undefined;
+  }
+};
+
+const getInitialExtendContractData = async (contractId: string) => {
+  try {
+    const url = API_URL.CONTRACT.GET_INITIAL_EXTEND_CONTRACT.replace("{id}", contractId);
+    var response = await privateAxios.get(url);
     if (response.status === HttpStatusCode.Ok) {
       return response.data.result as InitialCreateEntendContractDataResponseModel;
     }
@@ -144,6 +158,7 @@ export const contractService = {
   createContractExtension: createContractExtension,
   getContractById: getContractById,
   getAllRoomTypesData: getAllRoomTypesData,
-  getInitialCreateExtendContractData: getInitialCreateExtendContractData,
+  getInitialCreateContractData: getInitialCreateContractData,
+  getInitialExtendContractData: getInitialExtendContractData,
   createNewContract: createNewContract,
 };

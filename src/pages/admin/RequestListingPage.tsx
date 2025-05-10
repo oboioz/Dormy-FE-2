@@ -189,7 +189,7 @@ export default function RequestListingPage() {
             <MenuItem value="SUBMITTED">Submitted</MenuItem>
             <MenuItem value="APPROVED">Approved</MenuItem>
             <MenuItem value="REJECTED">Rejected</MenuItem>
-            <MenuItem value="CANCELED">Canceled</MenuItem>
+            <MenuItem value="CANCELLED">Cancelled</MenuItem>
           </Select>
 
           {/* Search Input */}
