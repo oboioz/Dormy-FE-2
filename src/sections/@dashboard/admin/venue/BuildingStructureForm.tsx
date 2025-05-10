@@ -492,6 +492,7 @@ export default function BuildingStructureForm() {
                             type="number"
                             value={roomType.totalRoomsWantToCreate}
                             fullWidth
+                            disabled={isEditMode}
                             onChange={(evt) =>
                               handleChangeRoomCount(
                                 evt,
