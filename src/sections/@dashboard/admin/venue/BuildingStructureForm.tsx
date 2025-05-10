@@ -141,11 +141,11 @@ export default function BuildingStructureForm() {
         }
         if (
           !roomType.totalRoomsWantToCreate ||
-          roomType.totalRoomsWantToCreate < 1
+          roomType.totalRoomsWantToCreate < 0
         ) {
           errors[
             `floors.${floorIndex}.roomTypes.${roomTypeIndex}.totalRoomsWantToCreate`
-          ] = "Room count must be at least 1.";
+          ] = "Room count must be at least 0.";
         }
       });
     });
@@ -214,6 +214,35 @@ export default function BuildingStructureForm() {
                       totalRoomsWantToCreate:
                         roomTypes.find((x) => x.id === event.target.value)
                           ?.capacity || 1,
+                    }
+                  : roomType
+              ),
+            }
+          : floor
+      ),
+    });
+  };
+
+  const handleChangeRoomCount = (
+    event: ChangeEvent<HTMLInputElement>,
+    floorIndex: number,
+    roomTypeIndex: number
+  ) => {
+    setBuilding({
+      ...building,
+      floors: building.floors.map((floor, index) =>
+        index === floorIndex
+          ? {
+              ...floor,
+              roomTypes: floor.roomTypes.map((roomType, index) =>
+                index === roomTypeIndex
+                  ? {
+                      ...roomType,
+                      // roomTypeId: event.target.value,
+                      totalRoomsWantToCreate:
+                        Number.parseInt(event.target.value) ||
+                        roomTypes.find((x) => x.id === event.target.value)
+                          ?.capacity,
                     }
                   : roomType
               ),
@@ -462,8 +491,14 @@ export default function BuildingStructureForm() {
                             label="Room Count"
                             type="number"
                             value={roomType.totalRoomsWantToCreate}
-                            disabled
                             fullWidth
+                            onChange={(evt) =>
+                              handleChangeRoomCount(
+                                evt,
+                                floorIndex,
+                                roomTypeIndex
+                              )
+                            }
                           />
                         </Grid>
 
