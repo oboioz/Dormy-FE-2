@@ -35,8 +35,7 @@ export const VehicleRegistrationFormPage = Loadable(lazy(() => import('../pages/
 
 export const UserInvoiceMonthlyListPage = Loadable(lazy(() => import('../pages/user/UserInvoiceMonthlyListPage')));
 export const UserInvoiceContractListPage = Loadable(lazy(() => import('../pages/user/UserInvoiceContractListPage')));
-
-
+export const UserInvoiceParkingFeeListPage = Loadable(lazy(() => import('../pages/user/UserInvoiceParkingFeeListPage')));
 
 export const NotificationsPage = Loadable(lazy(() => import('../pages/user/NotificationsPage')));
 export const NotificationPostPage = Loadable(lazy(() => import('../pages/user/NotificationPostPage')));

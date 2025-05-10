@@ -41,6 +41,7 @@ export const PATH_USER = {
   invoice: {
     monthly: path(ROOTS_USER, "/invoice/room-service-monthly"),
     contract: path(ROOTS_USER, "/invoice/contract"),
+    parkingFee: path(ROOTS_USER, "/invoice/parking-fee"),
   },
 
   request: path(ROOTS_USER, "/request"),

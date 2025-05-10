@@ -60,6 +60,7 @@ const userNavConfig = [
         children: [
           { title: "Monthly invoice", path: PATH_USER.invoice.monthly },
           { title: "Contract invoice", path: PATH_USER.invoice.contract },
+          { title: "Parking fee invoice", path: PATH_USER.invoice.parkingFee },
         ],
       },
       { title: "request", path: PATH_USER.request, icon: ICONS.request }, // Booking represents requests

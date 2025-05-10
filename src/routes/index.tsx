@@ -63,6 +63,7 @@ import {
   ContractCreatePage,
   ContractExtensionCreatePage,
   InvoiceParkingFeeListPage,
+  UserInvoiceParkingFeeListPage,
 } from "./elements";
 
 export default function Router() {
@@ -103,6 +104,7 @@ export default function Router() {
 
         { path: "invoice/room-service-monthly", element: <UserInvoiceMonthlyListPage /> },
         { path: "invoice/contract", element: <UserInvoiceContractListPage /> },
+        { path: "invoice/parking-fee", element: <UserInvoiceParkingFeeListPage /> },
 
         { path: "request", element: <RequestListPage /> },
 
