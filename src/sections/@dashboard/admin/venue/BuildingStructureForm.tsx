@@ -224,7 +224,7 @@ export default function BuildingStructureForm() {
   };
 
   const handleChangeRoomCount = (
-    event: ChangeEvent<HTMLInputElement>,
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     floorIndex: number,
     roomTypeIndex: number
   ) => {
