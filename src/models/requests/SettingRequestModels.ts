@@ -1,6 +1,6 @@
 export interface SettingCreateUpdateRequestModel {
     keyName: string;
-    value: string;
+    value?: string | null;
     dataType: string;
 }
 

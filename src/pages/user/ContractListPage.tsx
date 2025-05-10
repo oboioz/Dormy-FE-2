@@ -59,6 +59,8 @@ export default function ContractListPage() {
   const [openConfirmTerminateContract, setOpenConfirmTerminateContract] =
     useState(false);
   const [contracts, setContracts] = useState<ContractResponseModel[]>([]);
+  const [isCreateContractButtonEnabled, setIsCreateContractButtonEnabled] =
+    useState(false);
   const [openContractExtension, setOpenContractExtension] =
     useState<boolean>(false);
 
@@ -80,8 +82,22 @@ export default function ContractListPage() {
     }
   };
 
+  const fetchSettingData = async () => {
+    const response = await httpClient.settingService.getSettingByKeyname(
+      "EnableCreateContractForNewSchoolYear"
+    );
+    if (response) {
+      setIsCreateContractButtonEnabled(
+        response.value === "true" && response.isApplied
+      );
+    } else {
+      setIsCreateContractButtonEnabled(false);
+    }
+  };
+
   useEffect(() => {
     fetchContractsData();
+    fetchSettingData();
   }, []);
 
   const handleOpenConfirmTerminateContract = () => {
@@ -158,14 +174,16 @@ export default function ContractListPage() {
               >
                 Extend Contract
               </Button> */}
-              <Button
-                variant="contained"
-                color="success"
-                startIcon={<Iconify icon="eva:plus-fill" />}
-                onClick={() => navigate(PATH_USER.createContract)}
-              >
-                Create Contract
-              </Button>
+              {isCreateContractButtonEnabled && (
+                <Button
+                  variant="contained"
+                  color="success"
+                  startIcon={<Iconify icon="eva:plus-fill" />}
+                  onClick={() => navigate(PATH_USER.createContract)}
+                >
+                  Create Contract
+                </Button>
+              )}
             </>
           }
         />
@@ -257,7 +275,9 @@ export default function ContractListPage() {
                       <Button
                         variant="contained"
                         startIcon={<Iconify icon="eva:plus-fill" />}
-                        onClick={() => navigate(PATH_USER.extendContract(contract.id))}
+                        onClick={() =>
+                          navigate(PATH_USER.extendContract(contract.id))
+                        }
                       >
                         Extend Contract
                       </Button>
