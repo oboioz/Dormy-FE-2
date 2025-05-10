@@ -126,10 +126,10 @@ export default function RoomTypePage() {
         toast.success("Deleted");
         window.location.reload();
       } else {
-        toast.error("Error");
+        toast.error("Error, room type is used in other places");
       }
     } catch (error) {
-      toast.error("Error");
+      toast.error("Error, room type is used in other places");
     }
   };
 
