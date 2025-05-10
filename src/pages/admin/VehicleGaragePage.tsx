@@ -7,6 +7,7 @@ import {
   Table,
   TableBody,
   TableContainer,
+  TablePagination,
   Tooltip,
 } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -81,7 +82,17 @@ export default function VehicleGaragePage() {
   const handleEditRow = (id: string) => {
     // navigate(PATH_DASHBOARD.user.edit(paramCase(id)));
   };
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
 
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+  
   const handleDeleteRow = (id: string) => {
     const deleteRow = tableData.filter((row) => row.id.toString() !== id);
     setSelected([]);
@@ -93,7 +104,6 @@ export default function VehicleGaragePage() {
     //   }
     // }
   };
-
   const handleDeleteRows = (selectedRows: string[]) => {
     const deleteRows = tableData.filter(
       (row) => !selectedRows.includes(row.id.toString())
@@ -223,7 +233,7 @@ export default function VehicleGaragePage() {
 
         <Card>
           <TableContainer sx={{ position: "relative", overflow: "unset" }}>
-            <TableSelectedAction
+            {/* <TableSelectedAction
               numSelected={selected.length}
               rowCount={tableData.length}
               onSelectAllRows={(checked) =>
@@ -239,7 +249,7 @@ export default function VehicleGaragePage() {
                   </IconButton>
                 </Tooltip>
               }
-            />
+            /> */}
 
             <Scrollbar>
               <Table size={"medium"} sx={{ minWidth: 800 }}>
@@ -281,6 +291,15 @@ export default function VehicleGaragePage() {
               </Table>
             </Scrollbar>
           </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={tableData.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
         </Card>
       </Container>
 

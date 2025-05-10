@@ -36,6 +36,7 @@ import {
 import ParkingSpotStatusTag from "../../../tag/ParkingSpotStatusTag";
 import { useNavigate } from "react-router-dom";
 import { PATH_ADMIN } from "../../../../routes/paths";
+import { is } from "date-fns/locale";
 
 type Props = {
   row: IParkingSpot;
@@ -62,10 +63,12 @@ export default function GarageListRow({
   } = row;
 
   const navigate = useNavigate();
-  const isDisableEdit = currentQuantity > 0 || isDeleted;
+  const isActive = status === "AVAILABLE";
+  const isDisableEdit = currentQuantity > 0 || !isActive;
 
   const [openConfirm, setOpenConfirm] = useState(false);
-  const [openConfirmCreateParkingInvoice, setOpenConfirmCreateParkingInvoice] = useState(false);
+  const [openConfirmCreateParkingInvoice, setOpenConfirmCreateParkingInvoice] =
+    useState(false);
   const [openPopover, setOpenPopover] = useState<HTMLElement | null>(null);
   const [openDetailModal, setOpenDetailModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
@@ -152,20 +155,24 @@ export default function GarageListRow({
     }
   };
 
-  const handleDelete = async (id: string) => {
-    var response = await httpClient.parkingSpotService.softDelete(id);
+  const handledUpdateStatus = async (id: string) => {
+    var status = isActive ? "UNDER_MAINTENANCE" : "AVAILABLE";
+    var response = await httpClient.parkingSpotService.updateStatus(id, status);
     if (response) {
-      toast.success("Deactivate success");
+      toast.success("Update status success");
       handleCloseConfirm();
       window.location.reload();
     } else {
-      toast.error("Deactivate failed");
+      toast.error("Update status failed");
       handleCloseConfirm();
     }
   };
 
   const handleCreateBatchParkingInvoices = async (parkingSpotId: string) => {
-    var response = await httpClient.parkingSpotService.createParkingSpotInvoiceForAllUsers(parkingSpotId);
+    var response =
+      await httpClient.parkingSpotService.createParkingSpotInvoiceForAllUsers(
+        parkingSpotId
+      );
     if (response) {
       toast.success("Create batch parking invoices successfully!");
       handleCloseConfirmCreateParkingInvoice();
@@ -178,12 +185,12 @@ export default function GarageListRow({
 
   return (
     <>
-      <TableRow hover selected={selected} sx={{ opacity: isDeleted ? 0.5 : 1 }}>
+      <TableRow hover selected={selected} sx={{ opacity: 1 }}>
         <TableCell padding="checkbox">
           <Checkbox
             checked={selected}
             onClick={onSelectRow}
-            disabled={isDeleted}
+            disabled={!isActive}
           />
         </TableCell>
 
@@ -191,7 +198,7 @@ export default function GarageListRow({
           <Typography
             variant="subtitle2"
             noWrap
-            sx={{ textDecoration: isDeleted ? "line-through" : "none" }}
+            // sx={{ textDecoration: !isActive ? "line-through" : "none" }}
           >
             {parkingSpotName}
           </Typography>
@@ -216,6 +223,7 @@ export default function GarageListRow({
             color="warning"
             variant="contained"
             // startIcon={<Iconify icon="eva:plus-fill" />}
+            disabled={!isActive}
             onClick={handleOpenConfirmCreateParkingInvoice}
           >
             Create parking invoice
@@ -259,30 +267,34 @@ export default function GarageListRow({
           Edit
         </MenuItem>
         <MenuItem
-          disabled={isDisableEdit}
+          // disabled={isDisableEdit}
           onClick={() => {
             handleOpenConfirm();
             handleClosePopover();
           }}
-          sx={{ color: "error.main" }}
+          sx={{ color: isActive ? "error.main" : "success.main" }}
         >
-          <Iconify icon="mdi:cancel" />
-          Deactivate
+          <Iconify icon={isActive ? "mdi:cancel" : "mdi:check-circle"} />
+          {isActive ? "Deactivate" : "Activate"}
         </MenuItem>
       </MenuPopover>
 
       <ConfirmDialog
         open={openConfirm}
         onClose={handleCloseConfirm}
-        title="Deactivate"
-        content="Are you sure want to deactivate?"
+        title={isActive ? "Deactivate Parking Spot" : "Activate Parking Spot"}
+        content={
+          isActive
+            ? "Are you sure want to deactivate?"
+            : "Are you sure want to activate?"
+        }
         action={
           <Button
             variant="contained"
-            color="error"
-            onClick={() => handleDelete(id)}
+            color={isActive ? "error" : "success"}
+            onClick={() => handledUpdateStatus(id)}
           >
-            Deactivate
+            {isActive ? "Deactivate" : "Activate"}
           </Button>
         }
       />
