@@ -47,8 +47,8 @@ const TABLE_HEAD = [
   { id: "invoiceName", label: "Invoice name", align: "left" },
   { id: "month_year", label: "Month/Year", align: "left" },
   { id: "dueDate", label: "Due date", align: "left" },
-  { id: "amountAfterPromotion", label: "Amount", align: "left" },
-  { id: "roomName", label: "Room name", align: "left" },
+  { id: "amountAfterPromotion", label: "Amount", align: "right" },
+  { id: "roomName", label: "Room name", align: "center" },
   { id: "status", label: "Status", align: "left" },
   { id: "action", label: "", align: "center" },
 ];
@@ -147,7 +147,7 @@ export default function UserInvoiceMonthlyListPage() {
                         {fDate(invoice.dueDate, "dd/MM/yyyy")}
                       </TableCell>
 
-                      <TableCell align="left">
+                      <TableCell align="right">
                         {formatCurrency(invoice.amountAfterPromotion)}
                       </TableCell>
                       <TableCell align="center">{invoice.roomName}</TableCell>
