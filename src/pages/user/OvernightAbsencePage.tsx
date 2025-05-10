@@ -24,6 +24,7 @@ import Scrollbar from "../../components/scrollbar";
 import { useSettingsContext } from "../../components/settings";
 import {
   TableHeadCustom,
+  TableNoData,
   TablePaginationCustom,
   useTable,
 } from "../../components/table";
@@ -315,6 +316,7 @@ export default function OvernightAbsencePage() {
                       />
                     </TableRow>
                   ))}
+                  <TableNoData isNotFound={overnightAbsences?.length == 0} />
                 </TableBody>
               </Table>
             </Scrollbar>

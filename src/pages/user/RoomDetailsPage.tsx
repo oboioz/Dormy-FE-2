@@ -1,4 +1,4 @@
-import { CardHeader, Container } from "@mui/material";
+import { CardHeader, Container, Typography } from "@mui/material";
 import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
 import { Helmet } from "react-helmet-async";
 import { useSettingsContext } from "../../components/settings";
@@ -31,7 +31,7 @@ export default function RoomDetailsPage() {
       if (roomDetail) {
         setRoom({
           ...roomDetail,
-          users: roomDetail.users, //.filter((x) => x.userId !== userId),
+          users: roomDetail.users//.filter((x) => x.userId !== userId),
         });
       }
     }
@@ -62,10 +62,18 @@ export default function RoomDetailsPage() {
           ]}
         />
 
-        {room && <RoomDetails room={room} />}
-
-        <CardHeader title={"Roomate Information"} sx={{ mb: 3 }} />
-        <RoomateInformation users={room?.users || []} />
+        {room ? (
+          <>
+            <RoomDetails room={room} />
+            <CardHeader title={"Roomate Information"} sx={{ mb: 3 }} />
+            <RoomateInformation users={room?.users || []} />
+          </>
+        ) : (
+          <Typography variant="h6" color="text.secondary">
+            No room details available for you.
+          </Typography>
+        )}
+        
       </Container>
     </>
   );

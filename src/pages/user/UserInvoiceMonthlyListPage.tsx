@@ -23,6 +23,7 @@ import Scrollbar from "../../components/scrollbar";
 import { useSettingsContext } from "../../components/settings";
 import {
   TableHeadCustom,
+  TableNoData,
   TablePaginationCustom,
   useTable,
 } from "../../components/table";
@@ -171,6 +172,7 @@ export default function UserInvoiceMonthlyListPage() {
                       />
                     </TableRow>
                   ))}
+                  <TableNoData isNotFound={tableData?.length == 0} />
                 </TableBody>
               </Table>
             </Scrollbar>
