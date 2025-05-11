@@ -42,16 +42,16 @@ export default function NotificationsPage() {
 
   const fetchNotifications = async () => {
     var notifications = await httpClient.notificationService.getNotifications();
-    if (!isAdmin) {
-      notifications = notifications.filter((x) =>
-        [
-          NotificationTypeEnum.CONTRACT_ACTIVATION.toString(),
-          NotificationTypeEnum.VIOLATION_CREATION.toString(),
-          NotificationTypeEnum.REQUEST_STATUS_CHANGE.toString(),
-          NotificationTypeEnum.PARKING_REQUEST_STATUS_CHANGE.toString(),
-        ].includes(x.notificationType)
-      );
-    }
+    // if (!isAdmin) {
+    //   notifications = notifications.filter((x) =>
+    //     [
+    //       NotificationTypeEnum.CONTRACT_ACTIVATION.toString(),
+    //       NotificationTypeEnum.VIOLATION_CREATION.toString(),
+    //       NotificationTypeEnum.REQUEST_STATUS_CHANGE.toString(),
+    //       NotificationTypeEnum.PARKING_REQUEST_STATUS_CHANGE.toString(),
+    //     ].includes(x.notificationType)
+    //   );
+    // }
     setNotifications(notifications);
   };
 
