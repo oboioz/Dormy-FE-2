@@ -287,7 +287,7 @@ export default function InvoiceParkingFeeListPage() {
   return (
     <>
       <Helmet>
-        <title>Invoice for contract</title>
+        <title>Invoice for parking fee</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : "lg"}>
