@@ -150,6 +150,7 @@ export const API_URL = {
   NOTIFICATION: {
     GET: "notification",
     READ: "notification/read/id/",
+    POST_ANNOUNCEMENT: "notification/post-announcement",
   },
   SETTING: {
     CREATE: "setting",
