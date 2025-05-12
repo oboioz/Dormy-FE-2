@@ -5,36 +5,27 @@ import {
   Container,
   Table,
   TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-  TextField,
+  TableContainer
 } from "@mui/material";
 
 // components
-import { yupResolver } from "@hookform/resolvers/yup";
-import { DatePicker, LoadingButton } from "@mui/lab";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Controller, useForm } from "react-hook-form";
-import * as Yup from "yup";
+import { toast } from "react-toastify";
+import { useAuthGuard } from "../../auth/AuthGuard";
+import { useAuthContext } from "../../auth/JwtContext";
 import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
-import FormProvider from "../../components/hook-form";
-import RHFSwitch from "../../components/hook-form/RHFSwitch";
+import Iconify from "../../components/iconify";
 import Scrollbar from "../../components/scrollbar";
 import { useSettingsContext } from "../../components/settings";
 import { TableHeadCustom } from "../../components/table";
-import { PATH_ADMIN } from "../../routes/paths";
-import { useAuthGuard } from "../../auth/AuthGuard";
 import { UserRole } from "../../models/enums/DormyEnums";
-import { useEffect, useState } from "react";
-import { httpClient } from "../../services";
-import { SettingResponseModel } from "../../models/responses/SettingResponseModels";
-import SystemSettingsTableRow from "../../sections/@dashboard/admin/setting/SystemSettingsTableRow";
 import { SettingCreateUpdateRequestModel, SettingTurnOnOffRequestModel } from "../../models/requests/SettingRequestModels";
-import { toast } from "react-toastify";
-import { useAuthContext } from "../../auth/JwtContext";
-import Iconify from "../../components/iconify";
+import { SettingResponseModel } from "../../models/responses/SettingResponseModels";
+import { PATH_ADMIN } from "../../routes/paths";
 import SettingCreateEditModal from "../../sections/@dashboard/admin/setting/SettingCreateEditModal";
+import SystemSettingsTableRow from "../../sections/@dashboard/admin/setting/SystemSettingsTableRow";
+import { httpClient } from "../../services";
 // sections
 
 // ----------------------------------------------------------------------
@@ -153,7 +144,7 @@ export default function SystemSettingsPage() {
 
       <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
-          heading="Request List"
+          heading="System Settings"
           links={[
             { name: "Dashboard", href: PATH_ADMIN.root },
             { name: "Admin", href: PATH_ADMIN.profile },
