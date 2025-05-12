@@ -12,33 +12,14 @@ import { useAuthContext } from "../../auth/JwtContext";
 import { UserRole } from "../../models/enums/DormyEnums";
 import { NotificationTypeEnum } from "../../models/enums/NotificationTypeEnum";
 import { toast } from "react-toastify";
+import { useAuthGuard } from "../../auth/AuthGuard";
 
 export default function NotificationsPage() {
+  useAuthGuard(UserRole.CUSTOMER);
   const { themeStretch } = useSettingsContext();
   const { user } = useAuthContext();
-  const isAdmin = user.role === UserRole.ADMIN;
 
-  // const [posts, setPosts] = useState([]);
   const [notifications, setNotifications] = useState<INotification[]>();
-
-  // const getAllPosts = useCallback(async () => {
-  //   try {
-  //     const response = await axios.get('/api/blog/posts');
-  //     setPosts(response.data.posts);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   getAllPosts();
-  // }, [getAllPosts]);
-
-  // setPosts(mockNotifications);
-
-  // const [posts, setPosts] = useState<INotification[]>([]);
-
-  // setPosts(mockNotifications);
 
   const fetchNotifications = async () => {
     var notifications = await httpClient.notificationService.getNotifications();
