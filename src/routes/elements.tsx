@@ -88,6 +88,7 @@ export const DormitoryRoomListPage = Loadable(lazy(() => import('../pages/admin/
 export const DormitoryRoomCreatePage = Loadable(lazy(() => import('../pages/admin/DormitoryRoomCreatePage')));
 export const RoomPage = Loadable(lazy(() => import('../pages/admin/RoomPage')));
 
+export const NotificationsAdminPage = Loadable(lazy(() => import('../pages/admin/NotificationsAdminPage')));
 export const NotificationNewPostPage = Loadable(lazy(() => import('../pages/admin/NotificationNewPostPage')));
 
 export const ViolationDetailsListPage = Loadable(lazy(() => import('../pages/admin/ViolationDetailsListPage')));

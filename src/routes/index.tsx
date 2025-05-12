@@ -64,6 +64,7 @@ import {
   ContractExtensionCreatePage,
   InvoiceParkingFeeListPage,
   UserInvoiceParkingFeeListPage,
+  NotificationsAdminPage,
 } from "./elements";
 
 export default function Router() {
@@ -192,7 +193,7 @@ export default function Router() {
         { path: "roomservice", element: <RoomServicePage /> },
         { path: "roomserviceedit", element: <RoomServiceFormPage /> },
 
-        { path: "notification", element: <NotificationsPage /> },
+        { path: "notification", element: <NotificationsAdminPage /> },
         { path: "notificationpost", element: <NotificationPostPage /> },
         { path: "notificationcreate", element: <NotificationNewPostPage /> },
       ],
