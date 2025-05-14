@@ -5,7 +5,8 @@ import {
   Container,
   Table,
   TableBody,
-  TableContainer
+  TableContainer,
+  TablePagination
 } from "@mui/material";
 
 // components
@@ -18,7 +19,7 @@ import CustomBreadcrumbs from "../../components/custom-breadcrumbs";
 import Iconify from "../../components/iconify";
 import Scrollbar from "../../components/scrollbar";
 import { useSettingsContext } from "../../components/settings";
-import { TableHeadCustom } from "../../components/table";
+import { TableHeadCustom, useTable } from "../../components/table";
 import { UserRole } from "../../models/enums/DormyEnums";
 import { SettingCreateUpdateRequestModel, SettingTurnOnOffRequestModel } from "../../models/requests/SettingRequestModels";
 import { SettingResponseModel } from "../../models/responses/SettingResponseModels";
@@ -42,7 +43,17 @@ const TABLE_HEAD = [
 
 export default function SystemSettingsPage() {
   useAuthGuard(UserRole.ADMIN);
-
+  const {
+    page,
+    rowsPerPage,
+    setRowsPerPage,
+    setPage,
+    //
+    selected,
+    setSelected,
+    onSelectRow,
+    onSelectAllRows,
+  } = useTable();
   const { themeStretch } = useSettingsContext();
   const [openCreateModal, setOpenCreateModal] = useState<boolean>(false);
   const [settings, setSettings] = useState<SettingResponseModel[]>([]);
@@ -136,6 +147,17 @@ export default function SystemSettingsPage() {
     }
   };
 
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   return (
     <>
       <Helmet>
@@ -179,6 +201,15 @@ export default function SystemSettingsPage() {
               </Table>
             </Scrollbar>
           </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={settings?.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
         </Card>
       </Container>
       <SettingCreateEditModal

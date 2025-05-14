@@ -7,6 +7,7 @@ import {
   Table,
   TableBody,
   TableContainer,
+  TablePagination,
 } from "@mui/material";
 // routes
 
@@ -52,7 +53,9 @@ export default function ContractAdminListPage() {
   useAuthGuard(UserRole.ADMIN);
   const {
     page,
+    setPage,
     rowsPerPage,
+    setRowsPerPage,
     //
     selected,
     onSelectRow,
@@ -92,6 +95,17 @@ export default function ContractAdminListPage() {
   useEffect(() => {
     fetchContractsData();
   }, []);
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   return (
     <>
@@ -147,6 +161,15 @@ export default function ContractAdminListPage() {
               </Table>
             </Scrollbar>
           </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={tableData.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
         </Card>
       </Container>
     </>

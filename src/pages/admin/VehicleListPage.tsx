@@ -7,6 +7,7 @@ import {
   Table,
   TableBody,
   TableContainer,
+  TablePagination,
   Tooltip,
 } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -49,6 +50,7 @@ export default function RoomTypePage() {
   const {
     page,
     rowsPerPage,
+    setRowsPerPage,
     setPage,
     //
     selected,
@@ -130,6 +132,17 @@ export default function RoomTypePage() {
   useEffect(() => {
     fetchVehicles();
   }, []);
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   return (
     <>
@@ -216,6 +229,15 @@ export default function RoomTypePage() {
               </Table>
             </Scrollbar>
           </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={tableData?.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
         </Card>
       </Container>
 
