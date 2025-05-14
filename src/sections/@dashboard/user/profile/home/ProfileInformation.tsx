@@ -276,8 +276,8 @@ export default function ProfileInformation() {
                   InputProps={{ readOnly: true }}
                 />
                 <RHFTextField
-                  name={`guardians[${index}].address`}
-                  label="Address"
+                  name={`guardians[${index}].relationship`}
+                  label="Relationship"
                   InputProps={{ readOnly: true }}
                 />
                 <RHFTextField
@@ -290,9 +290,21 @@ export default function ProfileInformation() {
                   label="Email"
                   InputProps={{ readOnly: true }}
                 />
+                {/* <RHFTextField
+                  name={`guardians[${index}].address`}
+                  label="Address"
+                  InputProps={{ readOnly: true }}
+                /> */}
+              </Box>
+              <Box
+                rowGap={3}
+                columnGap={2}
+                display="grid"
+                sx={{ mt: 3 }}
+              >
                 <RHFTextField
-                  name={`guardians[${index}].relationship`}
-                  label="Relationship"
+                  name={`guardians[${index}].address`}
+                  label="Address"
                   InputProps={{ readOnly: true }}
                 />
               </Box>
