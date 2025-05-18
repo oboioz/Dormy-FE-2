@@ -84,9 +84,9 @@ export default function InvoiceNewEditForm({ isEdit, currentInvoice, invoiceId }
           roomServiceName: null,
           unit: null,
           quantity: 0,
-          cost: null,
-          oldIndicator: null,
-          newIndicator: null,
+          cost: 0,
+          oldIndicator: 0,
+          newIndicator: 0,
         },
       ],
     }),
@@ -135,11 +135,11 @@ export default function InvoiceNewEditForm({ isEdit, currentInvoice, invoiceId }
         invoiceItems: items.map((item) => ({
           roomServiceId: item.roomServiceId,
           roomServiceName: item.roomServiceId ? "" : item.roomServiceName,
-          cost: item.roomServiceId ? null : item.cost,
+          cost: item.roomServiceId ? 0 : item.cost,
           unit: item.roomServiceId ? "" : item.unit,
-          quantity: item.quantity,
-          oldIndicator: item.oldIndicator,
-          newIndicator: item.newIndicator,
+          quantity: item.isServiceIndicatorUsed ? (item.quantity ?? 0) : item.quantity,
+          oldIndicator: item.isServiceIndicatorUsed ? (item.oldIndicator ?? 0) : item.oldIndicator,
+          newIndicator: item.isServiceIndicatorUsed ? (item.newIndicator ?? 0) : item.newIndicator,
         })),
       };
 
@@ -179,11 +179,11 @@ export default function InvoiceNewEditForm({ isEdit, currentInvoice, invoiceId }
         invoiceItems: items.map((item) => ({
           roomServiceId: item.roomServiceId,
           roomServiceName: item.roomServiceId ? "" : item.roomServiceName,
-          cost: item.roomServiceId ? null : item.cost,
+          cost: item.roomServiceId ? 0 : item.cost,
           unit: item.roomServiceId ? "" : item.unit,
-          quantity: item.quantity,
-          oldIndicator: item.oldIndicator,
-          newIndicator: item.newIndicator,
+          quantity: item.isServiceIndicatorUsed ? (item.quantity ?? 0) : item.quantity,
+          oldIndicator: item.isServiceIndicatorUsed ? (item.oldIndicator ?? 0) : item.oldIndicator,
+          newIndicator: item.isServiceIndicatorUsed ? (item.newIndicator ?? 0) : item.newIndicator,
         })),
       };
 
