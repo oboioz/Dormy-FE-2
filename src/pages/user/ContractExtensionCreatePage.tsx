@@ -44,9 +44,21 @@ type FormValuesProps = {
 };
 
 const UpdateSchema = Yup.object().shape({
-  roomTypeId: Yup.string().required("Room type is required"),
-  buildingId: Yup.string().required("Building is required"),
-  roomId: Yup.string().required("Room is required"),
+  roomTypeId: Yup.string().when("$isCurrentRoomUsed", {
+    is: false,
+    then: (schema) => schema.required("Room type is required"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
+  buildingId: Yup.string().when("$isCurrentRoomUsed", {
+    is: false,
+    then: (schema) => schema.required("Building is required"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
+  roomId: Yup.string().when("$isCurrentRoomUsed", {
+    is: false,
+    then: (schema) => schema.required("Room is required"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
   startDate: Yup.date()
     .nullable()
     .required("Start date is required")
@@ -80,6 +92,7 @@ export default function ContractExtensionCreatePage() {
 
   const methods = useForm<FormValuesProps>({
     resolver: yupResolver(UpdateSchema) as any,
+    context: { isCurrentRoomUsed },
   });
 
   const { watch, reset, control, setValue, handleSubmit } = methods;
@@ -94,7 +107,8 @@ export default function ContractExtensionCreatePage() {
     const payload: ContractExtensionCreateRequestModel = {
       startDate: DateTimeUtils.toStringWithDefaultTime(data.startDate),
       endDate: DateTimeUtils.toStringWithDefaultTime(data.endDate),
-      roomId: data.roomId,
+      roomId: isCurrentRoomUsed ? contractInformation?.roomId : data.roomId,
+      contractId: contractId || "",
     };
 
     const response = await httpClient.contractService.createContractExtension(
@@ -189,7 +203,6 @@ export default function ContractExtensionCreatePage() {
           boxShadow: 1,
           border: "1px solid",
           borderColor: "divider",
-          
         }}
       >
         <Grid container spacing={2}>
@@ -210,7 +223,8 @@ export default function ContractExtensionCreatePage() {
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant="body2">
-              <b>Status:</b> <ContractStatusTag status={contractInformation?.status} />
+              <b>Status:</b>{" "}
+              <ContractStatusTag status={contractInformation?.status} />
             </Typography>
             <Typography variant="body2" sx={{ mb: 1 }}>
               <strong>Room Type: </strong>
@@ -239,12 +253,16 @@ export default function ContractExtensionCreatePage() {
                     label="Start date"
                     minDate={
                       contractInformation?.endDate
-                        ? new Date(
-                            Math.max(
-                              new Date().getTime(),
-                              new Date(contractInformation.endDate).getTime()
-                            )
-                          )
+                        ? (() => {
+                            const base = new Date(
+                              Math.max(
+                                new Date().getTime(),
+                                new Date(contractInformation.endDate).getTime()
+                              )
+                            );
+                            base.setDate(base.getDate() + 1);
+                            return base;
+                          })()
                         : new Date()
                     }
                   />

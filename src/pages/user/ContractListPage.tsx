@@ -38,8 +38,14 @@ import { DateTimeUtils } from "../../utils/DateTimeUtils";
 import ContractStatusTag from "../../sections/tag/ContractStatusTag";
 import ContractExtensionModal from "../../sections/@dashboard/user/contract/ContractExtensionModal";
 import { useNavigate } from "react-router-dom";
-import { ContractStatusEnum } from "../../models/enums/ContractStatusEnum";
+import {
+  ContractStatusDescriptions,
+  ContractStatusEnum,
+} from "../../models/enums/ContractStatusEnum";
 import ConfirmDialog from "../../components/confirm-dialog";
+import InvoiceStatusTag from "../../sections/tag/InvoiceStatusTag";
+import { EnumUtils } from "../../utils/EnumUtils";
+import UserViewDetailInvoiceModal from "../../sections/@dashboard/user/invoice/UserViewDetailInvoiceModal";
 
 const TABLE_HEAD = [
   { id: "startDate", label: "Start date", align: "left" },
@@ -63,6 +69,13 @@ export default function ContractListPage() {
     useState(false);
   const [openContractExtension, setOpenContractExtension] =
     useState<boolean>(false);
+  const [openViewDetailInvoiceId, setOpenViewDetailInvoiceId] = useState<
+    string | null
+  >(null);
+
+  const handleOpenViewDetail = (invoiceId: string) => {
+    setOpenViewDetailInvoiceId(invoiceId);
+  };
 
   const { themeStretch } = useSettingsContext();
 
@@ -234,7 +247,7 @@ export default function ContractListPage() {
                       {fDate(contract.submissionDate, "dd/MM/yyyy")}
                     </Typography>
                     <Typography variant="body2" sx={{ mb: 1 }}>
-                      <strong>Workplace:</strong> {contract.workplaceName}
+                      <strong>Place of Work/Study:</strong> {contract.workplaceName}
                     </Typography>
                   </Grid>
 
@@ -404,9 +417,13 @@ export default function ContractListPage() {
                           <strong>Building: </strong>
                           {extension.buildingName}
                         </Typography>
+                        <Typography variant="body2">
+                          <strong>Room Type: </strong>
+                          {extension.roomTypeName}
+                        </Typography>
                       </Grid>
                       <Grid item xs={12} md={6}>
-                        <Typography variant="body2">
+                        <Typography variant="body2" sx={{ mb: 1 }}>
                           <b>Status:</b>{" "}
                           <ContractStatusTag status={extension.status} />
                         </Typography>
@@ -416,10 +433,71 @@ export default function ContractListPage() {
                             ? extension.approverFullName
                             : "N/A"}
                         </Typography>
-                        <Typography variant="body2" sx={{ mb: 1 }}>
+                        {extension?.invoiceId ? (
+                          <Typography variant="body2" sx={{ mb: 1 }}>
+                            <strong>Invoice status:</strong>{" "}
+                            <InvoiceStatusTag
+                              status={extension?.invoiceStatus}
+                            />
+                            <IconButton
+                              onClick={() => {
+                                handleOpenViewDetail(extension.invoiceId);
+                              }}
+                              sx={{
+                                fontSize: 22, // Zoom in the font size for the icon and text
+                                ml: 1,
+                                color: "primary.main",
+                                "& .MuiSvgIcon-root": {
+                                  fontSize: 15,
+                                },
+                              }}
+                            >
+                              <Box
+                                component="span"
+                                sx={{ fontSize: 18, mr: 0.5 }}
+                              >
+                                View detail
+                              </Box>
+                              <Iconify
+                                icon="eva:eye-outline"
+                                sx={{ fontSize: 22 }}
+                              />
+                            </IconButton>
+                            {openViewDetailInvoiceId === extension.invoiceId && (
+                              <UserViewDetailInvoiceModal
+                                open={!!openViewDetailInvoiceId}
+                                onClose={() => setOpenViewDetailInvoiceId(null)}
+                                invoiceId={extension?.invoiceId}
+                              />
+                            )}
+                          </Typography>
+                        ) : (
+                          <Typography
+                            variant="body2"
+                            sx={{ mb: 1, color: "red" }}
+                          >
+                            <strong>No invoice </strong>
+                            {extension.status === "PENDING" ? (
+                              <>because contract has not approved yet.</>
+                            ) : (
+                              <>
+                                because contract was{" "}
+                                {EnumUtils.getEnumDescription(
+                                  ContractStatusDescriptions,
+                                  EnumUtils.convertToEnum(
+                                    ContractStatusEnum,
+                                    extension.status
+                                  )
+                                )}
+                                .
+                              </>
+                            )}
+                          </Typography>
+                        )}
+                        {/* <Typography variant="body2">
                           <strong>Room Type: </strong>
                           {extension.roomTypeName}
-                        </Typography>
+                        </Typography> */}
                       </Grid>
                     </Grid>
                   </Box>

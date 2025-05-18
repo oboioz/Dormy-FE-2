@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
     Dialog,
     DialogTitle,
@@ -7,14 +7,11 @@ import {
     Button,
     Stack,
     Typography,
-    Box,
 } from "@mui/material";
 import { fDate } from "../../../../utils/formatTime";
-import { ContractResponseModel } from "../../../../models/responses/ContractResponseModels";
 import { httpClient } from "../../../../services";
 import ConfirmDialog from "../../../../components/confirm-dialog";
 import { toast } from "react-toastify";
-import ContractExtensionStatusTag from "../../../tag/ContractExtensionStatusTag";
 import ContractStatusTag from "../../../tag/ContractStatusTag";
 import { ContractStatusEnum } from "../../../../models/enums/ContractStatusEnum";
 import { RegistrationAccommodationResponseModel } from "../../../../models/responses/RegistrationModels";
@@ -33,6 +30,7 @@ export default function RegistrationModal({
 }: RegistrationModalProps/* & { onStatusChange: (newStatus: string) => void }*/) {
     const [openConfirm, setOpenConfirm] = useState(false);
     const [confirmAction, setConfirmAction] = useState<ContractStatusEnum | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleOpenConfirm = (action: ContractStatusEnum) => {
         setConfirmAction(action);
@@ -46,6 +44,7 @@ export default function RegistrationModal({
 
     const handleConfirmAction = async () => {
         if (!confirmAction) return;
+        setIsLoading(true);
 
         try {
             let response;
@@ -72,10 +71,13 @@ export default function RegistrationModal({
             } else {
                 toast.error(`Failed to ${confirmAction.toLowerCase()} the contract.`);
             }
+            setIsLoading(false);
         } catch (error) {
             toast.error(`Error during ${confirmAction.toLowerCase()} action:` + error);
+            setIsLoading(false);
         } finally {
             handleCloseConfirm();
+            setIsLoading(false);
         }
     };
 
@@ -233,6 +235,7 @@ export default function RegistrationModal({
                             onClick={() => handleOpenConfirm(ContractStatusEnum.WAITING_PAYMENT)}
                             variant="contained"
                             color={buildColorForConfirmButtonConfirmDialog(ContractStatusEnum.WAITING_PAYMENT)}
+                            disabled={isLoading}
                         >
                             {buildActionForConfirmDialog(ContractStatusEnum.WAITING_PAYMENT)}
                         </Button>
@@ -240,6 +243,7 @@ export default function RegistrationModal({
                             onClick={() => handleOpenConfirm(ContractStatusEnum.REJECTED)}
                             variant="contained"
                             color={buildColorForConfirmButtonConfirmDialog(ContractStatusEnum.REJECTED)}
+                            disabled={isLoading}
                         >
                             {buildActionForConfirmDialog(ContractStatusEnum.REJECTED)}
                         </Button>
@@ -250,6 +254,7 @@ export default function RegistrationModal({
                             onClick={() => handleOpenConfirm(ContractStatusEnum.ACTIVE)}
                             variant="contained"
                             color={buildColorForConfirmButtonConfirmDialog(ContractStatusEnum.ACTIVE)}
+                            disabled={isLoading}
                         >
                             {buildActionForConfirmDialog(ContractStatusEnum.ACTIVE)}
                         </Button>
@@ -260,6 +265,7 @@ export default function RegistrationModal({
                             onClick={() => handleOpenConfirm(ContractStatusEnum.EXTENDED)}
                             variant="contained"
                             color={buildColorForConfirmButtonConfirmDialog(ContractStatusEnum.EXTENDED)}
+                            disabled={isLoading}
                         >
                             {buildActionForConfirmDialog(ContractStatusEnum.EXTENDED)}
                         </Button>
@@ -267,6 +273,7 @@ export default function RegistrationModal({
                             onClick={() => handleOpenConfirm(ContractStatusEnum.TERMINATED)}
                             variant="contained"
                             color={buildColorForConfirmButtonConfirmDialog(ContractStatusEnum.TERMINATED)}
+                            disabled={isLoading}
                         >
                             {buildActionForConfirmDialog(ContractStatusEnum.TERMINATED)}
                         </Button>
@@ -289,6 +296,7 @@ export default function RegistrationModal({
                         variant="contained"
                         color={buildColorForConfirmButtonConfirmDialog(confirmAction)}
                         onClick={handleConfirmAction}
+                        disabled={isLoading}
                     >
                         {buildActionForConfirmDialog(confirmAction)}
                     </Button>
