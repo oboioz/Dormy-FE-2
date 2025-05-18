@@ -8,6 +8,7 @@ export interface ContractExtensionExtendContractResponseModel {
   endDate: string;
   status: string;
   invoiceId?: string | null;
+  invoiceStatus?: string | null;
   approverId?: string | null;
   approverFullName: string;
   roomId?: string | null;

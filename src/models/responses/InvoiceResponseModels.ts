@@ -9,6 +9,7 @@ export interface InvoiceResponseModel {
   type: string;
   status: string;
   contractId: string;
+  contractExtensionId: string;
   roomId: string;
   roomName: string;
   userFullname: string;

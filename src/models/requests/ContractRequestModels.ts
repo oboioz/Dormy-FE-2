@@ -10,6 +10,7 @@ export interface ContractExtensionCreateRequestModel {
     startDate: string;
     endDate: string;
     roomId: string;
+    contractId: string;
 }
 
 export interface ContractRequestModel {
