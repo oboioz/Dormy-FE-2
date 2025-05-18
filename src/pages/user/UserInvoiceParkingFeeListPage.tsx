@@ -46,7 +46,6 @@ const TABLE_HEAD = [
   { id: "invoiceName", label: "Invoice name", align: "left" },
   { id: "dueDate", label: "Due date", align: "left" },
   { id: "amountAfterPromotion", label: "Amount", align: "right" },
-  { id: "userFullname", label: "User fullname", align: "left" },
   { id: "roomName", label: "Room name", align: "center" },
   { id: "status", label: "Status", align: "left" },
   { id: "action", label: "", align: "center" },
@@ -146,11 +145,6 @@ export default function UserInvoiceParkingFeeListPage() {
                       <TableCell align="right">
                         {formatCurrency(invoice.amountAfterPromotion)}
                       </TableCell>
-                      {invoice.type === "PARKING_INVOICE" && (
-                        <TableCell align="left">
-                          {invoice.userFullname}
-                        </TableCell>
-                      )}
                       <TableCell align="center">{invoice.roomName}</TableCell>
 
                       <TableCell align="left">

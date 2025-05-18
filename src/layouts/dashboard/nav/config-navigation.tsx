@@ -125,7 +125,7 @@ const adminNavConfig = [
         // roles: ['admin'],
       },
       {
-        title: "Workplace",
+        title: "Place of Work/Study",
         path: PATH_ADMIN.workplace.list,
         icon: ICONS.workplace,
         // roles: ['admin'],

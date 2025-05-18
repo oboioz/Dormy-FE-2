@@ -229,25 +229,25 @@ export default function ProfileInformation() {
         </Card>
 
         <Card sx={{ p: 3 }}>
-          <CardHeader title="Workplace" />
+          <CardHeader title="Place of Work/Study" />
           <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
             <RHFTextField
               name="workplaceName"
-              label="Workplace Name"
+              label="Place of Work/Study Name"
               InputProps={{ readOnly: true }}
             />
           </Stack>
           <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
             <RHFTextField
               name="workplaceAddress"
-              label="Workplace Address"
+              label="Place of Work/Study Address"
               InputProps={{ readOnly: true }}
             />
           </Stack>
         </Card>
 
         <Card sx={{ p: 3 }}>
-          <CardHeader title="Guardian Information" />
+          <CardHeader title="Relative Information" />
           {methods.watch("guardians").map((guardian, index) => (
             <Box
               key={index}
@@ -259,7 +259,7 @@ export default function ProfileInformation() {
               }}
             >
               <Typography variant="h6" sx={{ mb: 2 }}>
-                Guardian {index + 1}
+                Relative {index + 1}
               </Typography>
               <Box
                 rowGap={3}

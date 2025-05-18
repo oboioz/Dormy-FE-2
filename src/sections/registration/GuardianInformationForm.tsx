@@ -158,7 +158,7 @@ export default function GuardianInformationForm({
   return (
     <>
       <Typography variant="h4" sx={{ fontWeight: "bold", mb: 5 }}>
-        Please fill in all the guardian information
+        Please fill in all the relative information
       </Typography>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
         <Grid
@@ -171,7 +171,7 @@ export default function GuardianInformationForm({
             <Grid item xs={12} md={10} key={field.id}>
               <Stack spacing={2}>
                 <Typography variant="h6">
-                  Guardian Information {index + 1}
+                  Relative Information {index + 1}
                 </Typography>
                 <Grid container spacing={2}>
                   <Grid item xs={12} md={6}>

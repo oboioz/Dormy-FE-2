@@ -27,7 +27,7 @@ import { RoomTypeOptionModel } from "../../models/responses/RoomTypeModels";
 const STEPS = [
   "Room Picking",
   "General Information",
-  "Guardian Information",
+  "Relative Information",
   "Confirmation Information",
 ];
 

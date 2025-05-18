@@ -219,13 +219,13 @@ export default function RegistrationConfirm({
       {/* Workplace Information */}
       <Box sx={{ border: "1px solid #ddd", borderRadius: 2, p: 3, mb: 2 }}>
         <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
-          Workplace Information
+          Place of Work/Study Information
         </Typography>
         <Divider sx={{ mb: 2 }} />
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Typography variant="body1">
-              <strong>Workplace:</strong>{" "}
+              <strong>Place of Work/Study:</strong>{" "}
               {workplaceOptions.find(
                 (workplace) => workplace.id === workplaceId
               )?.name || "N/A"}
@@ -287,14 +287,14 @@ export default function RegistrationConfirm({
       {/* Guardian Information */}
       <Box sx={{ border: "1px solid #ddd", borderRadius: 2, p: 3, mb: 2 }}>
         <Typography variant="h5" sx={{ fontWeight: "bold", mb: 2 }}>
-          Guardian Information
+          Relative Information
         </Typography>
         <Divider sx={{ mb: 2 }} />
         {guardianState?.length > 0 ? (
           guardianState.map((guardian: any, index: number) => (
             <Box key={index} sx={{ mb: 2 }}>
               <Typography variant="body1" sx={{ mb: 1 }}>
-                <strong>Guardian {index + 1}:</strong>
+                <strong>Relative {index + 1}:</strong>
               </Typography>
               <Grid container spacing={2}>
                 <Grid item xs={6}>

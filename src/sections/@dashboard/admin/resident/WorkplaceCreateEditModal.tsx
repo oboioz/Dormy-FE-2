@@ -67,14 +67,14 @@ export default function WorkplaceCreateEditModal({
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
         <DialogTitle>
-            {initialData ? "Edit Workplace" : "Create Workplace"}
+            {initialData ? "Edit Place of Work/Study" : "Create Place of Work/Study"}
         </DialogTitle>
         <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
             <DialogContent dividers>
             <Grid container spacing={3}>
                 <Grid item xs={12}>
                 <Stack spacing={2}>
-                    <Typography variant="h6">Workplace Information</Typography>
+                    <Typography variant="h6">Place of Work/Study Information</Typography>
 
                     <RHFTextField name="name" label="Name" />
 

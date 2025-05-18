@@ -47,7 +47,7 @@ import { useAuthContext } from "../../auth/JwtContext";
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: "name", label: "Workplace Name", align: "left" },
+  { id: "name", label: "Place of Work/Study Name", align: "left" },
   { id: "address", label: "Address", align: "left" },
   { id: "abbrevation", label: "Abbreviation", align: "left" },
   { id: "createdByCreator", label: "Created by", align: "left" },
@@ -218,16 +218,16 @@ export default function WorkplaceListPage() {
   return (
     <>
       <Helmet>
-        <title>Workplace List</title>
+        <title>Place of Work/Study</title>
       </Helmet>
 
       <Container maxWidth={themeStretch ? false : "lg"}>
         <CustomBreadcrumbs
-          heading="Workplace List"
+          heading="Place of Work/Study"
           links={[
             { name: "Dashboard", href: PATH_ADMIN.root },
             { name: "User", href: PATH_ADMIN.profile },
-            { name: "Workplace List" },
+            { name: "Place of Work/Study" },
           ]}
           action={
             <Button
@@ -235,7 +235,7 @@ export default function WorkplaceListPage() {
               startIcon={<Iconify icon="eva:plus-fill" />}
               onClick={handleOpenCreateModal}
             >
-              Add new workplace
+              Add new place of work/study
             </Button>
           }
         />

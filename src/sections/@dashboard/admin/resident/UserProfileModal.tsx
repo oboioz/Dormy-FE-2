@@ -107,7 +107,7 @@ UserProfileModalProps) {
           {/* Guardians Section */}
           <Box>
             <Typography variant="h6" gutterBottom>
-              Guardians
+              Relative
             </Typography>
             <Grid container spacing={2}>
               {userProfile?.guardians?.map((guardian, index) => (
@@ -138,10 +138,10 @@ UserProfileModalProps) {
           {/* Workplace Section */}
           <Box>
             <Typography variant="h6" gutterBottom>
-              Workplace
+              Place of Work/Study
             </Typography>
             <Typography variant="body2" sx={{ mb: 1 }}>
-              <b>Company Name:</b> {userProfile?.workplace?.name}
+              <b>Place of Work/Study Name:</b> {userProfile?.workplace?.name}
             </Typography>
             <Typography variant="body2" sx={{ mb: 1 }}>
               <b>Address:</b> {userProfile?.workplace?.address}
@@ -178,58 +178,65 @@ UserProfileModalProps) {
             <Typography variant="h6" gutterBottom>
               Contract
             </Typography>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="body2">
-                  <b>Submission date:</b>{" "}
-                  {fDate(userProfile?.contract?.submissionDate, "dd/MM/yyyy")}
-                </Typography>
+            {userProfile?.contract ? (
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="body2">
+                    <b>Submission date:</b>{" "}
+                    {fDate(userProfile?.contract?.submissionDate, "dd/MM/yyyy")}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="body2">
+                    <b>Status:</b>{" "}
+                    {userProfile?.contract?.status ? (
+                      <ContractStatusTag
+                        status={
+                          userProfile?.contract?.status ||
+                          ContractStatusEnum.PENDING
+                        }
+                      />
+                    ) : (
+                      "N/A"
+                    )}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="body2">
+                    <b>Start Date:</b>{" "}
+                    {fDate(userProfile?.contract?.startDate, "dd/MM/yyyy")}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="body2">
+                    <b>End Date:</b>{" "}
+                    {fDate(userProfile?.contract?.endDate, "dd/MM/yyyy")}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="body2">
+                    <b>Room number:</b>{" "}
+                    {userProfile?.contract?.roomNumber || "--"}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="body2">
+                    <b>Building:</b>{" "}
+                    {userProfile?.contract?.buildingName || "--"}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="body2">
+                    <b>Room type:</b>{" "}
+                    {userProfile?.contract?.roomTypeName || "--"}
+                  </Typography>
+                </Grid>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="body2">
-                  <b>Status:</b>{" "}
-                  {userProfile?.contract?.status ? (
-                    <ContractStatusTag
-                      status={
-                        userProfile?.contract?.status ||
-                        ContractStatusEnum.PENDING
-                      }
-                    />
-                  ) : (
-                    "N/A"
-                  )}
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="body2">
-                  <b>Start Date:</b>{" "}
-                  {fDate(userProfile?.contract?.startDate, "dd/MM/yyyy")}
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="body2">
-                  <b>End Date:</b>{" "}
-                  {fDate(userProfile?.contract?.endDate, "dd/MM/yyyy")}
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="body2">
-                  <b>Room number:</b>{" "}
-                  {userProfile?.contract?.roomNumber || "--"}
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="body2">
-                  <b>Building:</b> {userProfile?.contract?.buildingName || "--"}
-                </Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Typography variant="body2">
-                  <b>Room type:</b>{" "}
-                  {userProfile?.contract?.roomTypeName || "--"}
-                </Typography>
-              </Grid>
-            </Grid>
+            ) : (
+              <Typography variant="body2">
+                <b>No contract information available.</b>
+              </Typography>
+            )}
           </Box>
         </Stack>
       </DialogContent>
