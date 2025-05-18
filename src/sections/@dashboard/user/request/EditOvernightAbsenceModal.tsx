@@ -37,7 +37,7 @@ export default function EditOvernightAbsenceModal({
     mode: "onBlur", // Validate on blur
   });
 
-  const { handleSubmit, reset } = methods;
+  const { handleSubmit, reset, watch } = methods;
 
   // Update form values when initialData changes
   useEffect(() => {
@@ -85,12 +85,32 @@ export default function EditOvernightAbsenceModal({
               <RHFDatePicker
                 name="startDateTime"
                 label="Start Date"
-                rules={{ required: "Start date is required" }}
+                rules={{
+                  required: "Start date is required",
+                  validate: (value) => {
+                    const end = watch("endDateTime");
+                    if (value > end) {
+                      return "Start date must be less than or equal to end date";
+                    }
+                    return true;
+                  },
+                }} // Validation rule
+                minDate={new Date()} // Prevent past dates
               />
               <RHFDatePicker
                 name="endDateTime"
                 label="End Date"
-                rules={{ required: "End date is required" }}
+                rules={{
+                  required: "End date is required",
+                  validate: (value) => {
+                    const start = watch("startDateTime");
+                    if (start > value) {
+                      return "End date must be greater than or equal to start date";
+                    }
+                    return true;
+                  },
+                }} // Validation rule
+                minDate={new Date()} // Prevent past dates
               />
               <RHFTextField
                 name="reason"
