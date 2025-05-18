@@ -15,6 +15,7 @@ import {
   TableRow,
   Paper,
   Grid,
+  Link,
 } from "@mui/material";
 import { DetailInvoiceResponseModel } from "../../../../models/responses/InvoiceResponseModels";
 import { fDate } from "../../../../utils/formatTime";
@@ -25,6 +26,7 @@ import InvoiceStatusTag from "../../../tag/InvoiceStatusTag";
 import ConfirmDialog from "../../../../components/confirm-dialog";
 import { InvoiceStatusEnum } from "../../../../models/enums/InvoiceStatusEnum";
 import { UpdateInvoiceStatusRequestModel } from "../../../../models/requests/InvoiceRequestModels";
+import Iconify from "../../../../components/iconify";
 
 type ViewDetailInvoiceModalProps = {
   open: boolean;
@@ -202,9 +204,7 @@ export default function ViewDetailInvoiceModal({
                   </Typography>
                 </Grid>
               </Grid>
-              <Typography variant="body2">
-                <strong>Room: </strong> {invoice?.roomName}
-              </Typography>
+
               <Typography
                 variant="body2"
                 sx={{
@@ -233,15 +233,64 @@ export default function ViewDetailInvoiceModal({
                 ))}
               </Typography>
 
-              <Typography variant="body2">
-                <strong>Created by: </strong> {invoice?.lastUpdatedByUpdater}
-              </Typography>
-              <Typography variant="body2">
-                <strong>Created at: </strong>{" "}
-                {fDate(invoice?.lastUpdatedDateUtc, "dd/MM/yyyy")}
-              </Typography>
-            </Stack>
+              <Grid container>
+                {/* First Column */}
+                <Grid item xs={12} md={6}>
+                  <Typography variant="body2">
+                    <strong>Created by: </strong>{" "}
+                    {invoice?.lastUpdatedByUpdater}
+                  </Typography>
+                  <Typography variant="body2" sx={{ mt: 1 }}>
+                    <strong>Created at: </strong>{" "}
+                    {fDate(invoice?.lastUpdatedDateUtc, "dd/MM/yyyy")}
+                  </Typography>
+                </Grid>
 
+                {/* Second Column */}
+                <Grid
+                  item
+                  xs={12}
+                  md={6}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    alignItems: "center",
+                  }}
+                >
+                  {invoice?.type === "PAYMENT_CONTRACT" && (
+                    <Stack direction="row" alignItems="center" spacing={1}>
+                      <Iconify
+                        icon="eva:file-text-outline"
+                        sx={{ color: "primary.main", fontSize: 22 }}
+                      />
+                      <Link
+                        variant="body2"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() =>
+                          window.open(
+                            `/admin/contract/${invoice?.contractId}`,
+                            "_blank"
+                          )
+                        }
+                        sx={{
+                          color: "primary.main",
+                          textDecoration: "underline",
+                          fontWeight: 600,
+                          fontSize: 16,
+                          transition: "color 0.2s",
+                          "&:hover": { color: "primary.dark" },
+                          display: "inline-flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        View Contract
+                      </Link>
+                    </Stack>
+                  )}
+                </Grid>
+              </Grid>
+            </Stack>
             {/* Invoice Items */}
             <Typography variant="h6" align="center" sx={{ mt: 3 }}>
               Invoice Items
