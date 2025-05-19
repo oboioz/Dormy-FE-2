@@ -1,6 +1,7 @@
 // @mui
 import {
   Button,
+  Card,
   Container,
   Divider,
   FormHelperText,
@@ -8,6 +9,11 @@ import {
   MenuItem,
   Stack,
   StackProps,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
   Typography,
 } from "@mui/material";
 // @types
@@ -34,6 +40,14 @@ import { PATH_AUTH } from "../../routes/paths";
 import { useDispatch } from "../../redux/store";
 import { updateGeneralInformation } from "../../redux/slices/registration";
 import { DateTimeUtils } from "../../utils/DateTimeUtils";
+import Scrollbar from "../../components/scrollbar";
+import {
+  TableHeadCustom,
+  TableNoData,
+  TablePaginationCustom,
+  useTable,
+} from "../../components/table";
+import { fCurrency } from "../../utils/formatNumber";
 
 type Props = {
   generalInformation: IRegistrationFormState;
@@ -67,6 +81,13 @@ const UpdateSchema = Yup.object().shape({
     .min(Yup.ref("startDate"), "End date must be after the start date"),
 });
 
+const TABLE_HEAD = [
+  { id: "roomTypeName", label: "Room type", align: "left" },
+  { id: "capacity", label: "Capacity", align: "center" },
+  { id: "price", label: "Price (VND)", align: "center" },
+  { id: "description", label: "Description", align: "left" },
+];
+
 export default function RoomPickingForm({
   generalInformation,
   genderEnums,
@@ -85,6 +106,16 @@ export default function RoomPickingForm({
     useState<boolean>(true);
   const [isDisabledRoomOption, setIsDisabledRoomOption] =
     useState<boolean>(true);
+  const {
+    page,
+    rowsPerPage,
+    selected,
+    setPage,
+    setSelected,
+    onSelectRow,
+    onSelectAllRows,
+    setRowsPerPage,
+  } = useTable();
 
   const defaultValues: FormValuesProps = {
     roomTypeId: generalInformation?.roomState?.roomTypeId,
@@ -183,6 +214,17 @@ export default function RoomPickingForm({
     }
   }, [buildingId]);
 
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   return (
     <>
       <Typography variant="h4" sx={{ fontWeight: "bold", mb: 5 }}>
@@ -220,8 +262,7 @@ export default function RoomPickingForm({
             </Stack>
 
             <Stack spacing={2} sx={{ pt: 5 }}>
-              <Typography variant="h6">Choose room</Typography>
-
+              <Typography variant="h6">Choose room (Reference detail room type table below)</Typography>
               <Grid container spacing={2}>
                 <Grid item xs={12} md={3}>
                   <RHFSelect name="gender" label="Gender">
@@ -246,8 +287,6 @@ export default function RoomPickingForm({
                     {roomTypeOptions?.map((option) => (
                       <MenuItem key={option.id} value={option.id}>
                         {option.roomTypeName +
-                          " - Capacity: " +
-                          option.capacity +
                           " - Price: " +
                           formatCurrency(option.price)}
                       </MenuItem>
@@ -312,11 +351,48 @@ export default function RoomPickingForm({
                 </Grid>
               </Grid>
             </Stack>
+            <Card sx={{ mt: 5, ml: 2.5 }}>
+              <TableContainer sx={{ position: "relative", overflow: "unset" }}>
+                <Scrollbar>
+                  <Table size={"medium"} sx={{ width: "100%" }}>
+                    <TableHeadCustom
+                      headLabel={TABLE_HEAD}
+                      // rowCount={tableData.length}
+                    />
+                    <TableBody>
+                      {roomTypeOptions?.map((row) => (
+                        <TableRow key={row.id}>
+                          <TableCell align="left">{row.roomTypeName}</TableCell>
+                          <TableCell align="center">{row.capacity}</TableCell>
+                          <TableCell
+                            align="right"
+                            sx={{ fontSize: "1rem", pr: 5 }}
+                          >
+                            {fCurrency(row.price)}
+                          </TableCell>
+
+                          <TableCell align="left">{row.description}</TableCell>
+                        </TableRow>
+                      ))}
+                      <TableNoData isNotFound={roomTypeOptions?.length == 0} />
+                    </TableBody>
+                  </Table>
+                </Scrollbar>
+              </TableContainer>
+
+              <TablePaginationCustom
+                count={roomTypeOptions?.length}
+                page={page}
+                rowsPerPage={rowsPerPage}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </Card>
           </Grid>
 
           <Container
             sx={{
-              pt: 15,
+              pt: 8,
             }}
           >
             <Stack spacing={3} direction="row" justifyContent="space-between">

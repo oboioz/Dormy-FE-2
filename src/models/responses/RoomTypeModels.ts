@@ -33,4 +33,5 @@ export interface RoomTypeOptionModel {
   roomTypeName: string;
   capacity: number;
   price: number;
+  description: string;
 }

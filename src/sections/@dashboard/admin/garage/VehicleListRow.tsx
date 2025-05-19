@@ -98,7 +98,7 @@ export default function VehicleListRow({
             color={(!isDeleted && "success") || "error"}
             sx={{ textTransform: "capitalize" }}
           >
-            {isDeleted ? "Inactive" : "Active"}
+            {isDeleted ? "Away" : "Parked"}
           </Label>
         </TableCell>
 
@@ -112,7 +112,7 @@ export default function VehicleListRow({
             onClick={() => updateVehicleHistory(id)}
             sx={{ mr: 1 }}
           >
-            In/Out
+            Parked/Away
           </Button>
         </TableCell>
       </TableRow>

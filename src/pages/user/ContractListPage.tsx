@@ -46,6 +46,7 @@ import ConfirmDialog from "../../components/confirm-dialog";
 import InvoiceStatusTag from "../../sections/tag/InvoiceStatusTag";
 import { EnumUtils } from "../../utils/EnumUtils";
 import UserViewDetailInvoiceModal from "../../sections/@dashboard/user/invoice/UserViewDetailInvoiceModal";
+import UserTermAndConditionModal from "../../sections/@dashboard/user/contract/UserTermAndConditionModal";
 
 const TABLE_HEAD = [
   { id: "startDate", label: "Start date", align: "left" },
@@ -72,6 +73,10 @@ export default function ContractListPage() {
   const [openViewDetailInvoiceId, setOpenViewDetailInvoiceId] = useState<
     string | null
   >(null);
+  const [openTerms, setOpenTerms] = useState(false);
+
+  const handleOpenTerms = () => setOpenTerms(true);
+  const handleCloseTerms = () => setOpenTerms(false);
 
   const handleOpenViewDetail = (invoiceId: string) => {
     setOpenViewDetailInvoiceId(invoiceId);
@@ -178,25 +183,24 @@ export default function ContractListPage() {
           ]}
           action={
             <>
-              {/* <Button
-                variant="contained"
-                startIcon={<Iconify icon="eva:plus-fill" />}
-                // onClick={handleOpenContractExtension}
-                onClick={() => navigate(PATH_USER.extendContract)}
-                sx={{ mr: 2 }}
-              >
-                Extend Contract
-              </Button> */}
               {isCreateContractButtonEnabled && (
                 <Button
                   variant="contained"
                   color="success"
                   startIcon={<Iconify icon="eva:plus-fill" />}
                   onClick={() => navigate(PATH_USER.createContract)}
+                  sx={{ mr: 2 }}
                 >
                   Create Contract
                 </Button>
               )}
+              <Button
+                variant="contained"
+                startIcon={<Iconify icon="eva:eye-outline" />}
+                onClick={handleOpenTerms}
+              >
+                View terms - conditions
+              </Button>
             </>
           }
         />
@@ -511,6 +515,11 @@ export default function ContractListPage() {
           </Accordion>
         ))}
       </Container>
+
+      <UserTermAndConditionModal
+        open={openTerms}
+        onClose={handleCloseTerms}
+      />
 
       {/* <ContractExtensionModal
         open={openContractExtension}

@@ -79,10 +79,10 @@ export default function RoomTypeRow({
 
         <TableCell align="left">{roomTypeName}</TableCell>
 
-        <TableCell align="left">{capacity}</TableCell>
+        <TableCell align="center">{capacity}</TableCell>
 
-        <TableCell align="left" sx={{ fontSize: "1rem" }}>
-          {fCurrency(price)} VND
+        <TableCell align="right" sx={{ fontSize: "1rem", pr: 5 }}>
+          {fCurrency(price)}
         </TableCell>
 
         <TableCell align="left">{description}</TableCell>

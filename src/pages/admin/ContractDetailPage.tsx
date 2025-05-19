@@ -17,6 +17,9 @@ import { PATH_ADMIN } from "../../routes/paths";
 import InvoiceStatusTag from "../../sections/tag/InvoiceStatusTag";
 import ViewDetailInvoiceModal from "../../sections/@dashboard/admin/invoices/ViewDetailInvoiceModal";
 import Iconify from "../../components/iconify";
+import { ContractStatusEnum } from "../../models/enums/ContractStatusEnum";
+import ConfirmDialog from "../../components/confirm-dialog";
+import { toast } from "react-toastify";
 
 export default function ContractDetailPage() {
   const { contractId } = useParams();
@@ -25,6 +28,7 @@ export default function ContractDetailPage() {
   const [openViewDetailInvoiceId, setOpenViewDetailInvoiceId] = useState<
     string | null
   >(null);
+  const [openConfirmTerminateContract, setOpenConfirmTerminateContract] = useState(false);
 
   const handleOpenViewDetail = (invoiceId: string) => {
     setOpenViewDetailInvoiceId(invoiceId);
@@ -60,6 +64,30 @@ export default function ContractDetailPage() {
         ),
       };
     });
+  };
+
+  const handleOpenConfirmTerminateContract = () => {
+    setOpenConfirmTerminateContract(true);
+  };
+
+  const handleCloseConfirmTerminateContract = () => {
+    setOpenConfirmTerminateContract(false);
+  };
+
+  const handleTerminateContract = async (id: string) => {
+    try {
+      const response = await httpClient.contractService.terminateContract(id);
+      if (response) {
+        window.location.reload();
+        toast.success("Terminate contract successfully.");
+      } else {
+        toast.error("Failed to terminate contract.");
+      }
+    } catch (error) {
+      toast.error("Failed to terminate contract: " + error);
+    } finally {
+      setOpenConfirmTerminateContract(false);
+    }
   };
 
   return (
@@ -128,13 +156,75 @@ export default function ContractDetailPage() {
             <Typography variant="body2" sx={{ mb: 1 }}>
               <strong>Building:</strong> {contract.buildingName}
             </Typography>
-            <Typography variant="body2" sx={{ mb: 1 }}>
+            {/* <Typography variant="body2" sx={{ mb: 1 }}>
               <strong>Price:</strong> {contract.price.toLocaleString()} VND
             </Typography>
             <Typography variant="body2" sx={{ mb: 1 }}>
               <strong>Status:</strong>{" "}
               <ContractStatusTag status={contract.status} />
-            </Typography>
+            </Typography> */}
+            <Grid container spacing={2} alignItems="center">
+              {/* Left column: Price and Status */}
+              <Grid item xs={12} md={6}>
+                <Typography variant="body2" sx={{ mb: 1 }}>
+                  <strong>Price:</strong> {contract.price.toLocaleString()} VND
+                </Typography>
+                <Typography variant="body2" sx={{ mb: 1 }}>
+                  <strong>Status:</strong>{" "}
+                  <ContractStatusTag status={contract.status} />
+                </Typography>
+              </Grid>
+              {/* Right column: Button */}
+              <Grid
+                item
+                xs={12}
+                md={6}
+                sx={{
+                  display: "flex",
+                  justifyContent: { xs: "flex-start", md: "flex-end" },
+                  alignItems: "center",
+                  mt: { xs: 1, md: 0 },
+                }}
+              >
+                {(contract.status === ContractStatusEnum.ACTIVE ||
+                  contract.status === ContractStatusEnum.EXTENDED ||
+                  contract.status === ContractStatusEnum.EXPIRED) && (
+                  <Button
+                    variant="contained"
+                    color="error"
+                    startIcon={<Iconify icon="eva:trash-2-outline" />}
+                    onClick={handleOpenConfirmTerminateContract}
+                  >
+                    Terminate contract
+                  </Button>
+                )}
+              </Grid>
+              {openConfirmTerminateContract && (
+                <ConfirmDialog
+                  open={openConfirmTerminateContract}
+                  onClose={handleCloseConfirmTerminateContract}
+                  title="Terminate Contract"
+                  content={
+                    <>
+                      Are you sure want to <strong>terminate</strong> this
+                      contract ?
+                    </>
+                  }
+                  action={
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={() => {
+                        handleTerminateContract(contract.id);
+                        handleCloseConfirmTerminateContract();
+                      }}
+                    >
+                      Confirm terminate
+                    </Button>
+                  }
+                />
+              )}
+            </Grid>
           </Grid>
         </Grid>
       </Card>

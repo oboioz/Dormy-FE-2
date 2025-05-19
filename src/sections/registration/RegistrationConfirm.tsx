@@ -21,6 +21,11 @@ import { DateTimeUtils } from "../../utils/DateTimeUtils";
 import { RoomSummaryResponseModel } from "../../models/responses/RoomModel";
 import { fDate } from "../../utils/formatTime";
 import { fCurrency } from "../../utils/formatNumber";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
+import * as Yup from "yup";
+import Iconify from "../../components/iconify";
+import TermAndConditionModal from "./TermAndConditionModal";
 
 type Props = {
   generalInformation: IRegistrationFormState;
@@ -30,6 +35,22 @@ type Props = {
   onNextStep: VoidFunction;
   onBackStep: VoidFunction;
 };
+
+type FormValuesProps = {
+  isConfirmed: boolean;
+  isReadTerms: boolean;
+};
+
+const UpdateSchema = Yup.object().shape({
+  isConfirmed: Yup.boolean().oneOf(
+    [true],
+    "You must confirm that all the information is correct."
+  ),
+  isReadTerms: Yup.boolean().oneOf(
+    [true],
+    "You must agree to the terms and conditions."
+  ),
+});
 
 export default function RegistrationConfirm({
   onNextStep,
@@ -52,10 +73,42 @@ export default function RegistrationConfirm({
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isConfirmed, setIsConfirmed] = useState(false);
-  const [roomInformation, setRoomInformation] = useState<RoomSummaryResponseModel>();
+  const [isReadTerms, setIsReadTerms] = useState(false);
+  const [roomInformation, setRoomInformation] =
+    useState<RoomSummaryResponseModel>();
+  const [openTerms, setOpenTerms] = useState(false);
+
+  const defaultValues: FormValuesProps = {
+    isConfirmed: false,
+    isReadTerms: false,
+    // ...add other fields as needed
+  };
+
+  const methods = useForm<FormValuesProps>({
+    resolver: yupResolver(UpdateSchema) as any,
+    defaultValues,
+  });
+
+  const {
+    watch,
+    reset,
+    control,
+    setValue,
+    handleSubmit,
+    // formState: { isSubmitting, errors },
+  } = methods;
+
+  const handleOpenTerms = () => setOpenTerms(true);
+  const handleCloseTerms = () => setOpenTerms(false);
+  const handleConfirmTerms = () => {
+    setIsReadTerms(true);
+    setOpenTerms(false);
+  };
 
   const fetchRoomSumaryData = async (roomId: string) => {
-    const response = await httpClient.registrationService.getRoomSumaryById(roomId);
+    const response = await httpClient.registrationService.getRoomSumaryById(
+      roomId
+    );
 
     setRoomInformation(response);
   };
@@ -68,7 +121,11 @@ export default function RegistrationConfirm({
     const errors: Record<string, string> = {};
 
     if (!isConfirmed) {
-      errors.isConfirmed = "You have not confirmed the information yet.";
+      errors.isConfirmed =
+        "You must confirm that all the information is correct.";
+    }
+    if (!isReadTerms) {
+      errors.isReadTerms = "You must agree to the terms and conditions.";
     }
 
     setFormErrors(errors);
@@ -95,15 +152,15 @@ export default function RegistrationConfirm({
       workplaceId: workplaceId,
       roomId: roomState.roomId,
       startDate: startDate
-          ? DateTimeUtils.toStringWithDefaultTime(startDate)
-          : "",
-      endDate: endDate
-          ? DateTimeUtils.toStringWithDefaultTime(endDate)
-          : "",
+        ? DateTimeUtils.toStringWithDefaultTime(startDate)
+        : "",
+      endDate: endDate ? DateTimeUtils.toStringWithDefaultTime(endDate) : "",
       healthInsurance: {
         insuranceCardNumber: healthInsuranceState.insuranceCardNumber,
         expirationDate: healthInsuranceState.expirationDate
-          ? DateTimeUtils.toStringWithDefaultTime(healthInsuranceState.expirationDate)
+          ? DateTimeUtils.toStringWithDefaultTime(
+              healthInsuranceState.expirationDate
+            )
           : "",
         registeredHospital: healthInsuranceState.registeredHospital,
       },
@@ -244,41 +301,33 @@ export default function RegistrationConfirm({
           <Grid item xs={6}>
             <Typography variant="body1">
               <strong>Start date:</strong>{" "}
-              {startDate
-                ? fDate(startDate, "dd/MM/yyyy")
-                : "N/A"}
+              {startDate ? fDate(startDate, "dd/MM/yyyy") : "N/A"}
             </Typography>
           </Grid>
           <Grid item xs={6}>
             <Typography variant="body1">
               <strong>End date:</strong>{" "}
-              {endDate
-                ? fDate(endDate, "dd/MM/yyyy")
-                : "N/A"}
+              {endDate ? fDate(endDate, "dd/MM/yyyy") : "N/A"}
             </Typography>
           </Grid>
           <Grid item xs={6}>
             <Typography variant="body1">
-              <strong>Room number:</strong>{" "}
-              {roomInformation?.roomNumber}
+              <strong>Room number:</strong> {roomInformation?.roomNumber}
             </Typography>
           </Grid>
           <Grid item xs={6}>
             <Typography variant="body1">
-              <strong>Building:</strong>{" "}
-              {roomInformation?.buildingName}
+              <strong>Building:</strong> {roomInformation?.buildingName}
             </Typography>
           </Grid>
           <Grid item xs={6}>
             <Typography variant="body1">
-              <strong>Room type:</strong>{" "}
-              {roomInformation?.roomTypeName}
+              <strong>Room type:</strong> {roomInformation?.roomTypeName}
             </Typography>
           </Grid>
           <Grid item xs={6}>
             <Typography variant="body1">
-              <strong>Price:</strong>{" "}
-              {fCurrency(roomInformation?.price)}
+              <strong>Price:</strong> {fCurrency(roomInformation?.price)}
             </Typography>
           </Grid>
         </Grid>
@@ -342,18 +391,50 @@ export default function RegistrationConfirm({
       </Box>
 
       {/* Confirmation Checkbox */}
-      <FormControlLabel
-        control={
-          <Checkbox
-            checked={isConfirmed}
-            onChange={(e) => setIsConfirmed(e.target.checked)}
-          />
-        }
-        label="I confirm that all the information provided is correct."
-        sx={{ mb: 3 }}
-      />
+      <Box>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={isConfirmed}
+              onChange={(e) => setIsConfirmed(e.target.checked)}
+            />
+          }
+          label="I confirm that all the information provided is correct."
+        />
+      </Box>
       {formErrors.isConfirmed && (
-        <Typography color="error">{formErrors.isConfirmed}</Typography>
+        <Typography color="error" sx={{ mb: 1 }}>{formErrors.isConfirmed}</Typography>
+      )}
+
+      <Box sx={{ display: "flex", alignItems: "center" }}>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={isReadTerms}
+              disabled={!isReadTerms}
+              onChange={(e) => setIsReadTerms(e.target.checked)}
+            />
+          }
+          label="I have read and agree to the terms and conditions."
+        />
+        <Button
+          size="small"
+          sx={{ ml: 1, textTransform: "none" }}
+          onClick={handleOpenTerms}
+        >
+          View Terms{" "}
+          <Iconify icon="eva:eye-outline" width={18} sx={{ ml: 1 }} />
+        </Button>
+        <TermAndConditionModal
+          open={openTerms}
+          onClose={handleCloseTerms}
+          onConfirm={handleConfirmTerms}
+        />
+      </Box>
+      {formErrors.isReadTerms && (
+        <Typography color="error">
+          {formErrors.isReadTerms}
+        </Typography>
       )}
 
       {/* Action Buttons */}
